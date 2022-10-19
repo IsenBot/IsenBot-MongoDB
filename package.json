@@ -4,10 +4,34 @@
   "description": "ISEN Nantes's promo 5's discord bot with various command categories like admin, music, core ...",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
+  },
+  "config": {
+    "port": "8080"
+  },
+  "engines": {
+    "node": ">=16.9.0"
   },
   "keywords": [],
-  "author": "",
+  "homepage": "https://github.com/IsenBot/IsenBot-MongoDB",
+  "bugs": {
+    "url": "https://github.com/IsenBot/IsenBot-MongoDB/issues"
+  },
+  "contributors": [
+    {
+      "name": "l_enchantuer"
+    },
+    {
+      "name": "Ackimixs"
+    },
+    {
+      "name": "@llan"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsenBot/IsenBot-MongoDB.git"
+  },
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.6.0",
