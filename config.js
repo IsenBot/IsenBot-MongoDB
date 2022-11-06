@@ -2,8 +2,10 @@ const chalk = require('chalk');
 require('dotenv').config();
 module.exports = {
     token : process.env.TOKEN,
+    mongodbUri: process.env.MONGODB_URI,
     // Config for the log on discord and console
     log : {
+        globalLogChannelId: 'id',
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
         // Color rule for log message in console
@@ -25,5 +27,8 @@ module.exports = {
             error: '#e40613',
             event: '#e3bd2c',
         },
+    },
+    apiKeys: {
+        blagues: process.env.BLAGUES_API_KEY,
     },
 };
