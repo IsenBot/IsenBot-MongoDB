@@ -3,7 +3,7 @@ async function execute(channel) {
     if (channel.isThread()) {
         // The thread is only store locally, not in the database
         if (channel.guild.thread?.id === channel.id) {
-            channel.guild.commandLogger.removeLogThread();
+            channel.guild.logger.removeLogThread();
         }
         if (client.logger.thread?.id === channel.id) {
             client.logger.removeLogThread();
