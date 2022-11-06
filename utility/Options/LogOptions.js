@@ -20,11 +20,17 @@ class LogOptions {
     resolve() {
         if (this.body) return this.body;
 
+        if (this.options instanceof String) {
+            const textContent = this.options;
+            this.options = {};
+            this.options.textContent = textContent;
+        }
+
         const { headers, textContent, author, target, url, isEmbed, isConsoleLog, isDiscordLog, guild, type } = this.options;
 
         this.body = {
             type: type.toLowerCase(),
-            headers,
+            headers: headers instanceof String ? [headers] : headers,
             textContent,
             author,
             target,

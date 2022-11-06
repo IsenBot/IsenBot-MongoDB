@@ -1,11 +1,10 @@
 const { EmbedBuilder } = require('discord.js');
-const EmbedOptions = require('./EmbedOptions');
-const LogOptions = require('./LogOptions');
+const EmbedOptions = require('../utility/Options/EmbedOptions');
+const LogOptions = require('../utility/Options/LogOptions');
 const { formatString, dateMatch, getUTCFullDate, stringToEmbed, formatLog } = require('../utility/Log');
 
 // WARNING : DO NOT SAVE IN DATABASE
 //
-// TODO : Event listener -> logChannel deleted -> change the logChannel
 // TODO : Event listener -> thread deleted -> change the thread
 // TODO : Command to change the logChannel
 //
@@ -20,15 +19,12 @@ class Logger {
     constructor(client) {
         // client which initiate this logger
         this.client = client;
-        // TODO : Store the guild object through the new client class
         // guild which initiate this logger
-        this.guild = undefined;
-        // TODO : Store the channel object through the new client class
+        this.guild = null;
         // discord channel where to log
-        this.logChannel = undefined;
+        this.logChannel = null;
         // The last thread used to log
-        // TODO : Maybe make in the client Class to get the today thread when initialised OR Maybe only do it when logging something
-        this.thread = undefined;
+        this.thread = null;
         // color for the embed
         this.embedColors = this.client.config.log.embedColors;
         // color for the console
@@ -36,15 +32,42 @@ class Logger {
         // If true, log on discord with embed
         this.defaultEmbed = this.client.config.log.defaultEmbed;
     }
+    static async create(client, extra={}) {
+        const logger = new this(client);
+        if (extra.guild) {
+            logger.guild = extra.guild
+        }
+        try {
+            if (extra.logChannelId) {
+                logger.logChannel = await client.channels.fetch(extra.logChannelId);
+            }
+        } catch (e) {
+            logger.logChannel = null;
+            await logger.log({
+                textContent: formatLog('Failed to fetch log channel', {'ChannelId': logger.logChannel?.id}),
+                type: 'error',
+                headers: 'Logger',
+            });
+        }
+        return logger;
+    }
+
     get isClientLogger() {
         return this.client.logger === this;
     }
-    /*
-    static create(client, extra={}) {
-        const guild = extra.guild,
-            logChannel = client
+
+    removeLogChannel() {
+        this.logChannel = null;
+        this.removeLogThread();
     }
-    */
+    removeLogThread() {
+        this.thread = null;
+    }
+    setLogChannel(newLogChannel) {
+        this.logChannel = newLogChannel;
+        this.removeLogThread();
+    }
+
     // Create an embed for the given options, options are an EmbedOptions instance.
     createEmbed(options) {
         let embedOptionsBody;
@@ -104,7 +127,7 @@ class Logger {
             'Target': target,
         });
 
-        console.log(finalHeader, content);
+        (type === 'error' ? console.error : console.log)(finalHeader, content);
     }
     async discordLog(options) {
         if (!this.logChannel) {
@@ -174,28 +197,20 @@ class Logger {
         const logOptionsBody = logOptions.resolve();
         // If this logger instance is not the client's one, then call the client's one.
         if (!(this.isClientLogger)) {
-            // If there is no client logger, then log an error.
-            if (!(this.client.logger)) {
-                // Also, if we are suppose to consoleLog, do it now.
-                if (logOptionsBody.isConsoleLog) {
-                    this.consoleLog(logOptions);
-                }
-                console.error(new Error('No logger for the client'));
-            } else {
-                this.client.logger?.log(logOptions);
-            }
-            // eslint-disable-next-line brace-style
-        }
-
-        else if (logOptionsBody.isConsoleLog) {
+            this.client.logger.log(logOptions);
+        } else if (logOptionsBody.isConsoleLog) {
             this.consoleLog(logOptions);
         }
+
         if (logOptionsBody.isDiscordLog) {
             try {
                 await this.discordLog(logOptions);
             } catch (e) {
-                console.error('Fail sending log at :', this.logChannel?.url + '\n content :\n' + logOptionsBody.textContent);
-                console.error(e);
+                this.consoleLog({
+                    textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent })+'\n'+e.toString(),
+                    type: 'error',
+                    header: 'Logger',
+                });
             }
         }
     }
@@ -214,7 +229,7 @@ class Logger {
         }
         // TODO : Throw error if no log channel ??
         if (!this.logChannel) {
-            console.error('mettez un log channel');
+            // console.error('mettez un log channel');
             return false;
         }
         const threads = this.findThread(date);
@@ -225,7 +240,7 @@ class Logger {
     async getTodayThread() {
         // TODO : throw error ?
         if (!this.logChannel) {
-            console.error('mettez un log channel');
+            // console.error('mettez un log channel');
             return undefined;
         }
         const date = new Date();

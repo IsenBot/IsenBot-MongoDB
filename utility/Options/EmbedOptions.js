@@ -13,11 +13,17 @@ class EmbedOptions {
     resolve() {
         if (this.body) return this.body;
 
+        if (this.options instanceof String) {
+            const textContent = this.options;
+            this.options = {};
+            this.options.textContent = textContent;
+        }
+
         const { color, headers, textContent, author, target, url, guild } = this.options;
 
         this.body = {
             color,
-            headers,
+            headers: headers instanceof String ? [headers] : headers,
             textContent,
             author,
             target,
