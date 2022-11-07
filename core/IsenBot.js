@@ -11,7 +11,7 @@ const path = require('path');
 const fs = require('fs');
 
 class IsenBot extends Client {
-    async constructor(options) {
+    constructor(options) {
         super(options);
         // Store the config of the bot like token.
         this.config = require('../config');
@@ -35,8 +35,13 @@ class IsenBot extends Client {
         // Contain all the command of the bot
         this.commands = new Collection();
         // The client's logger
-        this.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
+        this.logger = undefined;
     }
+    static async create(options) {
+        const client = new this(options);
+        client.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
+    }
+
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
         const mongodb = this.mongodb;

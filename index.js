@@ -21,7 +21,7 @@ async function main() {
         '    ..  ...  .  -.   -...  ---  -    \n';
 
     // Create a new client instance
-    const client = await new IsenBot({ intents: [GatewayIntentBits.Guilds] });
+    const client = await IsenBot.create({ intents: [GatewayIntentBits.Guilds] });
     // Some logs
     await client.logger.log({ textContent: startLogo, isEmbed: false });
     await client.logger.log({
