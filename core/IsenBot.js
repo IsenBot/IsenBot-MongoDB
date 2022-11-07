@@ -45,6 +45,10 @@ class IsenBot extends Client {
         client.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
     }
 
+    async log(options) {
+        return await this.logger.log(options);
+    }
+
     // Return the default bot language for all translation.
     get defaultLanguageMeta() {
         const language = this.languagesMeta.filter(languageMeta => languageMeta.default);
