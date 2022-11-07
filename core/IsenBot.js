@@ -36,10 +36,24 @@ class IsenBot extends Client {
         this.commands = new Collection();
         // The client's logger
         this.logger = undefined;
+
+        this.languagesMeta = require('../languages/languages-meta.json');
+        this.languageCache = new Collection();
     }
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
+    }
+
+    // Return the default bot language for all translation.
+    get defaultLanguageMeta() {
+        const language = this.languagesMeta.filter(languageMeta => languageMeta.default);
+        return language.length > 0 ? language[0] : undefined;
+    }
+    // Return the lang-meta part that match the given name
+    getLanguageMeta(languageName) {
+        const language = this.languagesMeta.filter(languageMeta => (languageMeta.name === languageName) || (languageMeta.aliases.includes(languageName)));
+        return language.length > 0 ? language[0] : this.defaultLanguageMeta;
     }
 
     // Set up Logger for all guild and the global logger.
@@ -88,7 +102,7 @@ class IsenBot extends Client {
             mongodb.close();
         }
     }
-    // Execute a command file
+    // Execute a command file.
     executeCommand(interaction, command) {
         const commandPath = Object.assign({}, this.commandsExePath);
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
@@ -124,7 +138,7 @@ class IsenBot extends Client {
         }
         return (require(path.format(commandPath)))(interaction);
     }
-    // Load the command in the client
+    // Load the command in the client.
     async loadCommand() {
         const mongodb = this.mongodb;
         const client = this;
@@ -191,9 +205,58 @@ class IsenBot extends Client {
             mongodb.close();
         }
     }
-    // TODO : do the function translate
-    translate(componentPath, variables, language) {
-        return componentPath;
+
+    // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
+    replaceVariable(string, variablesObject) {
+        // TODO : Put the wrapper config in the config ?
+        const leftWrapper = '{{';
+        const rightWrapper = '{{';
+        const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
+        return string.replaceAll(regex, (match, variableName) => Object.hasOwn(variablesObject, variableName) ? variablesObject[variableName] : match);
+    }
+    // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
+    // TODO : test if it work
+    translate(messageComponentPath, args = {}, languageName = this.defaultLanguageMeta.name) {
+        const regex = /:(?=\w)/g;
+        messageComponentPath = messageComponentPath.split(regex);
+        if (messageComponentPath.length < 2) {
+            throw 'Not a path';
+        }
+        const languageMeta = this.getLanguageMeta(languageName);
+        if (!languageMeta) {
+            return 'unknown';
+        }
+        if (!this.languageCache.has(languageMeta.name + '/' + messageComponentPath[0])) {
+            const languageFilePath = './languages/' + languageMeta.name + '/' + messageComponentPath[0] + '.json';
+            try {
+                let data = fs.readFileSync(languageFilePath, 'utf8');
+                data = JSON.parse(data);
+                this.languageCache[languageMeta.name + '/' + messageComponentPath[0]] = data;
+            } catch (err) {
+                this.logger.log({
+                    textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
+                    headers: 'Language',
+                    type: 'error',
+                });
+                if (err.code !== 'ENOENT') { console.error(err); }
+                return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
+            }
+        }
+        let component = this.languageCache[languageMeta.name + '/' + messageComponentPath[0]];
+        for (let i = 1; i < messageComponentPath.length; i++) {
+            if (component) {
+                component = component[messageComponentPath[i]];
+            }
+        }
+        if (component) {
+            return this.replaceVariable(component, args);
+        }
+        this.logger.log({
+            textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
+            headers: 'Language',
+            type: 'error',
+        });
+        return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
     }
 }
 

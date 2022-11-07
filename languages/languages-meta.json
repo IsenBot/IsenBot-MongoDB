@@ -1,0 +1,8 @@
+[
+  {
+    "name": "en",
+    "alias": ["english", "en"],
+    "default": true,
+    "dateFormat": "MM-DD-YYYY"
+  }
+]
