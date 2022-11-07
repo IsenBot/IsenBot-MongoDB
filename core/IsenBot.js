@@ -70,11 +70,19 @@ class IsenBot extends Client {
     // Remove the logChannel from the logger and the database for the given guild.
     async removeLogChannel(guild) {
         this.guild.logger.removeLogChannel();
-        await this.updateGuildData(guild.id, { logChannel: null });
-    }
-    // Return the data from the database for the guild with the given id
-    async updateGuildData(guildId, newValues) {
-        return await database.updateGuildData(this.mongodb, guildId, newValues);
+        const mongodb = this.mongodb;
+        try {
+            mongodb.connect();
+            // Set the logChannelId for the guild to null in the database.
+            const database = mongodb.db('database_name');
+            const guildsCollection = database.collection('guild');
+            const query = { _id: guild.id };
+            const update = { logChannelId: null };
+            await guildsCollection.updateOne(query, update);
+
+        } finally {
+            mongodb.close();
+        }
     }
     // Execute a command file
     executeCommand(interaction, command) {
