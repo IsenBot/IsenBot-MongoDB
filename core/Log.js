@@ -32,10 +32,10 @@ class Logger {
         // If true, log on discord with embed
         this.defaultEmbed = this.client.config.log.defaultEmbed;
     }
-    static async create(client, extra={}) {
+    static async create(client, extra = {}) {
         const logger = new this(client);
         if (extra.guild) {
-            logger.guild = extra.guild
+            logger.guild = extra.guild;
         }
         try {
             if (extra.logChannelId) {
@@ -44,7 +44,7 @@ class Logger {
         } catch (e) {
             logger.logChannel = null;
             await logger.log({
-                textContent: formatLog('Failed to fetch log channel', {'ChannelId': logger.logChannel?.id}),
+                textContent: formatLog('Failed to fetch log channel', { 'ChannelId': logger.logChannel?.id }),
                 type: 'error',
                 headers: 'Logger',
             });
@@ -207,7 +207,7 @@ class Logger {
                 await this.discordLog(logOptions);
             } catch (e) {
                 this.consoleLog({
-                    textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent })+'\n'+e.toString(),
+                    textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent }) + '\n' + e.toString(),
                     type: 'error',
                     header: 'Logger',
                 });
@@ -280,4 +280,3 @@ class Logger {
 }
 
 module.exports = Logger;
-// exports.Logger = Logger;

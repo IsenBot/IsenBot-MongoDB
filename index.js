@@ -4,30 +4,30 @@ const IsenBot = require('./core/IsenBot');
 
 async function main() {
     const startLogo =
-        "    ..  ...  .  -.   -...  ---  -    \n\n" +
-        "██╗███████╗███████╗███╗   ██╗         \n" +
-        "██║██╔════╝██╔════╝████╗  ██║         \n" +
-        "██║███████╗█████╗  ██╔██╗ ██║         \n" +
-        "██║╚════██║██╔══╝  ██║╚██╗██║         \n" +
-        "██║███████║███████╗██║ ╚████║         \n" +
-        "╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝         \n" +
-        "                                      \n" +
-        "            ██████╗  ██████╗ ████████╗\n" +
-        "            ██╔══██╗██╔═══██╗╚══██╔══╝\n" +
-        "            ██████╔╝██║   ██║   ██║   \n" +
-        "            ██╔══██╗██║   ██║   ██║   \n" +
-        "            ██████╔╝╚██████╔╝   ██║   \n" +
-        "            ╚═════╝  ╚═════╝    ╚═╝ \n\n" +
-        "    ..  ...  .  -.   -...  ---  -    \n";
+        '    ..  ...  .  -.   -...  ---  -    \n\n' +
+        '██╗███████╗███████╗███╗   ██╗         \n' +
+        '██║██╔════╝██╔════╝████╗  ██║         \n' +
+        '██║███████╗█████╗  ██╔██╗ ██║         \n' +
+        '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
+        '██║███████║███████╗██║ ╚████║         \n' +
+        '╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝         \n' +
+        '                                      \n' +
+        '            ██████╗  ██████╗ ████████╗\n' +
+        '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
+        '            ██████╔╝██║   ██║   ██║   \n' +
+        '            ██╔══██╗██║   ██║   ██║   \n' +
+        '            ██████╔╝╚██████╔╝   ██║   \n' +
+        '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
+        '    ..  ...  .  -.   -...  ---  -    \n';
 
     // Create a new client instance
     const client = await new IsenBot({ intents: [GatewayIntentBits.Guilds] });
     // Some logs
-    await client.logger.log({textContent: startLogo, isEmbed: false});
+    await client.logger.log({ textContent: startLogo, isEmbed: false });
     await client.logger.log({
-        textContent: `The bot is starting ...`,
-        headers: "CommandLoader",
-        type: "event",
+        textContent: 'The bot is starting ...',
+        headers: 'CommandLoader',
+        type: 'event',
     });
     // Load the command in the client instance, so we can execute them when someone use them
     await client.loadCommand();

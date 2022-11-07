@@ -1,36 +1,35 @@
-const { Client, Collection/*, MessageEmbed*/ } = require("discord.js");
+const { Client, Collection/* , MessageEmbed*/ } = require('discord.js');
 
-const { MongoClient } = require("mongodb");
+const { MongoClient } = require('mongodb');
 const { Player } = require('discord-player');
-const BlaguesAPI = require("blagues-api");
+const BlaguesAPI = require('blagues-api');
 
-const Logger = require("./Log");
-const database = require('../utility/database');
+const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
 
 const path = require('path');
-const fs = require("fs");
+const fs = require('fs');
 
 class IsenBot extends Client {
     async constructor(options) {
         super(options);
         // Store the config of the bot like token.
-        this.config = require("../config");
+        this.config = require('../config');
         // Client to connect to the database.
         this.mongodb = new MongoClient(this.config.mongodbUri);
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {
                 quality: 'highestaudio',
-                highWaterMark: 1<<25,
-            }
+                highWaterMark: 1 << 25,
+            },
         });
         // Store the blaguesAPI token and the last joke
         this.blagues = new BlaguesAPI(this.config.apiKeys.blagues);
         // The root path of the command exe
         this.commandsExePath = {
-            root : path.resolve("./commands/exe/"),
-            ext : ".js"
+            root : path.resolve('./commands/exe/'),
+            ext : '.js',
         };
         this.commandsBuilderPath = path.resolve('./commands/builder');
         // Contain all the command of the bot
@@ -77,7 +76,7 @@ class IsenBot extends Client {
         const commandPath = Object.assign({}, this.commandsExePath);
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
-        commandPath.dir = path.join(commandPath.root, command.path)
+        commandPath.dir = path.join(commandPath.root, command.path);
         if (subCommand || subCommandGroup) {
             commandPath.dir = path.join(commandPath.dir, command.name);
             command = command.data;
@@ -85,8 +84,8 @@ class IsenBot extends Client {
                 for (const optionKey in command.options) {
                     if (command.options[optionKey].name) {
                         if (interaction.translate(command.options[optionKey].name) === subCommandGroup) {
-                            command = command.options[optionKey]
-                            commandPath.dir = path.join(commandPath.dir, interaction.client.translate(command.name, {}, "en"));
+                            command = command.options[optionKey];
+                            commandPath.dir = path.join(commandPath.dir, interaction.client.translate(command.name, {}, 'en'));
                             break;
                         }
                     }
@@ -96,7 +95,7 @@ class IsenBot extends Client {
                 for (const optionKey in command.options) {
                     if (command.options[optionKey].name) {
                         if (interaction.translate(command.options[optionKey].name) === subCommand) {
-                            commandPath.name = interaction.client.translate(command.options[optionKey].name, {}, "en");
+                            commandPath.name = interaction.client.translate(command.options[optionKey].name, {}, 'en');
                             break;
                         }
                     }
@@ -104,7 +103,7 @@ class IsenBot extends Client {
             }
 
         } else {
-            commandPath.name = interaction.client.translate(command.data.name, {}, "en");
+            commandPath.name = interaction.client.translate(command.data.name, {}, 'en');
         }
         return (require(path.format(commandPath)))(interaction);
     }
@@ -130,8 +129,8 @@ class IsenBot extends Client {
             });
             // Iterate over each guild language
             const dirs = fs.readdirSync(commandsBuilderPath);
-            let langList = [];
-            let ignoreList = []
+            const langList = [];
+            const ignoreList = [];
             for await (const guildData of guildsData) {
                 const language = guildData.language;
                 if (!(langList.includes(language))) {
@@ -140,11 +139,11 @@ class IsenBot extends Client {
                     for (const dir of dirs) {
                         const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
                         for (const commandFile of commandFiles) {
-                            if (!ignoreList.includes(commandFile.split(".js")[0])) {
+                            if (!ignoreList.includes(commandFile.split('.js')[0])) {
                                 await client.logger.log({
-                                    textContent: formatLog(`Loading command ...`, {
+                                    textContent: formatLog('Loading command ...', {
                                         'Command': commandFile,
-                                        'Language': language
+                                        'Language': language,
                                     }),
                                     headers: 'CommandLoader',
                                     type: 'log',
@@ -154,10 +153,10 @@ class IsenBot extends Client {
                                 try {
                                     client.commands.set(client.translate(command.data.name, {}, language), command);
                                 } catch (e) {
-                                    if (e !== "Not a path") {
+                                    if (e !== 'Not a path') {
                                         throw e;
                                     }
-                                    ignoreList.push(command.data.name)
+                                    ignoreList.push(command.data.name);
                                     client.commands.set(command.data.name, command);
                                 }
                             }
@@ -176,8 +175,8 @@ class IsenBot extends Client {
         }
     }
     // TODO : do the function translate
-    translate(path, variables, language) {
-        return path;
+    translate(componentPath, variables, language) {
+        return componentPath;
     }
 }
 
