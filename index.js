@@ -1,6 +1,7 @@
 // Require the necessary discord.js classes
 const { GatewayIntentBits } = require('discord.js');
 const IsenBot = require('./core/IsenBot');
+const fs = require("fs");
 
 async function main() {
     const startLogo =
@@ -32,6 +33,8 @@ async function main() {
     // Load the command in the client instance, so we can execute them when someone use them
     await client.loadCommand();
 
+    initializeEventHandler(client);
+
     // When the client is ready, run this code (only once)
     client.once('ready', () => {
         client.createLoggers();
@@ -42,4 +45,19 @@ async function main() {
     await client.login(client.config.token);
 }
 
-main().then();
+function initializeEventHandler(client) {
+    fs.readdirSync('./event/').forEach(dirs => {
+        const eventFiles = fs.readdirSync(`./event/${dirs}`).filter(file => file.endsWith('.js'));
+        const handler = (dirs === 'core' ? client : dirs === 'music' ? client.player : undefined )
+        for (const file of eventFiles) {
+            const event = require(`./event/${dirs}/${file}`);
+            if (event.once) {
+                handler?.once(event.name, (...args) => event.execute(...args));
+            } else {
+                handler?.on(event.name, (...args) => event.execute(...args));
+            }
+        }
+    });
+}
+
+main();
