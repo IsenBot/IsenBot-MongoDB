@@ -257,7 +257,6 @@ class Logger {
         const date = new Date();
         const thread = await this.logChannel.threads.create({
             name: getUTCFullDate(date, 'YYYY-MM-DD'),
-            // TODO : use console language date format
             reason: `Open log thread for ${getUTCFullDate(date, 'YYYY-MM-DD')}`,
         });
         await this.log({
