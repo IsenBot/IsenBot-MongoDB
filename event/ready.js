@@ -1,7 +1,6 @@
 const { formatLog } = require('../utility/Log');
 
 async function checkNewGuild(client) {
-    const mongodb = client.mongodb
     try {
         client.mongodb.connect();
 
