@@ -3,17 +3,17 @@ const { formatLog } = require('../utility/Log');
 async function checkNewGuild(client) {
     const mongodb = client.mongodb
     try {
-        mongodb.connect();
+        client.mongodb.connect();
 
         const guildsCollection = client.guildsCollection;
         const query = {};
         const projection = { id_ : 1 };
 
-        const guildsId = await guildsCollection.find(query).project(projection).map( p => p._id ).toArray();
+        const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
 
         let change = false;
 
-        for (const guild of client.guilds.cache.map( guild => guild )) {
+        for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
             if (!guildsId.includes(guild)) {
                 change = true;
                 await client.log({
@@ -37,7 +37,7 @@ async function checkNewGuild(client) {
         }
 
     } finally {
-        mongodb.close();
+        client.mongodb.close();
     }
 }
 
@@ -51,7 +51,7 @@ module.exports = {
     once: true,
     async execute(client) {
         const log = client.log;
-        await log(`Triggered ...`, "[Ready]", "event");
+        await log('Triggered ...', '[Ready]', 'event');
         await log({
             textContent: 'Triggered ...',
             headers: 'Ready',
@@ -59,15 +59,15 @@ module.exports = {
         });
         await checkNewGuild(client);
 
-        //cache all guild and message where we look for a reaction
+        // cache all guild and message where we look for a reaction
         await log({
-            textContent: 'Caching message for reaction event ...',
+            textContent: 'Caching message event ...',
             headers: ['Ready', 'Cache'],
             type: 'log',
         });
         await cacheNeededGuildsMessages(client);
         await log({
-            textContent: 'Message caching finished',
+            textContent: '... Messages caching finished',
             headers: ['Ready', 'Cache'],
             type: 'success',
         });
@@ -80,7 +80,7 @@ module.exports = {
         // Initialise the guild loggers
         await client.createLoggers();
         await log({
-            textContent: 'Loggers added',
+            textContent: '... Loggers added',
             headers: ['Ready', 'Logger'],
             type: 'success',
         });
