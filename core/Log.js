@@ -120,8 +120,8 @@ class Logger {
 
         (type === 'error' ? console.error : console.log)(finalHeader, content);
     }
-    async discordLog(options) {
-        if (!this.logChannel) {
+    async discordLog(options, thread = undefined) {
+        if (!(this.logChannel || thread)) {
             // TODO : What to do ?
             return 'No log channel';
         }
@@ -140,8 +140,12 @@ class Logger {
 
         const { headers, textContent, author, target, url, type, guild, isEmbed } = logOptionsBody;
 
+        if (!thread) {
+            thread = await this.getTodayThread();
+        }
+
         if (isEmbed ?? this.defaultEmbed) {
-            return await this.logChannel.send({
+            return await thread.send({
                 embeds : [this.createEmbed({
                     headers,
                     textContent,
@@ -172,12 +176,11 @@ class Logger {
                 finalHeader += ' ';
             }
             content = finalHeader + content;
-            const thread = await this.getTodayThread();
             return await thread.send({ content });
         }
     }
     // TODO : Review the double log system
-    async log(options) {
+    async log(options, thread = undefined) {
         // Resolve the options using LogOptions.
         let logOptions;
         if (options instanceof LogOptions) {
@@ -195,7 +198,7 @@ class Logger {
 
         if (logOptionsBody.isDiscordLog) {
             try {
-                await this.discordLog(logOptions);
+                await this.discordLog(logOptions, thread);
             } catch (e) {
                 this.consoleLog({
                     textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent }) + '\n' + e.toString(),
@@ -252,13 +255,18 @@ class Logger {
         //     return undefined;
         // }
         const date = new Date();
-        return await this.logChannel.threads.create({
-            // TODO : Use the date format of the guild's defined language
+        const thread = await this.logChannel.threads.create({
             name: getUTCFullDate(date, 'YYYY-MM-DD'),
             // TODO : use console language date format
             reason: `Open log thread for ${getUTCFullDate(date, 'YYYY-MM-DD')}`,
         });
-        // TODO : Maybe some log
+        await this.log({
+            textContent: formatLog('Log thread created', { 'GuildId': this.guild?.id }),
+            type: 'log',
+            headers: ['Logger', 'Thread'],
+            url: thread.url,
+        }, thread);
+        return thread;
     }
     // Verify that, the given channel is a thread, the channel it belongs to is the log channel, it has been created by the bot and the date of the thread match the given date.
     #isValidThread(thread, date) {
