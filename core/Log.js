@@ -5,17 +5,8 @@ const { formatString, dateMatch, getUTCFullDate, stringToEmbed, formatLog } = re
 
 // WARNING : DO NOT SAVE IN DATABASE
 //
-// TODO : Event listener -> thread deleted -> change the thread
-// TODO : Command to change the logChannel
-//
-// TODO : Some things when the logger is initiate in the client class
-//
-// TODO : Replace console.log / .error with call to the client logger so that there is date with the log
-//
 // Use to send log both in console and on discord log channel
 class Logger {
-    // TODO: Thread system to archive by day. Create a thread each day, open a new thread and log in this thread for the day
-    // DONE : Function to get and create the thread
     constructor(client) {
         // client which initiate this logger
         this.client = client;
