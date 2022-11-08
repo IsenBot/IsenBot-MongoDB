@@ -16,7 +16,7 @@ class IsenBot extends Client {
         // Store the config of the bot like token.
         this.config = require('../config');
         // Client to connect to the database.
-        this.mongodb = new MongoClient(this.config.mongodbUri);
+        this.mongodb = new MongoClient(this.config.database.url);
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {
@@ -45,6 +45,11 @@ class IsenBot extends Client {
         client.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
     }
 
+    get guildsCollection() {
+        const database = this.mongodb.db(this.config.database.databaseName);
+        return database.collection(this.config.database.guildTableName);
+    }
+
     async log(options) {
         return await this.logger.log(options);
     }
@@ -66,8 +71,7 @@ class IsenBot extends Client {
         try {
             mongodb.connect();
 
-            const database = mongodb.db('database_name');
-            const guildsCollection = database.collection('guild');
+            const guildsCollection = this.guildsCollection;
             const query = {};
             const projection = { id_ : 1, logChannelId : 1 };
 
@@ -96,8 +100,7 @@ class IsenBot extends Client {
         try {
             mongodb.connect();
             // Set the logChannelId for the guild to null in the database.
-            const database = mongodb.db('database_name');
-            const guildsCollection = database.collection('guild');
+            const guildsCollection = this.guildsCollection;
             const query = { _id: guild.id };
             const update = { logChannelId: null };
             await guildsCollection.updateOne(query, update);
@@ -151,8 +154,7 @@ class IsenBot extends Client {
         try {
             mongodb.connect();
             // Get the guild language from database
-            const database = mongodb.db('database_name');
-            const guildsCollection = database.collection('guild');
+            const guildsCollection = this.guildsCollection;
             const query = {};
             const projection = { id_ : 1, language : 1 };
             const guildsData = guildsCollection.find(query).project(projection);

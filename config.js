@@ -2,7 +2,12 @@ const chalk = require('chalk');
 require('dotenv').config();
 module.exports = {
     token : process.env.TOKEN,
-    mongodbUri: process.env.MONGODB_URI,
+    database: {
+        url: process.env.DATABASE_URL,
+        databaseName: 'TO_BE_DEFINE',
+        guildTableName: 'guild',
+        rolesReactionsTableName: 'roleReactMessage',
+    },
     // Config for the log on discord and console
     log : {
         globalLogChannelId: 'id',

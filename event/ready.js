@@ -5,8 +5,7 @@ async function checkNewGuild(client) {
     try {
         mongodb.connect();
 
-        const database = mongodb.db('database_name');
-        const guildsCollection = database.collection('guild');
+        const guildsCollection = client.guildsCollection;
         const query = {};
         const projection = { id_ : 1 };
 
@@ -21,7 +20,6 @@ async function checkNewGuild(client) {
                     textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
                     headers: 'Ready',
                     type: 'log',
-                    url: guild.url
                 });
 
                 const guildData = {
