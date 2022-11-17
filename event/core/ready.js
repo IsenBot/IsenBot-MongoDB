@@ -1,4 +1,5 @@
-const { formatLog } = require('../utility/Log');
+const { formatLog } = require('../../utility/Log');
+const { GuildSchema } = require('../../utility/Schema');
 
 async function checkNewGuild(client) {
     try {
@@ -20,11 +21,7 @@ async function checkNewGuild(client) {
                     headers: 'Ready',
                     type: 'log',
                 });
-
-                const guildData = {
-                    _id: String(guild.id),
-                };
-                await guildsCollection.insertOne(guildData);
+                await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
             }
         }
         if (!change) {
