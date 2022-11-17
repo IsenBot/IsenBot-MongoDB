@@ -14,7 +14,7 @@ async function checkNewGuild(client) {
         let change = false;
 
         for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
-            if (!guildsId.includes(guild)) {
+            if (!guildsId.includes(guild.id)) {
                 change = true;
                 client.log({
                     textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
