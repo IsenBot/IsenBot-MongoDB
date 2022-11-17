@@ -69,7 +69,7 @@ class IsenBot extends Client {
     async createLoggers() {
         const mongodb = this.mongodb;
         try {
-            mongodb.connect();
+            await mongodb.connect();
 
             const guildsCollection = this.guildsCollection;
             const query = {};
@@ -89,7 +89,7 @@ class IsenBot extends Client {
             }
         } finally {
             // Ensures that the client will close when you finish/error
-            mongodb.close();
+            await mongodb.close();
         }
     }
     // Get the logChannel channel from the database for the given guild and then return the fetched logChannel on discord.
@@ -98,7 +98,7 @@ class IsenBot extends Client {
         this.guild.logger.removeLogChannel();
         const mongodb = this.mongodb;
         try {
-            mongodb.connect();
+            await mongodb.connect();
             // Set the logChannelId for the guild to null in the database.
             const guildsCollection = this.guildsCollection;
             const query = { _id: guild.id };
@@ -106,7 +106,7 @@ class IsenBot extends Client {
             await guildsCollection.updateOne(query, update);
 
         } finally {
-            mongodb.close();
+            await mongodb.close();
         }
     }
     // Execute a command file.
@@ -152,7 +152,7 @@ class IsenBot extends Client {
         const commandsBuilderPath = client.commandsBuilderPath;
 
         try {
-            mongodb.connect();
+            await mongodb.connect();
             // Get the guild language from database
             const guildsCollection = this.guildsCollection;
             const query = {};
@@ -208,8 +208,34 @@ class IsenBot extends Client {
             });
         } finally {
             // Ensures that the client will close when you finish/error
-            mongodb.close();
+            await mongodb.close();
         }
+    }
+
+    initializeEventHandler() {
+        const client = this;
+        client.log({
+            textContent: 'Loading events ...',
+            headers: 'EventLoader',
+            type: 'event',
+        });
+        fs.readdirSync(this.eventsPath).forEach(dirs => {
+            const eventFiles = fs.readdirSync(`${this.eventsPath}/${dirs}`).filter(file => file.endsWith('.js'));
+            const handler = (dirs === 'core' ? client : dirs === 'music' ? client.player : undefined);
+            for (const file of eventFiles) {
+                const event = require(`${this.eventsPath}/${dirs}/${file}`);
+                if (event.once) {
+                    client.once(event.name, (...args) => event.execute(...args));
+                } else {
+                    handler?.on(event.name, (...args) => event.execute(...args));
+                }
+            }
+        });
+        client.log({
+            textContent: '... All events load',
+            headers: 'EventLoader',
+            type: 'success',
+        });
     }
 
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable

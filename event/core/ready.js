@@ -2,7 +2,7 @@ const { formatLog } = require('../utility/Log');
 
 async function checkNewGuild(client) {
     try {
-        client.mongodb.connect();
+        await client.mongodb.connect();
 
         const guildsCollection = client.guildsCollection;
         const query = {};
@@ -36,7 +36,7 @@ async function checkNewGuild(client) {
         }
 
     } finally {
-        client.mongodb.close();
+        await client.mongodb.close();
     }
 }
 
@@ -63,7 +63,7 @@ async function cacheRoleReactMessage(client) {
         type: 'log',
     });
     try {
-        client.mongodb.connect();
+        await client.mongodb.connect();
 
         const database = client.mongodb.db(client.config.database.databaseName);
         const rolesReactionsMessages = database.collection(client.config.database.rolesReactionsTableName);
@@ -108,7 +108,7 @@ async function cacheRoleReactMessage(client) {
             }
         }
     } finally {
-        client.mongodb.close();
+        await client.mongodb.close();
     }
     await client.log({
         textContent: '... All message cached for role reaction',
