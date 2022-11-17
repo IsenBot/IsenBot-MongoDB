@@ -116,7 +116,7 @@ class Logger extends EventEmitter {
 
         const { type, headers, textContent, guild, author, target, url } = logOptionsBody;
         const colors = this.consoleColors,
-            date = getUTCFullDate(new Date(), 'DD/MM-HH:MIN');
+            date = getFullDate(new Date(), 'DD/MM-HH:MIN');
         const formatedUrl = url ? formatString(colors.url, url) : url;
 
         let finalHeader = formatString(colors.date, `[${date}]`);
@@ -270,8 +270,8 @@ class Logger extends EventEmitter {
         // }
         const date = new Date();
         const thread = await this.logChannel.threads.create({
-            name: getUTCFullDate(date, 'YYYY-MM-DD'),
-            reason: `Open log thread for ${getUTCFullDate(date, 'YYYY-MM-DD')}`,
+            name: getFullDate(date, 'YYYY-MM-DD'),
+            reason: `Open log thread for ${getFullDate(date, 'YYYY-MM-DD')}`,
         });
         await this.log({
             textContent: formatLog('Log thread created', { 'GuildId': this.guild?.id }),

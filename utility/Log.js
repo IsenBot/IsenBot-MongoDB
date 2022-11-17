@@ -11,10 +11,10 @@ function formatString(fn, text) {
 function dateMatch(date1, date2) {
     if (!(date1 instanceof Date)) { date1 = new Date(date1); }
     if (!(date2 instanceof Date)) { date2 = new Date(date2); }
-    return getUTCFullDate(date1) === getUTCFullDate(date2);
+    return getFullDate(date1, 'YYYY-MM-DD') === getFullDate(date2, 'YYYY-MM-DD');
 }
 // Return the date with the given format as string ( YYYY : the year, MM : the month, DD : the day of the month, HH : the hours, MIN : the minutes, SS : the seconds)
-function getUTCFullDate(date, format = 'YYYY-MM-DD HH:MIN:SS') {
+function getFullDate(date, format = 'YYYY-MM-DD HH:MIN:SS') {
     return format.replace('YYYY', date.getUTCFullYear())
         .replace('MM', (date.getUTCMonth().length === 1 ? '0' : '') + date.getUTCMonth())
         .replace('DD', (date.getUTCDate().length === 1 ? '0' : '') + date.getUTCDate())
@@ -79,7 +79,7 @@ function formatLog(previousText, options = {}) {
 module.exports = {
     formatString,
     dateMatch,
-    getUTCFullDate,
+    getFullDate,
     stringToEmbed,
     formatLog,
 };
