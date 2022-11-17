@@ -13,7 +13,7 @@ class EmbedOptions {
     resolve() {
         if (this.body) return this.body;
 
-        if (this.options instanceof String) {
+        if (this.options instanceof String || typeof this.options === 'string') {
             const textContent = this.options;
             this.options = {};
             this.options.textContent = textContent;
@@ -23,7 +23,7 @@ class EmbedOptions {
 
         this.body = {
             color,
-            headers: headers instanceof String ? [headers] : headers,
+            headers: (typeof headers === 'string' || headers instanceof String) ? [headers] : headers ?? [],
             textContent,
             author,
             target,
