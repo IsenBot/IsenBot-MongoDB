@@ -130,6 +130,19 @@ module.exports = {
         });
         await checkNewGuild(client);
 
+        log({
+            textContent: 'Adding Logger to each guild ...',
+            headers: ['Ready', 'Logger'],
+            type: 'event',
+        });
+        // Initialise the guild loggers
+        await client.createLoggers();
+        log({
+            textContent: '... Loggers added',
+            headers: ['Ready', 'Logger'],
+            type: 'success',
+        });
+
         // cache all guild and message where we look for a reaction
         log({
             textContent: 'Caching message event ...',
@@ -148,12 +161,6 @@ module.exports = {
             headers: 'Ready',
             type: 'Success',
         });
-        // Initialise the guild loggers
-        await client.createLoggers();
-        await log({
-            textContent: '... Loggers added',
-            headers: ['Ready', 'Logger'],
-            type: 'success',
-        });
+        await require('../../utility/deployCommands')(client);
     },
 };
