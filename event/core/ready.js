@@ -121,6 +121,9 @@ module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
+        await client.logger.setLogChannelId(client.config.log.globalLogChannelId);
+        client.logger.emit('ready');
+
         const log = client.log;
         await log('Triggered ...', '[Ready]', 'event');
         await log({

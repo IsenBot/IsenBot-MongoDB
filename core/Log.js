@@ -1,13 +1,16 @@
 const { EmbedBuilder } = require('discord.js');
 const EmbedOptions = require('../utility/Options/EmbedOptions');
 const LogOptions = require('../utility/Options/LogOptions');
-const { formatString, dateMatch, getUTCFullDate, stringToEmbed, formatLog } = require('../utility/Log');
+const { formatString, dateMatch, getFullDate, stringToEmbed, formatLog } = require('../utility/Log');
+const { EventEmitter } = require('node:events');
+
 
 // WARNING : DO NOT SAVE IN DATABASE
 //
 // Use to send log both in console and on discord log channel
-class Logger {
+class Logger extends EventEmitter {
     constructor(client) {
+        super();
         // client which initiate this logger
         this.client = client;
         // guild which initiate this logger
@@ -22,7 +25,18 @@ class Logger {
         this.consoleColors = this.client.config.log.consoleColors;
         // If true, log on discord with embed
         this.defaultEmbed = this.client.config.log.defaultEmbed;
+
+        this.logChain = new Promise((resolve) => {
+            this.once('ready', () => resolve('Log channel set, start sending the log on discord on discord.'));
+        });
+        this.on('discordLog', this.callDiscordLog);
     }
+    callDiscordLog(...options) {
+        this.logChain = this.logChain.then(() => {
+            return this.#discordLog(...options);
+        });
+    }
+
     static async create(client, extra = {}) {
         const logger = new this(client);
         if (extra.guild) {
@@ -198,7 +212,7 @@ class Logger {
 
         if (logOptionsBody.isDiscordLog) {
             try {
-                await this.discordLog(logOptions, thread);
+                this.emit('discordLog', logOptions, thread);
             } catch (e) {
                 this.consoleLog({
                     textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent }) + '\n' + e.toString(),

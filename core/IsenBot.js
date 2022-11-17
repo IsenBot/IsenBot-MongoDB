@@ -86,6 +86,7 @@ class IsenBot extends Client {
                 if (!(guild.logger)) {
                     guild.logger = await Logger.create(this, { guild, logChannelId: guildData.logChannelId });
                 }
+                guild.logger.emit('ready');
             }
         } finally {
             // Ensures that the client will close when you finish/error
