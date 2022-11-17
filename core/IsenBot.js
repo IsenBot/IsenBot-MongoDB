@@ -160,7 +160,7 @@ class IsenBot extends Client {
             const projection = { id_ : 1, language : 1 };
             const guildsData = guildsCollection.find(query).project(projection);
 
-            await client.logger.log({
+            client.log({
                 textContent: 'Loading commands ...',
                 headers: 'CommandLoader',
                 type: 'event',
@@ -178,7 +178,7 @@ class IsenBot extends Client {
                         const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
                         for (const commandFile of commandFiles) {
                             if (!ignoreList.includes(commandFile.split('.js')[0])) {
-                                await client.logger.log({
+                                client.log({
                                     textContent: formatLog('Loading command ...', {
                                         'Command': commandFile,
                                         'Language': language,
@@ -202,8 +202,8 @@ class IsenBot extends Client {
                     }
                 }
             }
-            await client.logger.log({
-                textContent: 'All commands load',
+            client.log({
+                textContent: ' ... All commands load',
                 headers: 'CommandLoader',
                 type: 'success',
             });
@@ -284,7 +284,7 @@ class IsenBot extends Client {
         if (component) {
             return this.replaceVariable(component, args);
         }
-        this.logger.log({
+        this.log({
             textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
             headers: 'Language',
             type: 'error',

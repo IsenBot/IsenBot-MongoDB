@@ -24,8 +24,8 @@ async function main() {
     // Create a new client instance
     const client = await IsenBot.create({ intents: [GatewayIntentBits.Guilds] });
     // Some logs
-    await client.logger.log({ textContent: startLogo, isEmbed: false });
-    await client.logger.log({
+    client.logger.log({ textContent: startLogo, isEmbed: false });
+    client.logger.log({
         textContent: 'The bot is starting ...',
         headers: 'CommandLoader',
         type: 'event',

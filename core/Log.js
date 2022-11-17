@@ -48,7 +48,7 @@ class Logger extends EventEmitter {
             }
         } catch (e) {
             logger.logChannel = null;
-            await logger.log({
+            logger.log({
                 textContent: formatLog('Failed to fetch log channel', { 'ChannelId': logger.logChannel?.id }),
                 type: 'error',
                 headers: 'Logger',
@@ -194,7 +194,7 @@ class Logger extends EventEmitter {
         }
     }
     // TODO : Review the double log system
-    async log(options, thread = undefined) {
+    log(options, thread = undefined) {
         // Resolve the options using LogOptions.
         let logOptions;
         if (options instanceof LogOptions) {

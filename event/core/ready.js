@@ -15,7 +15,7 @@ async function checkNewGuild(client) {
         for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
             if (!guildsId.includes(guild)) {
                 change = true;
-                await client.log({
+                client.log({
                     textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
                     headers: 'Ready',
                     type: 'log',
@@ -28,7 +28,7 @@ async function checkNewGuild(client) {
             }
         }
         if (!change) {
-            await client.log({
+            client.log({
                 textContent: 'No new guild detected',
                 headers: 'Ready',
                 type: 'log',
@@ -57,7 +57,7 @@ async function cacheNeededGuildsMessages(client) {
 }
 
 async function cacheRoleReactMessage(client) {
-    await client.log({
+    client.log({
         textContent: 'Caching message for role reaction ...',
         headers: ['Ready', 'Cache', 'RoleReact'],
         type: 'log',
@@ -82,7 +82,7 @@ async function cacheRoleReactMessage(client) {
                 const channel = await client.channels.fetch(channelId);
                 try {
                     const message = await channel.messages.fetch(messageId);
-                    await client.log({
+                    client.log({
                         textContent: formatLog('Role reaction\'s message fetched', { 'MessageId' : messageId, 'GuildId' : guildId }),
                         headers: ['Ready', 'Cache', 'RoleReact'],
                         type: 'success',
@@ -90,7 +90,7 @@ async function cacheRoleReactMessage(client) {
                     });
                 } catch (e) {
                     // TODO : If the error code says that the message does not exist, delete the role react
-                    await client.log({
+                    client.log({
                         textContent: formatLog('Cant fetch the message for the wanted role reaction', { 'MessageId' : messageId, 'GuildId' : guildId }),
                         headers: ['Ready', 'Cache', 'RoleReact'],
                         type: 'error',
@@ -99,7 +99,7 @@ async function cacheRoleReactMessage(client) {
                 }
             } catch (e) {
                 // TODO : If the error code says that the channel does not exist, delete all the role react of the channel
-                await client.log({
+                client.log({
                     textContent: formatLog('Cant fetch the channel for the wanted role reaction', { 'ChannelId' : channelId, 'GuildId' : guildId }),
                     headers: ['Ready', 'Cache', 'RoleReact'],
                     type: 'error',
@@ -110,7 +110,7 @@ async function cacheRoleReactMessage(client) {
     } finally {
         await client.mongodb.close();
     }
-    await client.log({
+    client.log({
         textContent: '... All message cached for role reaction',
         headers: ['Ready', 'Cache', 'RoleReact'],
         type: 'success',
@@ -125,31 +125,31 @@ module.exports = {
         client.logger.emit('ready');
 
         const log = client.log;
-        await log('Triggered ...', '[Ready]', 'event');
-        await log({
-            textContent: 'Triggered ...',
+
+        log({
+            textContent: 'Bot logged, ready triggered ...',
             headers: 'Ready',
             type: 'event',
         });
         await checkNewGuild(client);
 
         // cache all guild and message where we look for a reaction
-        await log({
+        log({
             textContent: 'Caching message event ...',
             headers: ['Ready', 'Cache'],
             type: 'log',
         });
         await cacheNeededGuildsMessages(client);
-        await log({
+        log({
             textContent: '... Messages caching finished',
             headers: ['Ready', 'Cache'],
             type: 'success',
         });
 
-        await log({
-            textContent: 'Adding Logger to each guild ...',
-            headers: ['Ready', 'Logger'],
-            type: 'event',
+        log({
+            textContent: '... Bot fully start now\n',
+            headers: 'Ready',
+            type: 'Success',
         });
         // Initialise the guild loggers
         await client.createLoggers();
