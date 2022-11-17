@@ -16,18 +16,18 @@ function dateMatch(date1, date2) {
 // Return the date with the given format as string ( YYYY : the year, MM : the month, DD : the day of the month, HH : the hours, MIN : the minutes, SS : the seconds)
 function getFullDate(date, format = 'YYYY-MM-DD HH:MIN:SS') {
     return format.replace('YYYY', date.getUTCFullYear())
-        .replace('MM', (date.getUTCMonth().length === 1 ? '0' : '') + date.getUTCMonth())
-        .replace('DD', (date.getUTCDate().length === 1 ? '0' : '') + date.getUTCDate())
-        .replace('HH', (date.getHours().length ? '0' : '') + date.getHours())
-        .replace('MIN', (date.getMinutes().length ? '0' : '') + date.getMinutes())
-        .replace('SS', (date.getSeconds().length ? '0' : '') + date.getSeconds());
+        .replace('MM', ((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1))
+        .replace('DD', (date.getDate() < 10 ? '0' : '') + date.getDate())
+        .replace('HH', (date.getHours() < 10 ? '0' : '') + date.getHours())
+        .replace('MIN', (date.getMinutes() < 10 ? '0' : '') + date.getMinutes())
+        .replace('SS', (date.getSeconds() < 10 ? '0' : '') + date.getSeconds());
 }
 // Return an object containing the description and the fields for an embed from a string with a specific format
 function stringToEmbed(string) {
     if (string == null || string === '') {
         return { description: null, fields: [] };
     }
-    if (!(string instanceof String)) {
+    if (!(string instanceof String || typeof string === 'string')) {
         throw new Error('The textContent for the embed must be a string or null');
     }
 
