@@ -1,13 +1,13 @@
 [
   {
     "name": "en",
-    "alias": ["english", "en", "English"],
+    "aliases": ["english", "en", "English"],
     "default": true,
     "dateFormat": "MM-DD-YYYY"
   },
   {
     "name": "fr",
-    "alias": ["Francais", "fr", "French", "Français", "francais", "french", "français"],
+    "aliases": ["Francais", "fr", "French", "Français", "francais", "french", "français"],
     "default": false,
     "dateFormat": "DD-MM-YYYY"
   }
