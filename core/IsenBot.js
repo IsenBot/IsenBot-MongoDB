@@ -7,8 +7,10 @@ const BlaguesAPI = require('blagues-api');
 const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
 
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
+
+// TODO : cache guildLanguage so we dont fetch it all the time
 
 class IsenBot extends Client {
     constructor(options) {
@@ -213,7 +215,7 @@ class IsenBot extends Client {
         }
     }
 
-    initializeEventHandler() {
+    loadEventHandler() {
         const client = this;
         client.log({
             textContent: 'Loading events ...',
