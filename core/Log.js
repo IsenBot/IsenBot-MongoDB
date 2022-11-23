@@ -113,7 +113,7 @@ class Logger extends EventEmitter {
             });
     }
 
-    consoleLog(options) {
+    #consoleLog(options) {
         let logOptions;
         if (options instanceof LogOptions) {
             logOptions = options;
@@ -146,7 +146,7 @@ class Logger extends EventEmitter {
 
         (type === 'error' ? console.error : console.log)(finalHeader, content);
     }
-    async discordLog(options, thread = undefined) {
+    async #discordLog(options, thread = undefined) {
         if (!(this.logChannel || thread)) {
             // TODO : What to do ?
             return 'No log channel';
@@ -220,15 +220,18 @@ class Logger extends EventEmitter {
         if (!(this.isClientLogger)) {
             this.client.logger.log(logOptions);
         } else if (logOptionsBody.isConsoleLog) {
-            this.consoleLog(logOptions);
+            this.#consoleLog(logOptions);
         }
 
         if (logOptionsBody.isDiscordLog) {
             try {
                 this.emit('discordLog', logOptions, thread);
             } catch (e) {
-                this.consoleLog({
-                    textContent: formatLog('Fail sending log', { 'At' : this.logChannel.url, '\nContent' : logOptionsBody.textContent }) + '\n' + e.toString(),
+                this.#consoleLog({
+                    textContent: formatLog('Fail sending log', {
+                        'At': this.logChannel.url,
+                        '\nContent': logOptionsBody.textContent,
+                    }),
                     type: 'error',
                     header: 'Logger',
                 });
