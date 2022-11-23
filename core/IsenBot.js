@@ -52,9 +52,9 @@ class IsenBot extends Client {
         return database.collection(this.config.database.guildTableName);
     }
 
-    async log(options) {
-        return await this.logger.log(options);
-    }
+    log = (...options) => {
+        return this.logger.log(...options);
+    };
 
     // Return the default bot language for all translation.
     get defaultLanguageMeta() {
@@ -117,7 +117,7 @@ class IsenBot extends Client {
         const commandPath = Object.assign({}, this.commandsExePath);
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
-        commandPath.dir = path.join(commandPath.root, command.path);
+        commandPath.dir = path.join(commandPath.root, command.category);
         if (subCommand || subCommandGroup) {
             commandPath.dir = path.join(commandPath.dir, command.name);
             command = command.data;
@@ -245,7 +245,7 @@ class IsenBot extends Client {
     replaceVariable(string, variablesObject) {
         // TODO : Put the wrapper config in the config ?
         const leftWrapper = '{{';
-        const rightWrapper = '{{';
+        const rightWrapper = '}}';
         const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
         return string.replaceAll(regex, (match, variableName) => Object.hasOwn(variablesObject, variableName) ? variablesObject[variableName] : match);
     }
@@ -268,7 +268,7 @@ class IsenBot extends Client {
                 data = JSON.parse(data);
                 this.languageCache[languageMeta.name + '/' + messageComponentPath[0]] = data;
             } catch (err) {
-                this.logger.log({
+                this.log({
                     textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
                     headers: 'Language',
                     type: 'error',

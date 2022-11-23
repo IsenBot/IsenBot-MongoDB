@@ -24,18 +24,21 @@ async function main() {
     // Create a new client instance
     const client = await IsenBot.create({ intents: [GatewayIntentBits.Guilds] });
     // Some logs
-    client.logger.log({ textContent: startLogo, isEmbed: false });
-    client.logger.log({
+    client.log({ textContent: startLogo, isEmbed: false });
+    client.log({
         textContent: 'The bot is starting ...',
-        headers: 'CommandLoader',
-        type: 'event',
+        type: 'log',
     });
     // Load the command in the client instance, so we can execute them when someone use them
     await client.loadCommand();
     // Load the events
     await client.loadEventHandler();
     // Login to Discord with your client's token
-    console.log('Login ...');
+    client.log({
+        textContent: 'Logging into discord ...',
+        headers: '',
+        type: 'log',
+    });
     await client.login(client.config.token);
 }
 

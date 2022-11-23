@@ -54,6 +54,7 @@ class Logger extends EventEmitter {
                 type: 'error',
                 headers: 'Logger',
             });
+            console.error(e);
         }
         return logger;
     }
@@ -224,6 +225,7 @@ class Logger extends EventEmitter {
         }
 
         if (logOptionsBody.isDiscordLog) {
+            // TODO : modif so it handle event error
             try {
                 this.emit('discordLog', logOptions, thread);
             } catch (e) {
@@ -235,6 +237,7 @@ class Logger extends EventEmitter {
                     type: 'error',
                     header: 'Logger',
                 });
+                console.error(e);
             }
         }
     }
@@ -269,12 +272,12 @@ class Logger extends EventEmitter {
         }
         const date = new Date();
         // Check if there is a stored thread and is the today log thread
-        if (this.#isValidThread(this.thread, date)/* this.thread && this.thread.parentId === this.logChannel.id && dateMatch(this.thread, date)*/) {
+        if (this.#isValidThread(this.thread, date)) {
             // If so return it
             return this.thread;
         }
         // Else If the thread for today exist, return it, otherwise, create one
-        this.thread = this.threadExist(date) ? await this.findThread(date) : await this.#createThread();
+        this.thread = this.findThread(date) ?? await this.#createThread();
         return this.thread;
     }
     // Create today log thread
@@ -289,8 +292,8 @@ class Logger extends EventEmitter {
             name: getFullDate(date, 'YYYY-MM-DD'),
             reason: `Open log thread for ${getFullDate(date, 'YYYY-MM-DD')}`,
         });
-        await this.log({
-            textContent: formatLog('Log thread created', { 'GuildId': this.guild?.id }),
+        this.log({
+            textContent: formatLog((this.isClientLogger ? 'Client log ' : 'Log ') + 'thread created', { 'GuildId': this.guild?.id }),
             type: 'log',
             headers: ['Logger', 'Thread'],
             url: thread.url,
@@ -299,11 +302,11 @@ class Logger extends EventEmitter {
     }
     // Verify that, the given channel is a thread, the channel it belongs to is the log channel, it has been created by the bot and the date of the thread match the given date.
     #isValidThread(thread, date) {
-        return thread?.isThread() && thread.parentId === this.logChannel.id && thread.ownerId === this.client.id && dateMatch(date, thread.createdAt);
+        return thread?.isThread() && thread.parentId === this.logChannel.id && thread.ownerId === this.client.application.id && dateMatch(date, thread.createdAt);
     }
     // Find in the cache the log thread for the given date.
     findThread(date) {
-        return this.client.channels.cache.find(x => this.#isValidThread(x, date)/* x.isThread() && x.parentId === this.logChannel && dateMatch(date, x.createdAt)*/);
+        return this.client.channels.cache.find(x => this.#isValidThread(x, date));
     }
 }
 
