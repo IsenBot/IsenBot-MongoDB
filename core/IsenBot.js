@@ -18,7 +18,7 @@ class IsenBot extends Client {
         // Store the config of the bot like token.
         this.config = require('../config');
         // Client to connect to the database.
-        this.mongodb = new MongoClient(this.config.database.url);
+        this.mongodb = new MongoClient(this.config.database.uri);
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {

@@ -3,8 +3,8 @@ require('dotenv').config();
 module.exports = {
     token : process.env.TOKEN,
     database: {
-        url: process.env.DATABASE_URL,
-        databaseName: 'TO_BE_DEFINE',
+        uri: process.env.DATABASE_URI,
+        databaseName: 'guildConfiguration',
         guildTableName: 'guild',
         rolesReactionsTableName: 'roleReactMessage',
     },
