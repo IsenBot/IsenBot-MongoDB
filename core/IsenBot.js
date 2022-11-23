@@ -30,10 +30,11 @@ class IsenBot extends Client {
         this.blagues = new BlaguesAPI(this.config.apiKeys.blagues);
         // The root path of the command exe
         this.commandsExePath = {
-            root : path.resolve('./commands/exe/'),
+            root : path.resolve(__dirname, '../commands-exe/'),
             ext : '.js',
         };
-        this.commandsBuilderPath = path.resolve('./commands/builder');
+        this.commandsBuilderPath = path.resolve(__dirname, '../commands-builders/');
+        this.eventsPath = path.resolve(__dirname, '../event');
         // Contain all the command of the bot
         this.commands = new Collection();
         // The client's logger
@@ -44,7 +45,8 @@ class IsenBot extends Client {
     }
     static async create(options) {
         const client = new this(options);
-        client.logger = await Logger.create(this, { logChannelId : this.config.log.globalLogChannelId });
+        client.logger = await Logger.create(client, { isClientLogger: true });
+        return client;
     }
 
     get guildsCollection() {
