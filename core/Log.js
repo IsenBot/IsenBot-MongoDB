@@ -69,6 +69,20 @@ class Logger extends EventEmitter {
         this.logChannel = newLogChannel;
         this.removeLogThread();
     }
+    async setLogChannelId(newLogChannelId) {
+        try {
+            this.logChannel = await this.client.channels.fetch(newLogChannelId);
+        } catch (e) {
+            this.logChannel = null;
+            this.log({
+                textContent: formatLog('Failed to fetch log channel', { 'ChannelId': newLogChannelId }),
+                type: 'error',
+                headers: 'Logger',
+            });
+            console.error(e);
+        }
+        this.removeLogThread();
+    }
 
     // Create an embed for the given options, options are an EmbedOptions instance.
     createEmbed(options) {
