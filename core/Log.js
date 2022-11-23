@@ -92,23 +92,24 @@ class Logger extends EventEmitter {
         } else {
             embedOptionsBody = EmbedOptions.create(options).resolve();
         }
-        const { color, headers, textContent, url, author, guild } = embedOptionsBody;
-        const { fields, description } = stringToEmbed(textContent);
+        const { color, headers, textContent, url, author, guild, target } = embedOptionsBody;
+        const { fields, description } = stringToEmbed(formatLog(textContent, { 'Target': target?.toString() }));
+        const title = headers.map(header => header ? `[${header}]` : '').join('');
 
         return new EmbedBuilder()
             .setColor(color)
             .setTimestamp(Date.now())
             .setURL(url)
-            .setTitle(headers.map(header => header ? `[${header}]` : '').join(''))
+            .setTitle(title ? title : null)
             .setAuthor({
-                iconURL: author.displayAvatarURL(),
-                name: author.toString(),
+                iconURL: author?.displayAvatarURL() ?? null,
+                name: author?.toString() ?? null,
             })
             .setDescription(description)
             .setFields(fields)
             .setFooter({
-                text: `${guild.name} | ${guild.id}`,
-                iconURL: guild.iconURL(),
+                text: guild ? `${guild?.name} | ${guild?.id}` : null,
+                iconURL: guild?.iconURL() ?? null,
             });
     }
 
@@ -177,6 +178,7 @@ class Logger extends EventEmitter {
                     author,
                     url,
                     color: this.embedColors[type],
+                    target,
                     guild,
                 })],
             });
