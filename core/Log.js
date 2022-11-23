@@ -42,6 +42,7 @@ class Logger extends EventEmitter {
         if (extra.guild) {
             logger.guild = extra.guild;
         }
+        logger.isClientLogger = extra.isClientLogger ?? false;
         try {
             if (extra.logChannelId) {
                 logger.logChannel = await client.channels.fetch(extra.logChannelId);
@@ -55,10 +56,6 @@ class Logger extends EventEmitter {
             });
         }
         return logger;
-    }
-
-    get isClientLogger() {
-        return this.client.logger === this;
     }
 
     removeLogChannel() {
