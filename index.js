@@ -77,7 +77,10 @@ async function main() {
         ],
     });
     // Some logs
-    client.log({ textContent: startLogo, isEmbed: false });
+    client.log({
+        textContent: startLogo,
+        isEmbed: false,
+        isCodeBlock: true});
     client.log({
         textContent: 'The bot is starting ...',
         type: 'log',

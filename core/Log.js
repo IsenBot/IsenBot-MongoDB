@@ -165,7 +165,7 @@ class Logger extends EventEmitter {
             throw new Error('The options specify isDiscordLog: false');
         }
 
-        const { headers, textContent, author, target, url, type, guild, isEmbed } = logOptionsBody;
+        let { headers, textContent, author, target, url, type, guild, isEmbed, isCodeBlock } = logOptionsBody;
 
         if (!thread) {
             thread = await this.getTodayThread();
@@ -187,6 +187,9 @@ class Logger extends EventEmitter {
             let finalHeader = headers.map(header => header ? `[${header}]` : '').join('');
             if (type) {
                 finalHeader += '[' + type.charAt(0).toUpperCase() + type.slice(1) + ']';
+            }
+            if (isCodeBlock){
+                textContent = "```" + textContent + "```";
             }
             let content = formatLog(textContent, {
                 'By': author,

@@ -26,7 +26,7 @@ class LogOptions {
             this.options.textContent = textContent;
         }
 
-        const { headers, textContent, author, target, url, isEmbed, isConsoleLog, isDiscordLog, guild, type } = this.options;
+        const { headers, textContent, author, target, url, isEmbed, isCodeBlock, isConsoleLog, isDiscordLog, guild, type } = this.options;
 
         this.body = {
             type: type?.toLowerCase(),
@@ -37,6 +37,7 @@ class LogOptions {
             url,
             guild,
             isEmbed,
+            isCodeBlock,
             isConsoleLog: isConsoleLog ?? true,
             isDiscordLog: isDiscordLog ?? true,
         };
