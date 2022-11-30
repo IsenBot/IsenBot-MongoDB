@@ -36,4 +36,8 @@ module.exports = {
     apiKeys: {
         blagues: process.env.BLAGUES_API_KEY,
     },
+    embed: {
+        color: '#e40613',
+        thumbnail: 'https://upload.wikimedia.org/wikipedia/fr/f/f0/Yncrea_BM_ISEN-_horizontal-1.jpg',
+    },
 };

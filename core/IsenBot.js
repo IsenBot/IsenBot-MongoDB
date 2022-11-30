@@ -1,4 +1,4 @@
-const { Client, Collection/* , MessageEmbed*/ } = require('discord.js');
+const { Client, Collection, EmbedBuilder } = require('discord.js');
 
 const { MongoClient } = require('mongodb');
 const { Player } = require('discord-player');
@@ -17,6 +17,9 @@ class IsenBot extends Client {
         super(options);
         // Store the config of the bot like token.
         this.config = require('../config');
+        this.embedTemplate = new EmbedBuilder()
+            .setColor(this.config.embed.color)
+            .setThumbnail(this.config.embed.thumbnail);
         // Client to connect to the database.
         this.mongodb = new MongoClient(this.config.database.uri);
         // Create the music player
