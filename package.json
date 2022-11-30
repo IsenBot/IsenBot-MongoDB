@@ -32,7 +32,7 @@
     "type": "git",
     "url": "git+https://github.com/IsenBot/IsenBot-MongoDB.git"
   },
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
     "blagues-api": "^2.1.0",
     "chalk": "4.1.2",
