@@ -67,7 +67,15 @@ async function main() {
         '    ..  ...  .  -.   -...  ---  -    \n';
 
     // Create a new client instance
-    const client = await IsenBot.create({ intents: [GatewayIntentBits.Guilds] });
+    const client = await IsenBot.create({
+        intents: [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildVoiceStates,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.GuildMembers,
+            GatewayIntentBits.GuildMessageReactions,
+        ],
+    });
     // Some logs
     client.log({ textContent: startLogo, isEmbed: false });
     client.log({
