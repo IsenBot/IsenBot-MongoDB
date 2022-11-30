@@ -1,7 +1,52 @@
 // Require the necessary discord.js classes
-const { GatewayIntentBits } = require('discord.js');
+const { GatewayIntentBits, BaseInteraction } = require('discord.js');
 const IsenBot = require('./core/IsenBot');
-const fs = require("fs");
+
+Object.defineProperties(BaseInteraction.prototype, {
+    logger: {
+        get: function() {
+            return this.guild.logger;
+        },
+    },
+    fetchGuildLanguage: {
+        value: async function() {
+            if (!Object.hasOwn(this, 'languageName')) {
+                try {
+                    await this.client.mongodb.connect();
+                    const query = { _id: this.id };
+                    const options = { projection: { _id: 0, language: 1 } };
+                    return this.languageName = (await this.client.guildsCollection.findOne(query, options)).language;
+                } finally {
+                    this.client.mongodb.close();
+                }
+            }
+            return this.languageName;
+        },
+    },
+    translate: {
+        value: async function(messageComponentPath, args = {}) {
+            return await this.client.translate(messageComponentPath, args, await this.fetchGuildLanguage());
+        },
+    },
+    log: {
+        value: function(...param) {
+            return this.logger?.log(...param);
+        },
+    },
+});
+
+const { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandChannelOption, SlashCommandMentionableOption, SlashCommandIntegerOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandUserOption, SlashCommandBooleanOption } = require('discord.js');
+const SlashCommandList = [SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandChannelOption, SlashCommandMentionableOption, SlashCommandIntegerOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandUserOption, SlashCommandBooleanOption];
+for (const SlashCommand of SlashCommandList) {
+    Object.defineProperties(SlashCommand.prototype, {
+        setNamePath: {
+            value: function(name) {
+                this.name = name;
+                return this;
+            },
+        },
+    });
+}
 
 async function main() {
     const startLogo =
