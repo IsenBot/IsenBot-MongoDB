@@ -90,7 +90,7 @@ module.exports = async function(client) {
                 commands = [];
                 for (const command of rawCommands) {
                     const translatedCommand = translate(client, command, language.name);
-                    commands.push(translatedCommand.toJSON());
+                    commands.push(translatedCommand);
                 }
                 client.log({
                     textContent: formatLog('... Commands translated', { 'Language': language.name }),

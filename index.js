@@ -13,11 +13,11 @@ Object.defineProperties(BaseInteraction.prototype, {
             if (!Object.hasOwn(this, 'languageName')) {
                 try {
                     await this.client.mongodb.connect();
-                    const query = { _id: this.id };
-                    const options = { projection: { _id: 0, language: 1 } };
+                    const query = { _id: this.guildId };
+                    const options = { projection: { _id: 1, language: 1 } };
                     return this.languageName = (await this.client.guildsCollection.findOne(query, options)).language;
                 } finally {
-                    this.client.mongodb.close();
+                    await this.client.mongodb.close();
                 }
             }
             return this.languageName;

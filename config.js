@@ -10,7 +10,7 @@ module.exports = {
     },
     // Config for the log on discord and console
     log : {
-        globalLogChannelId: 'id',
+        globalLogChannelId: "id",
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
         // Color rule for log message in console
@@ -40,4 +40,5 @@ module.exports = {
         color: '#e40613',
         thumbnail: 'https://upload.wikimedia.org/wikipedia/fr/f/f0/Yncrea_BM_ISEN-_horizontal-1.jpg',
     },
+    dontDeploy: []
 };
