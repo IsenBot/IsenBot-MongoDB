@@ -73,7 +73,7 @@ class IsenBot extends Client {
     }
     // Return an array of all the languages of the bot as discord readable locale id
     getLanguages(){
-        let discordLocales = ["en-US", "en", "bg", "zh-CN", "zh-TW", "hr", "cs", "da", "nl", "fi", "fr", "de", "el", "hi", "hu", "it", "ja", "ko", "lt", "no", "pl", "pt-BR", "ro", "ru", "es-ES", "sv-SE", "th", "tr", "uk", "vi"]
+        let discordLocales = ["en-US", "en-GB", "bg", "zh-CN", "zh-TW", "hr", "cs", "da", "nl", "fi", "fr", "de", "el", "hi", "hu", "it", "ja", "ko", "lt", "no", "pl", "pt-BR", "ro", "ru", "es-ES", "sv-SE", "th", "tr", "uk", "vi"]
         let result = {};
         for(const  discordLocale of discordLocales){
             for(let languageObject of this.languagesMeta){
@@ -261,7 +261,7 @@ class IsenBot extends Client {
 
     _parseMessageComponentPath(messageComponentPath){
         const regex = /:(?=\w)/g;
-        messageComponentPath = messageComponentPath.split(regex);
+        messageComponentPath = messageComponentPath.toUpperCase().split(regex);
         if (messageComponentPath.length < 2) {
             throw 'Not a path';
         }

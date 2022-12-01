@@ -66,6 +66,9 @@ async function main() {
             GatewayIntentBits.GuildMessageReactions,
         ],
     });
+
+    exports.client = client;
+
     // Some logs
     client.log({
         textContent: startLogo,
