@@ -71,6 +71,19 @@ class IsenBot extends Client {
         const language = this.languagesMeta.filter(languageMeta => (languageMeta.name === languageName) || (languageMeta.aliases.includes(languageName)));
         return language.length > 0 ? language[0] : this.defaultLanguageMeta;
     }
+    // Return an array of all the languages of the bot as discord readable locale id
+    getLanguages(){
+        let discordLocales = ["en-US", "en", "bg", "zh-CN", "zh-TW", "hr", "cs", "da", "nl", "fi", "fr", "de", "el", "hi", "hu", "it", "ja", "ko", "lt", "no", "pl", "pt-BR", "ro", "ru", "es-ES", "sv-SE", "th", "tr", "uk", "vi"]
+        let result = {};
+        for(const  discordLocale of discordLocales){
+            for(let languageObject of this.languagesMeta){
+                if(languageObject.name === discordLocale || languageObject.aliases.includes(discordLocale)){
+                    result[discordLocale] = languageObject.name;
+                }
+            }
+        }
+        return result;
+    }
 
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
@@ -246,6 +259,15 @@ class IsenBot extends Client {
         });
     }
 
+    _parseMessageComponentPath(messageComponentPath){
+        const regex = /:(?=\w)/g;
+        messageComponentPath = messageComponentPath.split(regex);
+        if (messageComponentPath.length < 2) {
+            throw 'Not a path';
+        }
+        return messageComponentPath;
+    }
+
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
     replaceVariable(string, variablesObject) {
         // TODO : Put the wrapper config in the config ?
@@ -257,11 +279,7 @@ class IsenBot extends Client {
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     // TODO : test if it work
     translate(messageComponentPath, args = {}, languageName = this.defaultLanguageMeta.name) {
-        const regex = /:(?=\w)/g;
-        messageComponentPath = messageComponentPath.split(regex);
-        if (messageComponentPath.length < 2) {
-            throw 'Not a path';
-        }
+        messageComponentPath = this._parseMessageComponentPath(messageComponentPath)
         const languageMeta = this.getLanguageMeta(languageName);
         if (!languageMeta) {
             return 'unknown';
@@ -297,6 +315,15 @@ class IsenBot extends Client {
             type: 'error',
         });
         return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
+    }
+
+    getLocales(messageComponentPath){
+        let localesMessageObject = {};
+        let languagesObj = this.getLanguages();
+        for(const [key, value] of Object.entries(languagesObj)){
+            localesMessageObject[key] = this.translate(messageComponentPath, {}, value);
+        }
+        return localesMessageObject;
     }
 }
 

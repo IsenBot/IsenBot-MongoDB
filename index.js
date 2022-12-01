@@ -8,25 +8,15 @@ Object.defineProperties(BaseInteraction.prototype, {
             return this.guild.logger;
         },
     },
-    fetchGuildLanguage: {
-        value: async function() {
-            if (!Object.hasOwn(this, 'languageName')) {
-                try {
-                    await this.client.mongodb.connect();
-                    const query = { _id: this.guildId };
-                    const options = { projection: { _id: 1, language: 1 } };
-                    return this.languageName = (await this.client.guildsCollection.findOne(query, options)).language;
-                } finally {
-                    await this.client.mongodb.close();
-                }
-            }
-            return this.languageName;
-        },
-    },
     translate: {
         value: async function(messageComponentPath, args = {}) {
-            return await this.client.translate(messageComponentPath, args, await this.fetchGuildLanguage());
+            return await this.client.translate(messageComponentPath, args, this.locale);
         },
+    },
+    getLocales: {
+        value: async function(messageComponentPath) {
+            return await this.client.getLocales(messageComponentPath);
+        }
     },
     log: {
         value: function(...param) {
@@ -50,21 +40,21 @@ for (const SlashCommand of SlashCommandList) {
 
 async function main() {
     const startLogo =
-        '    ..  ...  .  -.   -...  ---  -    \n\n' +
-        '██╗███████╗███████╗███╗   ██╗         \n' +
-        '██║██╔════╝██╔════╝████╗  ██║         \n' +
-        '██║███████╗█████╗  ██╔██╗ ██║         \n' +
-        '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
-        '██║███████║███████╗██║ ╚████║         \n' +
-        '╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝         \n' +
-        '                                      \n' +
-        '            ██████╗  ██████╗ ████████╗\n' +
-        '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
-        '            ██████╔╝██║   ██║   ██║   \n' +
-        '            ██╔══██╗██║   ██║   ██║   \n' +
-        '            ██████╔╝╚██████╔╝   ██║   \n' +
-        '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
-        '    ..  ...  .  -.   -...  ---  -    \n';
+        `    ..  ...  .  -.   -...  ---  -    \n\n` +
+        `██╗███████╗███████╗███╗   ██╗         \n` +
+        `██║██╔════╝██╔════╝████╗  ██║         \n` +
+        `██║███████╗█████╗  ██╔██╗ ██║         \n` +
+        `██║╚════██║██╔══╝  ██║╚██╗██║         \n` +
+        `██║███████║███████╗██║ ╚████║         \n` +
+        `╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝  ${process.env.npm_package_version}\n` +
+        `                                      \n` +
+        `            ██████╗  ██████╗ ████████╗\n` +
+        `            ██╔══██╗██╔═══██╗╚══██╔══╝\n` +
+        `            ██████╔╝██║   ██║   ██║   \n` +
+        `            ██╔══██╗██║   ██║   ██║   \n` +
+        `            ██████╔╝╚██████╔╝   ██║   \n` +
+        `            ╚═════╝  ╚═════╝    ╚═╝ \n\n` +
+        `    ..  ...  .  -.   -...  ---  -    \n`;
 
     // Create a new client instance
     const client = await IsenBot.create({

@@ -1,7 +1,7 @@
 [
   {
     "name": "en",
-    "aliases": ["english", "en", "English"],
+    "aliases": ["english", "en-GB", "en-US", "en", "English"],
     "default": true,
     "dateFormat": "MM-DD-YYYY"
   },
