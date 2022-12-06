@@ -142,9 +142,9 @@ class IsenBot extends Client {
             if (subCommandGroup) {
                 for (const optionKey in command.options) {
                     if (command.options[optionKey].name) {
-                        if (interaction.translate(command.options[optionKey].name) === subCommandGroup) {
+                        if (command.options[optionKey].name === subCommandGroup) {
                             command = command.options[optionKey];
-                            commandPath.dir = path.join(commandPath.dir, interaction.client.translate(command.name, {}, 'en'));
+                            commandPath.dir = path.join(commandPath.dir, command.name);
                             break;
                         }
                     }
@@ -153,8 +153,8 @@ class IsenBot extends Client {
             if (subCommand) {
                 for (const optionKey in command.options) {
                     if (command.options[optionKey].name) {
-                        if (interaction.translate(command.options[optionKey].name) === subCommand) {
-                            commandPath.name = interaction.client.translate(command.options[optionKey].name, {}, 'en');
+                        if (command.options[optionKey].name === subCommand) {
+                            commandPath.name = command.options[optionKey].name;
                             break;
                         }
                     }
@@ -162,7 +162,7 @@ class IsenBot extends Client {
             }
 
         } else {
-            commandPath.name = interaction.client.translate(command.data.name, {}, 'en');
+            commandPath.name = command.data.name;
         }
         return (require(path.format(commandPath)))(interaction);
     }
@@ -208,15 +208,7 @@ class IsenBot extends Client {
                                 });
                                 // Get the command builder file
                                 const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
-                                try {
-                                    client.commands.set(client.translate(command.data.name, {}, language), command);
-                                } catch (e) {
-                                    if (e !== 'Not a path') {
-                                        throw e;
-                                    }
-                                    ignoreList.push(command.data.name);
-                                    client.commands.set(command.data.name, command);
-                                }
+                                client.commands.set(command.data.name, command);
                             }
                         }
                     }
@@ -263,6 +255,7 @@ class IsenBot extends Client {
         const regex = /:(?=\w)/g;
         messageComponentPath = messageComponentPath.toUpperCase().split(regex);
         if (messageComponentPath.length < 2) {
+            console.log('Not a path : ', messageComponentPath);
             throw 'Not a path';
         }
         return messageComponentPath;
@@ -276,11 +269,13 @@ class IsenBot extends Client {
         const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
         return string.replaceAll(regex, (match, variableName) => Object.hasOwn(variablesObject, variableName) ? variablesObject[variableName] : match);
     }
+
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     // TODO : test if it work
-    translate(messageComponentPath, args = {}, languageName = this.defaultLanguageMeta.name) {
+    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
+        console.log("start traduction ", messageComponentPath, " language ", languageIdentifier)
         messageComponentPath = this._parseMessageComponentPath(messageComponentPath)
-        const languageMeta = this.getLanguageMeta(languageName);
+        const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
             return 'unknown';
         }
