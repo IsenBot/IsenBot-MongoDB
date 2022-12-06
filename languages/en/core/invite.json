@@ -1,0 +1,11 @@
+{
+    "BUILDER": {
+        "NAME": "invite",
+        "DESCRIPTION": "Creates an invitation link for specified channel",
+        "CHANNELINPUT" : {
+            "NAME": "channel",
+            "DESCRIPTION": "channel users will land in from created invitation"
+        }
+    },
+    "TITLE": "Invitation link to the channel #{{channel}} :"
+}
