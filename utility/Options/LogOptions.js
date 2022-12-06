@@ -37,9 +37,9 @@ class LogOptions {
             url,
             guild,
             isEmbed,
-            isCodeBlock,
-            isConsoleLog: isConsoleLog ?? true,
-            isDiscordLog: isDiscordLog ?? true,
+            isCodeBlock: !!isCodeBlock,
+            isConsoleLog: !!isConsoleLog ?? true,
+            isDiscordLog: !!isDiscordLog ?? true,
         };
         return this.body;
     }
