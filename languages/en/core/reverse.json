@@ -1,0 +1,10 @@
+{
+  "BUILDER": {
+    "NAME": "reverse",
+    "DESCRIPTION": "reverse",
+    "OPTIONS": {
+      "NAME": "query",
+      "DESCRIPTION": "query"
+    }
+  }
+}
