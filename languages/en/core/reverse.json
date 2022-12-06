@@ -3,8 +3,13 @@
     "NAME": "reverse",
     "DESCRIPTION": "reverse",
     "OPTIONS": {
-      "NAME": "query",
-      "DESCRIPTION": "query"
+      "NAME": "link",
+      "DESCRIPTION": "message link"
     }
+  },
+  "ERROR": {
+    "MESSAGE_NOT_FOUND": "Message not found",
+    "INVALID_LINK": "Invalid link",
+    "INVALID_CHANNEL": "Invalid channel"
   }
 }
