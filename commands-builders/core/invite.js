@@ -13,8 +13,6 @@ let com = initLanguage(new SlashCommandBuilder()
         )
     , "CORE")
 
-console.log(com)
-
 module.exports = {
     category: path.basename(__dirname),
     data: com

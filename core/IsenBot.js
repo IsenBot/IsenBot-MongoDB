@@ -224,7 +224,6 @@ class IsenBot extends Client {
         const regex = /:(?=\w)/g;
         messageComponentPath = messageComponentPath.toUpperCase().split(regex);
         if (messageComponentPath.length < 2) {
-            console.log('Not a path : ', messageComponentPath);
             throw 'Not a path';
         }
         return messageComponentPath;
@@ -242,7 +241,6 @@ class IsenBot extends Client {
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     // TODO : test if it work
     translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
-        console.log('start traduction ', messageComponentPath, ' language ', languageIdentifier);
         messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
         const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
