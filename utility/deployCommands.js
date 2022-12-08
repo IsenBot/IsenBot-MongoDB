@@ -13,57 +13,48 @@ module.exports = async function(client) {
 
     const blacklist = client.config.dontDeploy;
     const commandPath = client.commandsBuilderPath;
-    const commandsList = [];
+    const commandsBuilders = [];
 
     fs.readdirSync(commandPath).forEach(dir => {
         const commandFiles = fs.readdirSync(`${commandPath}/${dir}`).filter(file => (file.endsWith('.js')) && !(blacklist.includes(file.slice(0, -3))));
         commandFiles.forEach(file => {
             const command = new Object(require(`${commandPath}/${dir}/${file}`));
-            commandsList.push(command.data);
+            commandsBuilders.push(command.data);
         });
     });
 
     let success = 0;
     const failList = [];
 
-    try {
-        await client.mongodb.connect();
-        const query = {};
-        const projector = {
-            _id: 1,
-            language: 1,
-        };
+    for (const guild of client.guild.cache.map(g => g)) {
+        client.log({
+            textContent: formatLog('Registering application commands ...', { 'GuildId': guild.id }),
+            headers: ['DeployCommands', 'Rest'],
+            type: 'log',
+        });
 
-        for await (const guildData of client.guildsCollection.find(query).project(projector)) {
+        try {
+            // Register application commands on discord.
+            await rest.put(Routes.applicationGuildCommands(client.application.id, guild.id), { body: commandsBuilders });
+        } catch (e) {
+            failList.push(guild.id);
             client.log({
-                textContent: formatLog('Registering application commands ...', { 'GuildId': guildData._id}),
+                textContent: formatLog('Failed registering application commands', { 'GuildId': guild.id }),
                 headers: ['DeployCommands', 'Rest'],
-                type: 'log',
+                type: 'error',
             });
-            try {
-                // Register application commands on discord.
-                await rest.put(Routes.applicationGuildCommands(client.application.id, guildData._id), { body: commandsList });
-            } catch (e) {
-                failList.push(guildData._id);
-                client.log({
-                    textContent: formatLog('Failed registering application commands', { 'GuildId': guildData._id }),
-                    headers: ['DeployCommands', 'Rest'],
-                    type: 'error',
-                });
-                console.error(e);
-                // Don't log the success message since it failed
-                continue;
-            }
-            success++;
-            client.log({
-                textContent: formatLog('... Application commands registered', { 'GuildId': guildData._id }),
-                headers: ['DeployCommands', 'Rest'],
-                type: 'log',
-            });
+            console.error(e);
+            // Don't log the success message since it failed
+            continue;
         }
-    } finally {
-        client.mongodb.close();
+        success++;
+        client.log({
+            textContent: formatLog('... Application commands registered', { 'GuildId': guild.id }),
+            headers: ['DeployCommands', 'Rest'],
+            type: 'log',
+        });
     }
+
     if (failList.length === 0) {
         client.log({
             textContent: '... Commands deployed in all guilds',

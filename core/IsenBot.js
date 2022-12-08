@@ -168,61 +168,34 @@ class IsenBot extends Client {
     }
     // Load the command in the client.
     async loadCommand() {
-        const mongodb = this.mongodb;
-        const client = this;
-        const commandsBuilderPath = client.commandsBuilderPath;
-
-        try {
-            await mongodb.connect();
-            // Get the guild language from database
-            const guildsCollection = this.guildsCollection;
-            const query = {};
-            const projection = { id_ : 1, language : 1 };
-            const guildsData = guildsCollection.find(query).project(projection);
-
-            client.log({
-                textContent: 'Loading commands ...',
-                headers: 'CommandLoader',
-                type: 'event',
-            });
-            // Iterate over each guild language
-            const dirs = fs.readdirSync(commandsBuilderPath);
-            const langList = [];
-            const ignoreList = [];
-            for await (const guildData of guildsData) {
-                const language = guildData.language;
-                if (!(langList.includes(language))) {
-                    langList.push(language);
-                    // Iterate over all command builder file
-                    for (const dir of dirs) {
-                        const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
-                        for (const commandFile of commandFiles) {
-                            if (!ignoreList.includes(commandFile.split('.js')[0])) {
-                                client.log({
-                                    textContent: formatLog('Loading command ...', {
-                                        'Command': commandFile,
-                                        'Language': language,
-                                    }),
-                                    headers: 'CommandLoader',
-                                    type: 'log',
-                                });
-                                // Get the command builder file
-                                const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
-                                client.commands.set(command.data.name, command);
-                            }
-                        }
-                    }
-                }
+        this.log({
+            textContent: 'Loading commands ...',
+            headers: 'CommandLoader',
+            type: 'event',
+        });
+        // load each command
+        const commandsBuilderPath = this.commandsBuilderPath;
+        const dirs = fs.readdirSync(commandsBuilderPath);
+        for (const dir of dirs) {
+            const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
+            for (const commandFile of commandFiles) {
+                this.log({
+                    textContent: formatLog('Loading command ...', {
+                        'Command': commandFile,
+                    }),
+                    headers: 'CommandLoader',
+                    type: 'log',
+                });
+                // Get the command builder file
+                const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
+                this.commands.set(command.data.name, command);
             }
-            client.log({
-                textContent: ' ... All commands load',
-                headers: 'CommandLoader',
-                type: 'success',
-            });
-        } finally {
-            // Ensures that the client will close when you finish/error
-            await mongodb.close();
         }
+        this.log({
+            textContent: ' ... All commands load',
+            headers: 'CommandLoader',
+            type: 'success',
+        });
     }
 
     loadEventHandler() {
