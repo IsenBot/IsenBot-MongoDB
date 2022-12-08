@@ -26,7 +26,7 @@ module.exports = async function(client) {
     let success = 0;
     const failList = [];
 
-    for (const guild of client.guild.cache.map(g => g)) {
+    for (const guild of client.guilds.cache.map(g => g)) {
         client.log({
             textContent: formatLog('Registering application commands ...', { 'GuildId': guild.id }),
             headers: ['DeployCommands', 'Rest'],
