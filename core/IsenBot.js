@@ -136,33 +136,29 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.dir = path.join(commandPath.root, command.category);
+        command = command.data;
         if (subCommand || subCommandGroup) {
             commandPath.dir = path.join(commandPath.dir, command.name);
-            command = command.data;
             if (subCommandGroup) {
-                for (const optionKey in command.options) {
-                    if (command.options[optionKey].name) {
-                        if (command.options[optionKey].name === subCommandGroup) {
-                            command = command.options[optionKey];
-                            commandPath.dir = path.join(commandPath.dir, command.name);
-                            break;
-                        }
+                for (const option in Object.values(command.options)) {
+                    if (option?.name === subCommandGroup) {
+                        command = option;
+                        commandPath.dir = path.join(commandPath.dir, command.name);
+                        break;
                     }
                 }
             }
             if (subCommand) {
-                for (const optionKey in command.options) {
-                    if (command.options[optionKey].name) {
-                        if (command.options[optionKey].name === subCommand) {
-                            commandPath.name = command.options[optionKey].name;
-                            break;
-                        }
+                for (const option in Object.values(command.options)) {
+                    if (option?.name === subCommand) {
+                        commandPath.name = option.name;
+                        break;
                     }
                 }
             }
 
         } else {
-            commandPath.name = command.data.name;
+            commandPath.name = command.name;
         }
         return (require(path.format(commandPath)))(interaction);
     }

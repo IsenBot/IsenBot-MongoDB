@@ -11,12 +11,12 @@ module.exports = async function(client) {
     });
     const rest = new REST({ version: '10' }).setToken(client.config.token);
 
-    const blacklist = client.config.dontDeploy;
+    const blacklist = client.config.dontDeploy ?? [];
     const commandPath = client.commandsBuilderPath;
     const commandsBuilders = [];
 
     fs.readdirSync(commandPath).forEach(dir => {
-        const commandFiles = fs.readdirSync(`${commandPath}/${dir}`).filter(file => (file.endsWith('.js')) && !(blacklist.includes(file.slice(0, -3))));
+        const commandFiles = fs.readdirSync(`${commandPath}/${dir}`).filter(file => (file.endsWith('.js')) && !(blacklist.includes(file)));
         commandFiles.forEach(file => {
             const command = new Object(require(`${commandPath}/${dir}/${file}`));
             commandsBuilders.push(command.data);
