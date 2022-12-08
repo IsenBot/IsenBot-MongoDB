@@ -16,7 +16,7 @@ Object.defineProperties(BaseInteraction.prototype, {
     getLocales: {
         value: async function(messageComponentPath) {
             return await this.client.getLocales(messageComponentPath);
-        }
+        },
     },
     log: {
         value: function(...param) {
@@ -40,21 +40,21 @@ for (const SlashCommand of SlashCommandList) {
 
 async function main() {
     const startLogo =
-        `    ..  ...  .  -.   -...  ---  -    \n\n` +
-        `██╗███████╗███████╗███╗   ██╗         \n` +
-        `██║██╔════╝██╔════╝████╗  ██║         \n` +
-        `██║███████╗█████╗  ██╔██╗ ██║         \n` +
-        `██║╚════██║██╔══╝  ██║╚██╗██║         \n` +
-        `██║███████║███████╗██║ ╚████║         \n` +
+        '    ..  ...  .  -.   -...  ---  -    \n\n' +
+        '██╗███████╗███████╗███╗   ██╗         \n' +
+        '██║██╔════╝██╔════╝████╗  ██║         \n' +
+        '██║███████╗█████╗  ██╔██╗ ██║         \n' +
+        '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
+        '██║███████║███████╗██║ ╚████║         \n' +
         `╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝  ${process.env.npm_package_version}\n` +
-        `                                      \n` +
-        `            ██████╗  ██████╗ ████████╗\n` +
-        `            ██╔══██╗██╔═══██╗╚══██╔══╝\n` +
-        `            ██████╔╝██║   ██║   ██║   \n` +
-        `            ██╔══██╗██║   ██║   ██║   \n` +
-        `            ██████╔╝╚██████╔╝   ██║   \n` +
-        `            ╚═════╝  ╚═════╝    ╚═╝ \n\n` +
-        `    ..  ...  .  -.   -...  ---  -    \n`;
+        '                                      \n' +
+        '            ██████╗  ██████╗ ████████╗\n' +
+        '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
+        '            ██████╔╝██║   ██║   ██║   \n' +
+        '            ██╔══██╗██║   ██║   ██║   \n' +
+        '            ██████╔╝╚██████╔╝   ██║   \n' +
+        '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
+        '    ..  ...  .  -.   -...  ---  -    \n';
 
     // Create a new client instance
     const client = await IsenBot.create({
@@ -73,7 +73,8 @@ async function main() {
     client.log({
         textContent: startLogo,
         isEmbed: false,
-        isCodeBlock: true});
+        isCodeBlock: true,
+    });
     client.log({
         textContent: 'The bot is starting ...',
         type: 'log',
