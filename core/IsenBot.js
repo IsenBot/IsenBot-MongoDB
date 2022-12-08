@@ -71,6 +71,19 @@ class IsenBot extends Client {
         const language = this.languagesMeta.filter(languageMeta => (languageMeta.name === languageName) || (languageMeta.aliases.includes(languageName)));
         return language.length > 0 ? language[0] : this.defaultLanguageMeta;
     }
+    // Return an array of all the languages of the bot as discord readable locale id
+    getLanguages() {
+        const discordLocales = ['en-US', 'en-GB', 'bg', 'zh-CN', 'zh-TW', 'hr', 'cs', 'da', 'nl', 'fi', 'fr', 'de', 'el', 'hi', 'hu', 'it', 'ja', 'ko', 'lt', 'no', 'pl', 'pt-BR', 'ro', 'ru', 'es-ES', 'sv-SE', 'th', 'tr', 'uk', 'vi'];
+        const result = {};
+        for (const discordLocale of discordLocales) {
+            for (const languageObject of this.languagesMeta) {
+                if (languageObject.name === discordLocale || languageObject.aliases.includes(discordLocale)) {
+                    result[discordLocale] = languageObject.name;
+                }
+            }
+        }
+        return result;
+    }
 
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
@@ -123,101 +136,62 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.dir = path.join(commandPath.root, command.category);
+        command = command.data;
         if (subCommand || subCommandGroup) {
             commandPath.dir = path.join(commandPath.dir, command.name);
-            command = command.data;
             if (subCommandGroup) {
-                for (const optionKey in command.options) {
-                    if (command.options[optionKey].name) {
-                        if (interaction.translate(command.options[optionKey].name) === subCommandGroup) {
-                            command = command.options[optionKey];
-                            commandPath.dir = path.join(commandPath.dir, interaction.client.translate(command.name, {}, 'en'));
-                            break;
-                        }
+                for (const option in Object.values(command.options)) {
+                    if (option?.name === subCommandGroup) {
+                        command = option;
+                        commandPath.dir = path.join(commandPath.dir, command.name);
+                        break;
                     }
                 }
             }
             if (subCommand) {
-                for (const optionKey in command.options) {
-                    if (command.options[optionKey].name) {
-                        if (interaction.translate(command.options[optionKey].name) === subCommand) {
-                            commandPath.name = interaction.client.translate(command.options[optionKey].name, {}, 'en');
-                            break;
-                        }
+                for (const option in Object.values(command.options)) {
+                    if (option?.name === subCommand) {
+                        commandPath.name = option.name;
+                        break;
                     }
                 }
             }
 
         } else {
-            commandPath.name = interaction.client.translate(command.data.name, {}, 'en');
+            commandPath.name = command.name;
         }
         return (require(path.format(commandPath)))(interaction);
     }
     // Load the command in the client.
     async loadCommand() {
-        const mongodb = this.mongodb;
-        const client = this;
-        const commandsBuilderPath = client.commandsBuilderPath;
-
-        try {
-            await mongodb.connect();
-            // Get the guild language from database
-            const guildsCollection = this.guildsCollection;
-            const query = {};
-            const projection = { id_ : 1, language : 1 };
-            const guildsData = guildsCollection.find(query).project(projection);
-
-            client.log({
-                textContent: 'Loading commands ...',
-                headers: 'CommandLoader',
-                type: 'event',
-            });
-            // Iterate over each guild language
-            const dirs = fs.readdirSync(commandsBuilderPath);
-            const langList = [];
-            const ignoreList = [];
-            for await (const guildData of guildsData) {
-                const language = guildData.language;
-                if (!(langList.includes(language))) {
-                    langList.push(language);
-                    // Iterate over all command builder file
-                    for (const dir of dirs) {
-                        const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
-                        for (const commandFile of commandFiles) {
-                            if (!ignoreList.includes(commandFile.split('.js')[0])) {
-                                client.log({
-                                    textContent: formatLog('Loading command ...', {
-                                        'Command': commandFile,
-                                        'Language': language,
-                                    }),
-                                    headers: 'CommandLoader',
-                                    type: 'log',
-                                });
-                                // Get the command builder file
-                                const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
-                                try {
-                                    client.commands.set(client.translate(command.data.name, {}, language), command);
-                                } catch (e) {
-                                    if (e !== 'Not a path') {
-                                        throw e;
-                                    }
-                                    ignoreList.push(command.data.name);
-                                    client.commands.set(command.data.name, command);
-                                }
-                            }
-                        }
-                    }
-                }
+        this.log({
+            textContent: 'Loading commands ...',
+            headers: 'CommandLoader',
+            type: 'event',
+        });
+        // load each command
+        const commandsBuilderPath = this.commandsBuilderPath;
+        const dirs = fs.readdirSync(commandsBuilderPath);
+        for (const dir of dirs) {
+            const commandFiles = fs.readdirSync(`${commandsBuilderPath}/${dir}`).filter(file => (file.endsWith('.js')));
+            for (const commandFile of commandFiles) {
+                this.log({
+                    textContent: formatLog('Loading command ...', {
+                        'Command': commandFile,
+                    }),
+                    headers: 'CommandLoader',
+                    type: 'log',
+                });
+                // Get the command builder file
+                const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
+                this.commands.set(command.data.name, command);
             }
-            client.log({
-                textContent: ' ... All commands load',
-                headers: 'CommandLoader',
-                type: 'success',
-            });
-        } finally {
-            // Ensures that the client will close when you finish/error
-            await mongodb.close();
         }
+        this.log({
+            textContent: ' ... All commands load',
+            headers: 'CommandLoader',
+            type: 'success',
+        });
     }
 
     loadEventHandler() {
@@ -246,6 +220,15 @@ class IsenBot extends Client {
         });
     }
 
+    _parseMessageComponentPath(messageComponentPath) {
+        const regex = /:(?=\w)/g;
+        messageComponentPath = messageComponentPath.toUpperCase().split(regex);
+        if (messageComponentPath.length < 2) {
+            throw 'Not a path';
+        }
+        return messageComponentPath;
+    }
+
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
     replaceVariable(string, variablesObject) {
         // TODO : Put the wrapper config in the config ?
@@ -254,15 +237,12 @@ class IsenBot extends Client {
         const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
         return string.replaceAll(regex, (match, variableName) => Object.hasOwn(variablesObject, variableName) ? variablesObject[variableName] : match);
     }
+
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     // TODO : test if it work
-    translate(messageComponentPath, args = {}, languageName = this.defaultLanguageMeta.name) {
-        const regex = /:(?=\w)/g;
-        messageComponentPath = messageComponentPath.split(regex);
-        if (messageComponentPath.length < 2) {
-            throw 'Not a path';
-        }
-        const languageMeta = this.getLanguageMeta(languageName);
+    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
+        messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
+        const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
             return 'unknown';
         }
@@ -297,6 +277,15 @@ class IsenBot extends Client {
             type: 'error',
         });
         return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
+    }
+
+    getLocales(messageComponentPath) {
+        const localesMessageObject = {};
+        const languagesObj = this.getLanguages();
+        for (const [key, value] of Object.entries(languagesObj)) {
+            localesMessageObject[key] = this.translate(messageComponentPath, {}, value);
+        }
+        return localesMessageObject;
     }
 }
 

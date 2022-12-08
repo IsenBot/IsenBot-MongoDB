@@ -3,9 +3,8 @@ class GuildSchema {
         if (!fields?._id) {
             throw new Error('you must give at least the _id field');
         }
-        const { _id, language, logChannelId } = fields;
+        const { _id, logChannelId } = fields;
         this._id = _id;
-        this.language = language ?? null;
         this.logChannelId = logChannelId ?? null;
     }
 }

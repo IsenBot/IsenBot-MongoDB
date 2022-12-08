@@ -1,0 +1,11 @@
+{
+    "BUILDER": {
+        "NAME": "invitation",
+        "DESCRIPTION": "Crée une invitation vers le salon choisi",
+        "CHANNELINPUT" : {
+            "NAME": "salon",
+            "DESCRIPTION": "Les utilisateurs invités arriveront dans ce salon"
+        }
+    },
+    "TITLE": "Lien d'invitation vers le salon #{{channel}} : "
+}

@@ -1,0 +1,9 @@
+{
+    "BUILDER": {
+        "NAME": "ping",
+        "DESCRIPTION": "Répond avec pong !"
+    },
+    "TITLE": "Temps de réponse :",
+    "EMBED_DESCRIPTION": "{{ping}}ms",
+    "REPLY_CONTENT": "Je suis bien réveillé !!"
+}
