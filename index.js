@@ -23,6 +23,11 @@ Object.defineProperties(BaseInteraction.prototype, {
             return this.logger?.log(...param);
         },
     },
+    mongodb: {
+        get: async function() {
+            return await this.client.guildDB(this.guildId);
+        },
+    },
 });
 
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandChannelOption, SlashCommandMentionableOption, SlashCommandIntegerOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandUserOption, SlashCommandBooleanOption } = require('discord.js');
