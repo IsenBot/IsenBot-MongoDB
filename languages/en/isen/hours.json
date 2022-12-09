@@ -1,0 +1,25 @@
+{
+    "BUILDER": {
+        "NAME": "hours",
+        "DESCRIPTION": "Count your club hours at ISEN"
+    },
+    "TITLE": "Hours counter",
+    "TIMEH": "Time passed : {{hour}}h",
+    "TIMEM": "Time passed : {{minute}}min",
+    "TIME": "Time passed : {{hour}}h{{minute}}min",
+    "SHORT": {
+        "PLACEHOLDER": "Enter activity title"
+    },
+    "PARAGRAPH": {
+        "PLACEHOLDER": "Describe here the activity if necessary"
+    },
+    "HOUR": {
+        "PLACEHOLDER": "Number of hours to register"
+    },
+    "MINUTE": {
+        "PLACEHOLDER": "Number of minutes to register"
+    },
+    "BUTTON": {
+        "PLACEHOLDER": "Modify"
+    }
+}

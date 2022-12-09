@@ -1,0 +1,25 @@
+{
+    "BUILDER": {
+        "NAME": "heures",
+        "DESCRIPTION": "Compteur du nombre d'heures de club"
+    },
+    "TITLE": "Compteur d'heures",
+    "TIME": "Durée d'activité : {{hour}}h{{minute}}min",
+    "TIMEH": "Durée d'activité : {{hour}}h",
+    "TIMEM": "Durée d'activité : {{minute}}min",
+    "SHORT": {
+        "PLACEHOLDER": "Entrez içi le nom de l'activité"
+    },
+    "PARAGRAPH": {
+        "PLACEHOLDER": "Entrez içi une description si nécessaire"
+    },
+    "HOUR": {
+        "PLACEHOLDER": "Nombre d'heures d'activité"
+    },
+    "MINUTE": {
+        "PLACEHOLDER": "Nomde de minutes d'activité"
+    },
+    "BUTTON": {
+        "PLACEHOLDER": "Modifier"
+    }
+}
