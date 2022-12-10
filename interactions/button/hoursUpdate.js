@@ -25,7 +25,7 @@ module.exports = async function(interaction) {
     interaction.log({
         textContent: formatLog('', {}),
         author: interaction.user,
-        headers: 'Invite',
+        headers: ['Hours', 'Update'],
         type: 'log',
     });
 };

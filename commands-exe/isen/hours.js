@@ -26,8 +26,16 @@ module.exports = async function(interaction) {
         .addComponents(
             new ButtonBuilder()
                 .setCustomId('hoursUpdate')
-                .setLabel(await interaction.translate('isen/hours:BUTTON:PLACEHOLDER'))
+                .setLabel(await interaction.translate('isen/hours:BUTTON:UPDATE'))
                 .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+                .setCustomId('hoursValidate')
+                .setLabel(await interaction.translate('isen/hours:BUTTON:VALIDATE'))
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setCustomId('hoursDelete')
+                .setLabel(await interaction.translate('isen/hours:BUTTON:DELETE'))
+                .setStyle(ButtonStyle.Danger),
         );
 
     const embed = new EmbedBuilder()
@@ -43,6 +51,7 @@ module.exports = async function(interaction) {
     db.collection('isen/hours').insertOne(
         {
             messageId: reply.id,
+            userId: interaction.user.id,
             author: interaction.user.username,
             minutes: 0,
             hours: 0,
@@ -54,7 +63,7 @@ module.exports = async function(interaction) {
     interaction.log({
         textContent: formatLog('', {}),
         author: interaction.user,
-        headers: 'Invite',
+        headers: 'Hours',
         type: 'log',
     });
 };

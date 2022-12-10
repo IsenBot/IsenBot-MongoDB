@@ -20,6 +20,8 @@
         "PLACEHOLDER": "Number of minutes to register"
     },
     "BUTTON": {
-        "PLACEHOLDER": "Modify"
+        "UPDATE":  "Modify",
+        "VALIDATE":  "Validate",
+        "DELETE":  "Delete"
     }
 }

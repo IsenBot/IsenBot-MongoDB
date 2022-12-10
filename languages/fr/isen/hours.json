@@ -20,6 +20,8 @@
         "PLACEHOLDER": "Nomde de minutes d'activité"
     },
     "BUTTON": {
-        "PLACEHOLDER": "Modifier"
+        "UPDATE":  "Modifier",
+        "VALIDATE":  "Valider",
+        "DELETE":  "Supprimer"
     }
 }
