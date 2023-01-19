@@ -22,6 +22,7 @@ class IsenBot extends Client {
             .setThumbnail(this.config.embed.thumbnail);
         // Client to connect to the database.
         this.mongodb = new MongoClient(this.config.database.uri);
+        this.guildsDB = {};
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {
@@ -38,6 +39,9 @@ class IsenBot extends Client {
         };
         this.commandsBuilderPath = path.resolve(__dirname, '../commands-builders/');
         this.eventsPath = path.resolve(__dirname, '../event');
+        this.buttonPath = path.resolve(__dirname, '../interactions/button');
+        this.selectPath = path.resolve(__dirname, '../interactions/select');
+        this.modalPath = path.resolve(__dirname, '../interactions/modal');
         // Contain all the command of the bot
         this.commands = new Collection();
         // The client's logger
@@ -46,6 +50,7 @@ class IsenBot extends Client {
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
     }
+
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
@@ -53,8 +58,28 @@ class IsenBot extends Client {
     }
 
     get guildsCollection() {
-        const database = this.mongodb.db(this.config.database.databaseName);
-        return database.collection(this.config.database.guildTableName);
+        if (!this.database) {
+            this.database = this.mongodb.db(this.config.database.databaseName);
+        }
+        return this.database.collection(this.config.database.guildTableName);
+    }
+
+    async guildDB(id) {
+        if (id in this.guildsDB) {// If db socket is cached, returns it
+            return this.guildsDB[id];
+        }
+        if (id in Array.from(this.guilds.cache.keys())) {// Verifies if guild id correspond to a guild the client is in
+            const db = await this.mongodb.db(id.toString(10));
+            this.guildsDB[id] = db;// Adds the socket to cache
+            return db;
+        } else {
+            const guild = await this.guilds.fetch(id);// Fetches the id to see if it corresponds to a guild the bot is in
+            if (guild) {
+                const db = await this.mongodb.db(id.toString(10));
+                this.guildsDB[id] = db;
+                return db;
+            }
+        }
     }
 
     log = (...options) => {
@@ -88,47 +113,47 @@ class IsenBot extends Client {
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
         const mongodb = this.mongodb;
-        try {
-            await mongodb.connect();
+        // try {
+        await mongodb.connect();
 
-            const guildsCollection = this.guildsCollection;
-            const query = {};
-            const projection = { id_ : 1, logChannelId : 1 };
+        const guildsCollection = this.guildsCollection;
+        const query = {};
+        const projection = { id_ : 1, logChannelId : 1 };
 
-            const guildsData = guildsCollection.find(query).project(projection);
+        const guildsData = guildsCollection.find(query).project(projection);
 
-            for await (const guildData of guildsData) {
-                const guild = this.guilds.cache.get(guildData['_id']);
-                if (!guild) {
-                    // TODO : Maybe delete the guild from the database if the client cant access it anymore
-                    return;
-                }
-                if (!(guild.logger)) {
-                    guild.logger = await Logger.create(this, { guild, logChannelId: guildData.logChannelId });
-                }
-                guild.logger.emit('ready');
+        for await (const guildData of guildsData) {
+            const guild = this.guilds.cache.get(guildData['_id']);
+            if (!guild) {
+                // TODO : Maybe delete the guild from the database if the client cant access it anymore
+                return;
             }
-        } finally {
+            if (!(guild.logger)) {
+                guild.logger = await Logger.create(this, { guild, logChannelId: guildData.logChannelId });
+            }
+            guild.logger.emit('ready');
+        }
+        /* } finally {
             // Ensures that the client will close when you finish/error
             await mongodb.close();
-        }
+        }*/
     }
     // Get the logChannel channel from the database for the given guild and then return the fetched logChannel on discord.
     // Remove the logChannel from the logger and the database for the given guild.
     async removeLogChannel(guild) {
         this.guild.logger.removeLogChannel();
         const mongodb = this.mongodb;
-        try {
-            await mongodb.connect();
-            // Set the logChannelId for the guild to null in the database.
-            const guildsCollection = this.guildsCollection;
-            const query = { _id: guild.id };
-            const update = { logChannelId: null };
-            await guildsCollection.updateOne(query, update);
+        // try {
+        await mongodb.connect();
+        // Set the logChannelId for the guild to null in the database.
+        const guildsCollection = this.guildsCollection;
+        const query = { _id: guild.id };
+        const update = { logChannelId: null };
+        await guildsCollection.updateOne(query, update);
 
-        } finally {
+        /* } finally {
             await mongodb.close();
-        }
+        }*/
     }
     // Execute a command file.
     executeCommand(interaction, command) {
@@ -160,6 +185,27 @@ class IsenBot extends Client {
         } else {
             commandPath.name = command.name;
         }
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a button action
+    executeButton(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.buttonPath, interaction.customId);
+        console.log(commandPath);
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a select interaction
+    executeSelect(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.selectPath, interaction.customId);
+        console.log(commandPath);
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a modal submission
+    executeModal(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.modalPath, interaction.customId);
+        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Load the command in the client.
@@ -286,6 +332,10 @@ class IsenBot extends Client {
             localesMessageObject[key] = this.translate(messageComponentPath, {}, value);
         }
         return localesMessageObject;
+    }
+
+    async startDB() {
+        await this.mongodb.connect();
     }
 }
 

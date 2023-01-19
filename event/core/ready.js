@@ -1,42 +1,59 @@
 const { formatLog } = require('../../utility/Log');
 const { GuildSchema } = require('../../utility/Schema');
 
-async function checkNewGuild(client) {
+async function startDB(client) {
+    client.log({
+        textContent: 'Starting Database connection ...',
+        headers: ['Ready', 'MongoDB'],
+        type: 'log',
+    });
     try {
-        await client.mongodb.connect();
-
-        const guildsCollection = client.guildsCollection;
-        const query = {};
-        const projection = { id_ : 1 };
-
-        const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
-
-        let change = false;
-
-        for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
-            if (!guildsId.includes(guild.id)) {
-                change = true;
-                client.log({
-                    textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
-                    headers: 'Ready',
-                    type: 'log',
-                });
-                await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
-            }
-        }
-        if (!change) {
-            client.log({
-                textContent: 'No new guild detected',
-                headers: 'Ready',
-                type: 'log',
-            });
-        }
-
-    } finally {
-        await client.mongodb.close();
+        await client.startDB();
+        await client.mongodb.db(client.config.database.databaseName).command({ ping: 1 });
+    } catch (e) {
+        client.log({
+            textContent: 'Database start error ...',
+            headers: ['Ready', 'MongoDB'],
+            type: 'error',
+        });
+        console.error(e);
     }
 }
 
+async function checkNewGuild(client) {
+    // try {
+    const guildsCollection = client.guildsCollection;
+    const query = {};
+    const projection = { id_ : 1 };
+
+    const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
+
+    let change = false;
+
+    for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
+        if (!guildsId.includes(guild.id)) {
+            change = true;
+            client.log({
+                textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
+                headers: 'Ready',
+                type: 'log',
+            });
+            await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
+        }
+    }
+    if (!change) {
+        client.log({
+            textContent: 'No new guild detected',
+            headers: 'Ready',
+            type: 'log',
+        });
+    }
+
+    /* } finally {
+       await client.mongodb.close();
+    }*/
+}
+/*
 function getUrl(guildId, channelId = undefined, messageId = undefined) {
     const baseUrl = 'https://discord.com/channels/';
     let link = baseUrl + guildId;
@@ -53,16 +70,17 @@ async function cacheNeededGuildsMessages(client) {
     await cacheRoleReactMessage(client);
 }
 
-async function cacheRoleReactMessage(client) {
+
+// TODO : replace in the guild db rather than in a global db
+ async function cacheRoleReactMessage(client) {
     client.log({
         textContent: 'Caching message for role reaction ...',
         headers: ['Ready', 'Cache', 'RoleReact'],
         type: 'log',
     });
     try {
-        await client.mongodb.connect();
+        const database = client.guildsCollection;
 
-        const database = client.mongodb.db(client.config.database.databaseName);
         const rolesReactionsMessages = database.collection(client.config.database.rolesReactionsTableName);
 
         const query = {};
@@ -113,7 +131,7 @@ async function cacheRoleReactMessage(client) {
         type: 'success',
     });
 }
-
+*/
 module.exports = {
     name: 'ready',
     once: true,
@@ -128,6 +146,15 @@ module.exports = {
             headers: 'Ready',
             type: 'event',
         });
+
+        await startDB(client);
+
+        log({
+            textContent: 'Database connected successfully ...',
+            headers: ['Ready', 'MongoDB'],
+            type: 'success',
+        });
+
         await checkNewGuild(client);
 
         log({
@@ -142,7 +169,7 @@ module.exports = {
             headers: ['Ready', 'Logger'],
             type: 'success',
         });
-
+        /*
         // cache all guild and message where we look for a reaction
         log({
             textContent: 'Caching message event ...',
@@ -155,7 +182,7 @@ module.exports = {
             headers: ['Ready', 'Cache'],
             type: 'success',
         });
-
+        */
         log({
             textContent: '... Bot fully start now\n',
             headers: 'Ready',
