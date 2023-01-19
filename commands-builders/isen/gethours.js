@@ -1,9 +1,11 @@
 const path = require('node:path');
 const { SlashCommandBuilder } = require('discord.js');
+const { initLanguage } = require('../../utility/commandBuilder');
 
 module.exports = {
     category: path.basename(__dirname),
-    data: new SlashCommandBuilder()
+    data: initLanguage(new SlashCommandBuilder()
         .setName('gethours')
-        .setDescription('Get a CSV file of all registered hours'),
+        .setDescription('Get a CSV file of all registered hours')
+    , 'ISEN'),
 };

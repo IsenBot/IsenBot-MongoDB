@@ -1,0 +1,10 @@
+{
+    "BUILDER": {
+        "NAME": "gethours",
+        "DESCRIPTION": "Get a CSV file of all registered hours in this guild"
+    },
+    "FILENAME": "{{serverName}}_hours.csv",
+    "NUMBEREDFILENAME": "{{serverName}}_hours_{{number}}.csv",
+    "RESPONSE": "Requested file(s) :",
+    "NUMBEREDRESPONSE": "File n°{{number}}"
+}

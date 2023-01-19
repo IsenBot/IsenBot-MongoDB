@@ -1,0 +1,10 @@
+{
+    "BUILDER": {
+        "NAME": "listeheures",
+        "DESCRIPTION": "Renvoie un fichier CSV contenant la liste des heures renseignées sur ce serveur"
+    },
+    "FILENAME": "{{serverName}}_heures.csv",
+    "NUMBEREDFILENAME": "{{serverName}}_heures_{{number}}.csv",
+    "RESPONSE": "Fichier(s) demandé(s) :",
+    "NUMBEREDRESPONSE": "Fichier n°{{number}}"
+}

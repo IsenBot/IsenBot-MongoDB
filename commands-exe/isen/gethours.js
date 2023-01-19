@@ -50,13 +50,13 @@ module.exports = async function(interaction) {
         result.pipe(csvSpliter);
         if (filesCounter === 0) {
             await interaction.reply({
-                content: 'Requested files :',
-                files: [new AttachmentBuilder(csvSpliter, { name: `${interaction.guild.name.replaceAll(' ', '_')}_hours.cvs` })],
+                content: await interaction.translate('isen/gethours:RESPONSE'),
+                files: [new AttachmentBuilder(csvSpliter, { name: await interaction.translate('isen/gethours:FILENAME', { serverName : interaction.guild.name.replaceAll(' ', '_') }) })],
             });
         } else {
             await interaction.followUp({
-                content: 'File number ' + filesCounter,
-                files: [new AttachmentBuilder(csvSpliter, { name: `${interaction.guild.name.replaceAll(' ', '_')}_hours_${filesCounter}.cvs` })],
+                content: await interaction.translate('isen/gethours:NUMBEREDRESPONSE', { number: filesCounter }),
+                files: [new AttachmentBuilder(csvSpliter, { name: await interaction.translate('isen/gethours:NUMBEREDFILENAME', { serverName : interaction.guild.name.replaceAll(' ', '_'), number : filesCounter }) })],
             });
         }
         const streamEnd = new Promise((resolve, error) => {
