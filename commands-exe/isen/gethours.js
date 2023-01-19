@@ -1,26 +1,77 @@
 const { formatLog } = require('../../utility/Log');
-const csv = require('csv');
+const { stringify } = require('csv-stringify');
 const { AttachmentBuilder } = require('discord.js');
+const { Transform } = require('node:stream');
+class csvSplit extends Transform {
+    constructor(maxSize) {
+        super({
+            writableObjectMode: true,
+            highWaterMark: 2,
+        });
+        // this.write('Adding time, Discord userId, Discord username, Title, Description, Duration\n');
+        this.size = 0;
+        this.maxSize = maxSize;
+    }
+
+    _transform(chunk, encoding, callback) {
+        this.size = this.size + Buffer.byteLength(chunk);
+        this.push(chunk);
+        if (this.size > this.maxSize) {
+            this.end();
+        }
+        callback();
+    }
+}
+
 
 module.exports = async function(interaction) {
+    let csvStringified = false;
+    let filesCounter = 0;
     const db = await interaction.mongodb;
     const dbResultStream = db.collection('isen/hours').find().sort({ added: 1 }).project(
         {
             _id: 0,
             messageId: 0,
         },
-    ).stream();// Sends a readable Stream in Object mode (each data chunk is an object)
+    ).stream();
 
-    const csvString = csv.stringify({ // Takes piped readable object stream and stringifies it to CSV format
-        header: true, // Objects keys are added as column names (csv first line)
+    const csvString = stringify({
+        header: true,
     });
 
-    dbResultStream.pipe(csvString); // Pipes the readable stream to csvString that is writeable AND readeable
-
-    interaction.reply({
-        content: 'Here is your result',
-        files: [new AttachmentBuilder(csvString, { name: 'hours.cvs' })],
+    csvString.on('end', () => {
+        csvStringified = true;
     });
+
+    const result = dbResultStream.pipe(csvString);
+
+    async function prepareNewAttachment() {
+        const csvSpliter = new csvSplit(8300000); // Max for free users is 8Mbytes = 8388608 bytes - safety gap = 8300000
+        result.pipe(csvSpliter);
+        if (filesCounter === 0) {
+            await interaction.reply({
+                content: 'Requested files :',
+                files: [new AttachmentBuilder(csvSpliter, { name: `${interaction.guild.name.replaceAll(' ', '_')}_hours.cvs` })],
+            });
+        } else {
+            await interaction.followUp({
+                content: 'File number ' + filesCounter,
+                files: [new AttachmentBuilder(csvSpliter, { name: `${interaction.guild.name.replaceAll(' ', '_')}_hours_${filesCounter}.cvs` })],
+            });
+        }
+        const streamEnd = new Promise((resolve, error) => {
+            csvSpliter.on('end', resolve());
+            csvSpliter.on('error', error());
+        });
+        await streamEnd;
+        filesCounter++;
+        if (!csvStringified) {
+            result.unpipe();
+            await prepareNewAttachment();
+        }
+    }
+
+    await prepareNewAttachment();
 
     interaction.log({
         textContent: formatLog('', {}),
