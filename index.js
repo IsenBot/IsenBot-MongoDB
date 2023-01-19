@@ -30,19 +30,6 @@ Object.defineProperties(BaseInteraction.prototype, {
     },
 });
 
-const { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandChannelOption, SlashCommandMentionableOption, SlashCommandIntegerOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandUserOption, SlashCommandBooleanOption } = require('discord.js');
-const SlashCommandList = [SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandChannelOption, SlashCommandMentionableOption, SlashCommandIntegerOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandUserOption, SlashCommandBooleanOption];
-for (const SlashCommand of SlashCommandList) {
-    Object.defineProperties(SlashCommand.prototype, {
-        setNamePath: {
-            value: function(name) {
-                this.name = name;
-                return this;
-            },
-        },
-    });
-}
-
 async function main() {
     const startLogo =
         '    ..  ...  .  -.   -...  ---  -    \n\n' +
