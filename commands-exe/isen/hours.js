@@ -57,7 +57,7 @@ module.exports = async function(interaction) {
             hours: 0,
             title: undefined,
             description: undefined,
-            added: new Date().toTimeString(),
+            added: new Date().toLocaleString('fr-FR'),
         });
 
     interaction.log({
