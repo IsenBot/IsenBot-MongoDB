@@ -7,10 +7,10 @@ module.exports = async function(interaction) {
     interaction.reply('pinging ...');
     const reply = await interaction.fetchReply();
     const embed = new EmbedBuilder(interaction.client.embedTemplate)
-        .setTitle(await interaction.translate('core/ping:TITLE'))
-        .setDescription(await interaction.translate('core/ping:EMBED_DESCRIPTION', { ping: String(reply.createdAt - interaction.createdAt) }));
+        .setTitle(await interaction.translate('TITLE'))
+        .setDescription(await interaction.translate('EMBED_DESCRIPTION', { ping: String(reply.createdAt - interaction.createdAt) }));
     await interaction.editReply({
-        content: await interaction.translate('core/ping:REPLY_CONTENT'),
+        content: await interaction.translate('REPLY_CONTENT'),
         embeds: [embed],
     });
     interaction.log({

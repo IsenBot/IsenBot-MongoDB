@@ -266,6 +266,18 @@ class IsenBot extends Client {
         });
     }
 
+    _addCommandPath(messageComponentPath){
+        const stack = new Error().stack.split('\n')[4];
+        if(typeof stack === "string" && stack.search('commands-exe') !== -1){
+            let pathString = stack.substring(stack.indexOf('commands-exe\\'));
+            pathString = pathString.substring(pathString.indexOf('\\') + 1, pathString.indexOf('.')).replaceAll('\\', '/');
+            if(typeof messageComponentPath === "string" && messageComponentPath.search(pathString) === -1){
+                messageComponentPath = pathString + ':' + messageComponentPath;
+            }
+        }
+        return messageComponentPath;
+    }
+
     _parseMessageComponentPath(messageComponentPath) {
         const regex = /:(?=\w)/g;
         messageComponentPath = messageComponentPath.toUpperCase().split(regex);
@@ -287,6 +299,7 @@ class IsenBot extends Client {
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     // TODO : test if it work
     translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
+        messageComponentPath = this._addCommandPath(messageComponentPath);
         messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
         const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
