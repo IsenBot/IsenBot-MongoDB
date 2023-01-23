@@ -1,0 +1,10 @@
+name : "Update version"
+description : "Updates version based on input ['patch', 'minor' or  'major']"
+inputs:
+  type:
+    description: "Type of update, can be 'patch', 'minor' or 'major'"
+    required: false,
+    default: 'patch'
+runs:
+  using: 'node16'
+  main: $GITHUB_ACTION_PATH/updateVersion.js ${{ inputs.type }}
