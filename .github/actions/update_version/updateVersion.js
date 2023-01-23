@@ -8,7 +8,8 @@ core.info('Output to the actions build log')
 
 core.notice('This is a message that will also emit an annotation')
 
-core.notice(path.dirname());
+core.notice(__dirname);
+core.notice(path.resolve('./'));
 core.notice(path.resolve('../../../'));
 
 fs.readFile('../../../package.json', (e, data) => {
