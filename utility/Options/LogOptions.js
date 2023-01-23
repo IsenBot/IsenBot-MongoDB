@@ -38,8 +38,8 @@ class LogOptions {
             guild,
             isEmbed,
             isCodeBlock: !!isCodeBlock,
-            isConsoleLog: !!isConsoleLog ?? true,
-            isDiscordLog: !!isDiscordLog ?? true,
+            isConsoleLog: isConsoleLog ?? true,
+            isDiscordLog: isDiscordLog ?? true,
         };
         return this.body;
     }
