@@ -5,8 +5,8 @@ on:
     paths-ignore:
       - 'package.json'
       - '.gitignore'
-      - '.github/'
-      - '*.md'
+      - '.github/**'
+      - '**.md'
 
 permissions:
   contents: write
