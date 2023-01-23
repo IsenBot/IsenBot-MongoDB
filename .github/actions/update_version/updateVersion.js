@@ -28,12 +28,12 @@ fs.readFile('./package.json', (e, data) => {
         message = '✅ patch ';
     }
     package.version = versionArray.join('.');
-    fs.writeFile('./package.json', JSON.stringify(package), () => {
-        exec.exec('git config --global user.name "IsenBot Auto Versioning"');
-        exec.exec('git config --global user.email "isenbot@isenbot.com"');
-        exec.exec('git commit -a --message=\"' + message + package.version + '\"');
-        exec.exec('git remote remove origin')
-        exec.exec(`git remote add origin https://${token}@github.com/allan-cff/IsenBot-GithubActions.git`);
-        exec.exec('git push origin main')
+    fs.writeFile('./package.json', JSON.stringify(package), async () => {
+        await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
+        await exec.exec('git config --global user.email "isenbot@isenbot.com"');
+        await exec.exec('git commit -a --message=\"' + message + package.version + '\"');
+        await exec.exec('git remote remove origin')
+        await exec.exec(`git remote add origin https://${token}@github.com/allan-cff/IsenBot-GithubActions.git`);
+        await exec.exec('git push origin main')
     })
 })
