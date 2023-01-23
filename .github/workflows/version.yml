@@ -43,7 +43,7 @@ jobs:
         id: get_type
         uses: ./.github/actions/get_commit_type/
         with:
-          commit-message: ${{ github.event.commits[0].message }}
+          commits: ${{ github.event.commits }}
       - name: Increment version
         uses: ./.github/actions/update_version/
         with:
