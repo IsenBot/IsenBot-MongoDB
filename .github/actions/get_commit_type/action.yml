@@ -1,0 +1,12 @@
+name : "Get commit type"
+description : "Determines if commit is of type ['patch', 'minor' or  'major']"
+inputs:
+  commit-message:
+    description: "Message of the last commit of push or pull request"
+    required: true
+outputs:
+  type:
+    description: "The type of the last commit [patch, minor, major]"    
+runs:
+  using: 'node16'
+  main: updateVersion.js
