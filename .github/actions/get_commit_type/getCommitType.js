@@ -1,13 +1,17 @@
 const fs = require('node:fs');
 const core = require('@actions/core');
 
-const message = core.getInput('commit-message');
-if(message.toLowerCase().includes("major") || message.toLowerCase().includes("breaking change")){
-    core.setOutput('type', 'patch');
-} else {
-    if(message.toLowerCase().includes("minor") || message.toLowerCase().includes("feat")){
-        core.setOutput('type', 'minor');
+const commits = core.getInput('commits');
+const typesArray = [];
+for(const commit of commits){
+    if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
+        typesArray.push('major');
     } else {
-        core.setOutput('type', 'patch');
+        if(commit.message.toLowerCase().includes("minor") || commit.message.toLowerCase().includes("feat")){
+            typesArray.push('minor');
+        } else {
+            typesArray.push('patch');
+        }
     }
 }
+core.setOutput('types', typesArray);
