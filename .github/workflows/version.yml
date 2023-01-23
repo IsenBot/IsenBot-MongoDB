@@ -27,3 +27,4 @@ jobs:
         uses: ./.github/actions/update_version/
         with:
           type: 'patch'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
