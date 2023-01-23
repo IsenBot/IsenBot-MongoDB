@@ -1,6 +1,11 @@
 name: IsenBot Action
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - 'package.json'
+      - '.*'
+      - '*.md'
 
 permissions:
   contents: write
