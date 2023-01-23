@@ -47,5 +47,5 @@ jobs:
       - name: Increment version
         uses: ./.github/actions/update_version/
         with:
-          type: ${{ steps.get_type.outputs.type }}
+          types: ${{ steps.get_type.outputs.types }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
