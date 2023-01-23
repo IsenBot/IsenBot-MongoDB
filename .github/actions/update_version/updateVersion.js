@@ -1,6 +1,6 @@
 const fs = require('node:fs');
-const path = require('node:path');
-const core = require('@actions/core')
+const core = require('@actions/core');
+const exec = require('@actions/exec');
 
 const type = core.getInput('type');
 
@@ -10,18 +10,24 @@ fs.readFile('./package.json', (e, data) => {
     }
     const package = JSON.parse(data);
     const versionArray = package.version.split('.').map(version => parseInt(version, 10));
+    let message;
     if(type === 'major'){
         versionArray[0] += 1;
         versionArray[1] = 0;
         versionArray[2] = 0;
+        message = '📣 New MAJOR release 📣 ';
     }
     if(type === 'minor'){
         versionArray[1] += 1;
         versionArray[2] = 0;
+        message = '🆕 New minor release 🆕 ';
     }
     if(type === 'patch'){
         versionArray[2] += 1;
+        message = '✅ patch ';
     }
     package.version = versionArray.join('.');
-    fs.writeFile('./package.json', JSON.stringify(package), ()=>{})
+    fs.writeFile('./package.json', JSON.stringify(package), () => {
+        exec.exec('git commit --message=' + message + package.version)
+    })
 })
