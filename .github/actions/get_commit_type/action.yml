@@ -9,4 +9,4 @@ outputs:
     description: "The type of the last commit [patch, minor, major]"    
 runs:
   using: 'node16'
-  main: updateVersion.js
+  main: getCommitType.js
