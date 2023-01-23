@@ -27,9 +27,9 @@ jobs:
         id: get_type
         uses: ./.github/actions/get_commit_type/
         with:
-          commit-message: github.event.commits[0].message
+          commit-message: ${{ github.event.commits[0].message }}
       - name: Increment version
         uses: ./.github/actions/update_version/
         with:
-          type: steps.get_type.outputs.type
-          repo-token: secrets.GITHUB_TOKEN
+          type: ${{ steps.get_type.outputs.type }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
