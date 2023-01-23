@@ -1,12 +1,22 @@
+name: IsenBot Action
+
 on: [push]
 
 jobs:
   version_job:
     runs-on: ubuntu-latest
-    name: A job to control package version
+    name: Package version auto-increment job
+    strategy:
+      matrix:
+        node-version: [16.9, 17.x, 18.x, 19.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
       - name: Increment version action
         uses: ./.github/actions/update_version/
         with:
