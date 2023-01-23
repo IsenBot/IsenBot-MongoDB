@@ -2,9 +2,9 @@ name: IsenBot Action
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
-      - 'package.json'
-      - '.gitignore'
       - '.github/**'
       - '**.md'
 
