@@ -28,6 +28,9 @@ fs.readFile('./package.json', (e, data) => {
     }
     package.version = versionArray.join('.');
     fs.writeFile('./package.json', JSON.stringify(package), () => {
-        exec.exec('git commit --message=\"' + message + package.version + '\"')
+        exec.exec('git config --global user.name "IsenBot Auto Versioning"');
+        exec.exec('git config --global user.email "isenbot@isenbot.com"');
+        exec.exec('git commit --message=\"' + message + package.version + '\"');
+        exec.exec('git push origin main')
     })
 })
