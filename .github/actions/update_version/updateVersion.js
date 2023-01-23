@@ -28,6 +28,6 @@ fs.readFile('./package.json', (e, data) => {
     }
     package.version = versionArray.join('.');
     fs.writeFile('./package.json', JSON.stringify(package), () => {
-        exec.exec('git commit --message=' + message + package.version)
+        exec.exec('git commit --message=\"' + message + package.version + '\"')
     })
 })
