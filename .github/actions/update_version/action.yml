@@ -7,4 +7,4 @@ inputs:
     default: 'patch'
 runs:
   using: 'node16'
-  main: $GITHUB_ACTION_PATH/updateVersion.js
+  main: updateVersion.js
