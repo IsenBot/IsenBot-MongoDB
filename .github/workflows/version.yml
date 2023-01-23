@@ -5,8 +5,18 @@ on:
     branches:
       - main
     paths-ignore:
+      - 'package.json'
+      - '.gitignore'
       - '.github/**'
       - '**.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'package.json'
+      - '.gitignore'
+      - '.github/**'
+      - '**.md'  
 
 permissions:
   contents: write
