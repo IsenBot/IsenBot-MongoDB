@@ -2,10 +2,10 @@ const fs = require('node:fs');
 const core = require('@actions/core');
 
 const message = core.getInput('commit-message');
-if(message.toLowerString().contains("major") || message.toLowerString().contains("breaking change")){
+if(message.toLowerCase().contains("major") || message.toLowerCase().contains("breaking change")){
     core.setOutput('type', 'patch');
 } else {
-    if(message.toLowerString().contains("minor") || message.toLowerString().contains("feat")){
+    if(message.toLowerCase().contains("minor") || message.toLowerCase().contains("feat")){
         core.setOutput('type', 'minor');
     } else {
         core.setOutput('type', 'patch');
