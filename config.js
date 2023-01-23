@@ -10,7 +10,7 @@ module.exports = {
     },
     // Config for the log on discord and console
     log : {
-        globalLogChannelId: "id",
+        globalLogChannelId: 'id',
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
         // Color rule for log message in console
