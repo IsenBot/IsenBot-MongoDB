@@ -4,11 +4,7 @@ const core = require('@actions/core')
 
 const type = core.getInput('type');
 
-core.info('Output to the actions build log')
-
-core.notice('This is a message that will also emit an annotation')
-
-fs.readFile('./../../../package.json', (e, data) => {
+fs.readFile('./package.json', (e, data) => {
     if(e) {
         throw e;
     }
