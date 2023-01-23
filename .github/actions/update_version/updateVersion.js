@@ -3,6 +3,7 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 
 const type = core.getInput('type');
+const token = core.getInput('repo-token');
 
 fs.readFile('./package.json', (e, data) => {
     if(e) {
@@ -31,6 +32,8 @@ fs.readFile('./package.json', (e, data) => {
         exec.exec('git config --global user.name "IsenBot Auto Versioning"');
         exec.exec('git config --global user.email "isenbot@isenbot.com"');
         exec.exec('git commit -a --message=\"' + message + package.version + '\"');
+        exec.exec('git remote remove origin')
+        exec.exec(`git remote add origin https://${token}@github.com/allan-cff/IsenBot-GithubActions.git`);
         exec.exec('git push origin main')
     })
 })

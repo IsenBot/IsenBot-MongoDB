@@ -3,8 +3,11 @@ description : "Updates version based on input ['patch', 'minor' or  'major']"
 inputs:
   type:
     description: "Type of update, can be 'patch', 'minor' or 'major'"
-    required: false,
+    required: false
     default: 'patch'
+  repo-token:
+    description: "Github repository token with push authorisation"
+    required: true
 runs:
   using: 'node16'
   main: updateVersion.js
