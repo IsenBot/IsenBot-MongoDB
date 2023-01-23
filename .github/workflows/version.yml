@@ -1,0 +1,13 @@
+on: [push]
+
+jobs:
+  version_job:
+    runs-on: ubuntu-latest
+    name: A job to control package version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Increment version action
+        uses: ./.github/actions/update_version/
+        with:
+          type: 'patch'
