@@ -5,10 +5,10 @@ const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
 console.log(first);
 console.log(last);
-const res = await exec.exec(`git diff ${first} ${last}`);
+const res = await exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`);
 console.log(res);
 
-const commits = [];
+const commits = res.split('\n');
 const typesArray = [];
 for(const commit of commits){
     if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
