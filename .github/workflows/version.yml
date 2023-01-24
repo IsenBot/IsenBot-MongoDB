@@ -34,18 +34,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install --only=dev
-      - name: Determine commit type
-        id: get_type
-        uses: ./.github/actions/get_commit_type/
+      - name: Determine all commit types
+        id: get_types
+        uses: ./.github/actions/get_commits_types/
         with:
-          commits: ${{ github.event.commits }}
+          first-commit: ${{ github.event.before }}
+          last-commit: ${{ github.event.after }}
       - name: Increment version
         uses: ./.github/actions/update_version/
         with:
-          types: ${{ steps.get_type.outputs.types }}
+          types: ${{ steps.get_types.outputs.types }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
