@@ -1,0 +1,53 @@
+{
+  "BUILDER": {
+    "NAME": "music",
+    "PLAY" : {
+      "NAME": "play"
+    },
+    "YOUTUBE": {
+      "NAME": "youtube"
+    },
+    "TWITCH": {
+      "NAME": "twitch"
+    },
+    "SPOTIFY": {
+      "NAME": "spotify"
+    },
+    "QUERY" : {
+      "NAME": "query"
+    },
+    "STOP" : {
+      "NAME": "stop"
+    },
+    "SKIP" : {
+      "NAME": "skip"
+    },
+    "PAUSE" : {
+      "NAME": "pause"
+    },
+    "RESUME" : {
+      "NAME": "resume"
+    },
+    "VOLUME" : {
+      "NAME": "volume"
+    },
+    "QUEUE" : {
+      "NAME": "queue"
+    },
+    "LOOP" : {
+       "NAME": "loop"
+    },
+    "SEARCH" : {
+      "NAME": "search"
+    },
+    "LANGUAGE" : {
+      "NAME": "language"
+    },
+    "LIVE" : {
+      "NAME": "live"
+    },
+    "LIMIT" : {
+      "NAME": "limit"
+    }
+  }
+}

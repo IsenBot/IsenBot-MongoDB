@@ -4,6 +4,15 @@ module.exports = {
     name: 'interactionCreate',
     async execute(interaction) {
         const client = interaction.client;
+
+        if (interaction.isAutocomplete()) {
+
+            const entry = interaction.options.getFocused();
+
+            await client.commands.get(interaction.commandName)?.handleAutoComplete(interaction, client, entry);
+        }
+
+
         if (interaction.isCommand()) {
             const command = client.commands.get(interaction.commandName);
             if (!command) return;

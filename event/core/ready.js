@@ -18,6 +18,10 @@ async function startDB(client) {
         });
         console.error(e);
     }
+
+    client.guilds.fetch().then(guilds => guilds.forEach(guild => {
+        client.player.createQueue(guild.id);
+    }));
 }
 
 async function checkNewGuild(client) {
