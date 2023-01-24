@@ -27,7 +27,7 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
         const package = JSON.parse(data);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
-        let message = '"';
+        let message = '';
         for(const commit of commits){
             let messageType = "";
             if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
@@ -48,7 +48,7 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
             message += '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
         }
         package.version = versionArray.join('.');        
-        message = '🚨 New version : ' + package.version + '\n' + message + '"';
+        message = '🚨 New version : ' + package.version + '\n' + message;
         fs.writeFile('./package.json', JSON.stringify(package), async () => {
             await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
             await exec.exec('git config --global user.email "isenbot@isenbot.com"');
