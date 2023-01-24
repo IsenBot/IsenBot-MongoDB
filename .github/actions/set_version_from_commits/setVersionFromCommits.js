@@ -18,7 +18,6 @@ options.listeners = {
     myError += data.toString();
   }
 };
-options.cwd = './lib';
 
 exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then(() => {
     fs.readFile('./package.json', (e, data) => {
