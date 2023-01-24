@@ -1,7 +1,12 @@
-const fs = require('node:fs');
 const core = require('@actions/core');
+const exec = require('@actions/exec');
 
-const commits = core.getInput('commits');
+const first = core.getInput('first');
+const last = core.getInput('last');
+const res = await exec.exec(`git diff ${first} ${last}`);
+console.log(res);
+
+const commits = [];
 const typesArray = [];
 for(const commit of commits){
     if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){

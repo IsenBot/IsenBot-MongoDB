@@ -1,0 +1,15 @@
+name : "Get commit type"
+description : "Determines type of each commit between first and last between ['patch', 'minor' or  'major']"
+inputs:
+  first:
+    description: "First commit of push or pull request"
+    required: true
+  last:
+    description: "Last commit of push or pull request"
+    required: true
+outputs:
+  type:
+    description: "An array containing types of commits [patch, minor, major]"    
+runs:
+  using: 'node16'
+  main: getCommitType.js

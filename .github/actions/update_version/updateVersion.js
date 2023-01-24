@@ -5,6 +5,8 @@ const exec = require('@actions/exec');
 const typesArray = core.getInput('types');
 const token = core.getInput('repo-token');
 
+console.log(typesArray);
+
 fs.readFile('./package.json', (e, data) => {
     if(e) {
         throw e;
