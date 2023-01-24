@@ -88,6 +88,4 @@ async function main() {
 
 //minor
 
-//another major
-
 main();
