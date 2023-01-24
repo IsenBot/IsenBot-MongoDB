@@ -28,7 +28,8 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
         let message = '';
-        for(const commit of commits){
+        for(let i = commits.length - 1; i >= 0; i--){
+            let commit = commits[i];
             let messageType = "";
             if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
                 versionArray[0] += 1;
