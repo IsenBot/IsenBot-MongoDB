@@ -87,6 +87,4 @@ async function main() {
 //test
 
 
-//test 2
-
 main();
