@@ -23,10 +23,10 @@ exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(() => {
     const commits = myOutput.split('\n');
     const typesArray = [];
     for(const commit of commits){
-        if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
+        if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
             typesArray.push('major');
         } else {
-            if(commit.message.toLowerCase().includes("minor") || commit.message.toLowerCase().includes("feat")){
+            if(commit.toLowerCase().includes("minor") || commit.toLowerCase().includes("feat")){
                 typesArray.push('minor');
             } else {
                 typesArray.push('patch');
