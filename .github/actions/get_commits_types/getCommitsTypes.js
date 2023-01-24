@@ -5,20 +5,21 @@ const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
 console.log(first);
 console.log(last);
-const res = exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`);
-console.log(res);
+exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(result => {
+    console.log(result);
 
-const commits = res.split('\n');
-const typesArray = [];
-for(const commit of commits){
-    if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
-        typesArray.push('major');
-    } else {
-        if(commit.message.toLowerCase().includes("minor") || commit.message.toLowerCase().includes("feat")){
-            typesArray.push('minor');
+    const commits = result.split('\n');
+    const typesArray = [];
+    for(const commit of commits){
+        if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
+            typesArray.push('major');
         } else {
-            typesArray.push('patch');
+            if(commit.message.toLowerCase().includes("minor") || commit.message.toLowerCase().includes("feat")){
+                typesArray.push('minor');
+            } else {
+                typesArray.push('patch');
+            }
         }
     }
-}
-core.setOutput('types', typesArray);
+    core.setOutput('types', typesArray);
+})
