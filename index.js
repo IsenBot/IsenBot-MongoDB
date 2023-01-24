@@ -84,10 +84,10 @@ async function main() {
     await client.login(client.config.token);
 }
 
-//majors
+// majors
 
-//minor
+// minor
 
-//patch
+// patch
 
 main();
