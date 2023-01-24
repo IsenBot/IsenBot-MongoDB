@@ -5,7 +5,7 @@ const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
 console.log(first);
 console.log(last);
-const res = await exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`);
+const res = exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`);
 console.log(res);
 
 const commits = res.split('\n');
