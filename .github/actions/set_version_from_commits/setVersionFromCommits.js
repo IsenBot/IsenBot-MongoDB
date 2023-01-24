@@ -26,6 +26,8 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`).then(() => {
             throw e;
         }
         const package = JSON.parse(data);
+        console.log(myOutput);
+        console.log(typeof myOutput);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
         let message = '"';
