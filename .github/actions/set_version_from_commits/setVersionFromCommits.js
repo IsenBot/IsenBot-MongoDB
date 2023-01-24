@@ -28,27 +28,28 @@ exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(() => {
         const package = JSON.parse(data);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
-        let message = "";
+        let message = '"';
         for(const commit of commits){
+            let messageType = "";
             if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
                 versionArray[0] += 1;
                 versionArray[1] = 0;
                 versionArray[2] = 0;
-                message = '📣 New MAJOR release 📣 ';
+                messageType = '📣 New MAJOR release 📣 ';
             } else {
                 if(commit.toLowerCase().includes("minor") || commit.toLowerCase().includes("feat")){
                     versionArray[1] += 1;
                     versionArray[2] = 0;
-                    message = '🆕 New minor release 🆕 ';
+                    messageType = '🆕 New minor release 🆕 ';
                 } else {
                     versionArray[2] += 1;
-                    message = '✅ patch ';
+                    messageType = '✅ patch ';
                 }
             }
-            message = '-' + message + versionArray.join('.') + '\n' + commit + '\n';
+            message = '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
         }
         package.version = versionArray.join('.');        
-        message = '🚨 New version : ' + package.version + '\n' + message;
+        message = '🚨 New version : ' + package.version + '\n' + message + '"';
         fs.writeFile('./package.json', JSON.stringify(package), async () => {
             await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
             await exec.exec('git config --global user.email "isenbot@isenbot.com"');
