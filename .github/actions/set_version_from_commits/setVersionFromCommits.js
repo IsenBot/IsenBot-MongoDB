@@ -25,34 +25,27 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
             throw e;
         }
         const package = JSON.parse(data);
-        console.log(myOutput)
-        console.log(typeof myOutput);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
         let message = '"';
-        console.log(commits);
         for(const commit of commits){
-            console.log(typeof commit);
             let messageType = "";
             if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
                 versionArray[0] += 1;
                 versionArray[1] = 0;
                 versionArray[2] = 0;
                 messageType = '📣 New MAJOR release 📣 ';
-                console.log(commit + "is major update");
             } else {
                 if(commit.toLowerCase().includes("minor") || commit.toLowerCase().includes("feat")){
                     versionArray[1] += 1;
                     versionArray[2] = 0;
                     messageType = '🆕 New minor release 🆕 ';
-                    console.log(commit + "is minor update");
                 } else {
                     versionArray[2] += 1;
                     messageType = '✅ patch ';
-                    console.log(commit + "is patch update");
                 }
             }
-            message = '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
+            message += '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
         }
         package.version = versionArray.join('.');        
         message = '🚨 New version : ' + package.version + '\n' + message + '"';
