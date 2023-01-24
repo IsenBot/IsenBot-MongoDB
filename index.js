@@ -86,6 +86,4 @@ async function main() {
 
 //major update !!!!!!!
 
-//minor
-
 main();
