@@ -86,4 +86,6 @@ async function main() {
 
 //major
 
+//minor
+
 main();
