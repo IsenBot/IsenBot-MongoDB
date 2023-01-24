@@ -1,8 +1,10 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
 
-const first = core.getInput('first');
-const last = core.getInput('last');
+const first = core.getInput('first-commit');
+const last = core.getInput('last-commit');
+console.log(first);
+console.log(last);
 const res = await exec.exec(`git diff ${first} ${last}`);
 console.log(res);
 
