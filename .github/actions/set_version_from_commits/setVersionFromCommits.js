@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
+const fs = require('node:fs');
 
 const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
