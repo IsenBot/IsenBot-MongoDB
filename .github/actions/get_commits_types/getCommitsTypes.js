@@ -3,12 +3,24 @@ const exec = require('@actions/exec');
 
 const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
-console.log(first);
-console.log(last);
-exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(result => {
-    console.log(result);
 
-    const commits = result.split('\n');
+let myOutput = '';
+let myError = '';
+const options = {};
+
+options.listeners = {
+  stdout: (data) => {
+    myOutput += data.toString();
+  },
+  stderr: (data) => {
+    myError += data.toString();
+  }
+};
+options.cwd = './lib';
+
+exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(() => {
+    console.log(myOutput);
+    const commits = myOutput.split('\n');
     const typesArray = [];
     for(const commit of commits){
         if(commit.message.toLowerCase().includes("major") || commit.message.toLowerCase().includes("breaking change")){
