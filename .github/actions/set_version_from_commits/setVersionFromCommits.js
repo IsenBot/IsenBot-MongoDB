@@ -20,11 +20,12 @@ options.listeners = {
 };
 options.cwd = './lib';
 
-exec.exec(`git log ${first}...${last}^ --pretty=format:'%s'`).then(() => {
+exec.exec(`git log ${last}...${first} --pretty=format:'%s'`).then(() => {
     fs.readFile('./package.json', (e, data) => {
         if(e) {
             throw e;
         }
+        console.log(myOutput);
         const package = JSON.parse(data);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
         const commits = myOutput.split('\n');
