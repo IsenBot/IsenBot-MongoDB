@@ -12,10 +12,10 @@ const options = {};
 
 options.listeners = {
   stdout: (data) => {
-    myOutput += data.toString();
+    gitOutput += data.toString();
   },
   stderr: (data) => {
-    myError += data.toString();
+    gitError += data.toString();
   }
 };
 
