@@ -31,22 +31,24 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
         for(let i = commits.length - 1; i >= 0; i--){
             let commit = commits[i];
             let messageType = "";
-            if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
-                versionArray[0] += 1;
-                versionArray[1] = 0;
-                versionArray[2] = 0;
-                messageType = '📣 New MAJOR release 📣 ';
-            } else {
-                if(commit.toLowerCase().includes("minor") || commit.toLowerCase().includes("feat")){
-                    versionArray[1] += 1;
+            if(!commit.toLowerCase().includes("[no-upgrade]") && !commit.toLowerCase().includes("[no-version]")){
+                if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
+                    versionArray[0] += 1;
+                    versionArray[1] = 0;
                     versionArray[2] = 0;
-                    messageType = '🆕 New minor release 🆕 ';
+                    messageType = '📣 New MAJOR release 📣 ';
                 } else {
-                    versionArray[2] += 1;
-                    messageType = '✅ patch ';
+                    if(commit.toLowerCase().includes("minor") || commit.toLowerCase().includes("feat")){
+                        versionArray[1] += 1;
+                        versionArray[2] = 0;
+                        messageType = '🆕 New minor release 🆕 ';
+                    } else {
+                        versionArray[2] += 1;
+                        messageType = '✅ patch ';
+                    }
                 }
+                message += '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
             }
-            message += '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
         }
         package.version = versionArray.join('.');        
         message = '🚨 New version : ' + package.version + '\n' + message;
