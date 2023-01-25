@@ -1,5 +1,5 @@
 name: Bug Report
-description: Create a report to help us improve
+description: Create a report to help us improve. Be sure to read the [wiki first](https://github.com/IsenBot/IsenBot-MongoDB/wiki)
 title: "[Bug]: "
 labels: ["bug"]
 
@@ -54,12 +54,3 @@ body:
     attributes:
       label: Additional context
       description: Add any other context about the problem here.
-
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-      options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
