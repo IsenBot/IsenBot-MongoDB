@@ -1,0 +1,50 @@
+name: IsenBot Autoversion
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'package.json'
+      - '.gitignore'
+      - '.github/**'
+      - '**.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'package.json'
+      - '.gitignore'
+      - '.github/**'
+      - '**.md'  
+
+permissions:
+  contents: write
+  deployments: write
+  packages: write
+  pull-requests: write
+
+jobs:
+  version_job:
+    runs-on: ubuntu-latest
+    name: Package version auto-increment job
+    strategy:
+      matrix:
+        node-version: [16.9]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install --only=dev
+      - name: Determine all commit types and update
+        id: get_types
+        uses: ./.github/actions/set_version_from_commits/
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          first-commit: ${{ github.event.before }}
+          last-commit: ${{ github.event.after }}
