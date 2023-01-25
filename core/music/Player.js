@@ -13,9 +13,13 @@ class Player extends EventEmitter {
         this.client = client;
         this.spotifyClient = new SpotifyApi(client);
         this.twitchApi = new TwitchApi(client);
-        // eslint-disable-next-line no-empty-function
-        this.twitchApi.fetchToken().then(() => {});
         this.queue = new Collection();
+    }
+
+    static async createPlayer(client) {
+        const player = new this(client);
+        await player.twitchApi.fetchToken();
+        return player;
     }
 
     createResource(resource) {

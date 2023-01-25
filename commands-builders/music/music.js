@@ -1,7 +1,7 @@
 const path = require('node:path');
 const { SlashCommandBuilder } = require('discord.js');
 const { initLanguage } = require('../../utility/commandBuilder');
-const YouTube = require('youtube-sr');
+const YouTube = require('youtube-sr').default;
 
 module.exports = {
     category: path.basename(__dirname),

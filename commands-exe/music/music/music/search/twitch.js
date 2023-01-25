@@ -20,11 +20,14 @@ module.exports = async (interaction) => {
         .setTitle('Twitch Stream Search')
         .setTimestamp(new Date());
 
+    let i = 1;
+
     data.data.map((stream) => {
         embed.addFields({
-            name: stream.user_name,
+            name: `**${i}** - ${stream.user_name}`,
             value: `[${stream.title}](https://www.twitch.tv/${stream.user_login}) , game : ${stream.game_name} - ${stream.type === 'live' ? 'online' : 'offline'}\n`,
         });
+        i++;
     });
 
 
