@@ -1,5 +1,5 @@
 name: Bug Report
-description: Create a report to help us improve. Be sure to read the [wiki first](https://github.com/IsenBot/IsenBot-MongoDB/wiki)
+description: Create a report to help us improve
 title: "[Bug]: "
 labels: ["bug"]
 
@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to fill out this bug report! | Be sure to read the [wiki first](https://github.com/IsenBot/IsenBot-MongoDB/wiki)
 
   - type: textarea
     id: what-happened
