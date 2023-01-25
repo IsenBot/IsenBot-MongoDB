@@ -6,8 +6,8 @@ const first = core.getInput('first-commit');
 const last = core.getInput('last-commit');
 const token = core.getInput('repo-token');
 
-let myOutput = '';
-let myError = '';
+let gitOutput = '';
+let gitError = '';
 const options = {};
 
 options.listeners = {
@@ -20,16 +20,20 @@ options.listeners = {
 };
 
 exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then(() => {
+    if(gitError !== ''){
+        core.error(gitError);
+    }
     fs.readFile('./package.json', (e, data) => {
         if(e) {
             throw e;
         }
         const package = JSON.parse(data);
         const versionArray = package.version.split('.').map(version => parseInt(version, 10));
-        const commits = myOutput.split('\n');
+        const commitsMessages = gitOutput.split('\n');
         let message = '';
-        for(let i = commits.length - 1; i >= 0; i--){
-            let commit = commits[i];
+        let upgradeCommitsNumber = 0;
+        for(let i = commitsMessages.length - 1; i >= 0; i--){
+            let commit = commitsMessages[i];
             let messageType = "";
             if(!commit.toLowerCase().includes("[no-upgrade]") && !commit.toLowerCase().includes("[no-version]")){
                 if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
@@ -47,18 +51,21 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
                         messageType = '✅ patch ';
                     }
                 }
+                upgradeCommitsNumber++;
                 message += '-' + messageType + versionArray.join('.') + '\n' + commit + '\n';
             }
         }
-        package.version = versionArray.join('.');        
-        message = '🚨 New version : ' + package.version + '\n' + message;
-        fs.writeFile('./package.json', JSON.stringify(package), async () => {
-            await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
-            await exec.exec('git config --global user.email "isenbot@isenbot.com"');
-            await exec.exec('git commit -a --message=\"' + message + '\"');
-            await exec.exec('git remote remove origin')
-            await exec.exec(`git remote add origin https://${token}@github.com/allan-cff/IsenBot-GithubActions.git`);
-            await exec.exec('git push origin main')
-        })
+        if(upgradeCommitsNumber > 0){
+            package.version = versionArray.join('.');        
+            message = '🚨 New version : ' + package.version + '\n' + message;
+            fs.writeFile('./package.json', JSON.stringify(package), async () => {
+                await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
+                await exec.exec('git config --global user.email "isenbot@isenbot.com"');
+                await exec.exec('git commit -a --message=\"' + message + '\"');
+                await exec.exec('git remote remove origin')
+                await exec.exec(`git remote add origin https://${token}@github.com/allan-cff/IsenBot-GithubActions.git`);
+                await exec.exec('git push origin main')
+            })
+        }
     })
 })
