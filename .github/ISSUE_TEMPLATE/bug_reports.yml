@@ -38,7 +38,7 @@ body:
     attributes:
       label: Version
       description: What version of our software are you running?
-      value : "- OS : [e.g. iOS]\n- nodejs [e.g. 19.1.0]\ndiscord.js [e.g. 14.7.1]\n"
+      value : "- OS : [e.g. iOS]\n- nodejs [e.g. 19.1.0]\n- discord.js [e.g. 14.7.1]\n"
     validations:
       required: true
 
