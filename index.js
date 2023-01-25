@@ -83,4 +83,5 @@ async function main() {
     });
     await client.login(client.config.token);
 }
+
 main();
