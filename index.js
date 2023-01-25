@@ -81,7 +81,7 @@ async function main() {
         headers: '',
         type: 'log',
     });
-    await client.login(client.config.token);    
+    await client.login(client.config.token);
 }
 
 main();
