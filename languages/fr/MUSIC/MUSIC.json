@@ -48,6 +48,12 @@
     },
     "LIMIT" : {
       "NAME": "limit"
+    },
+    "MODE" : {
+      "NAME": "mode"
+    },
+    "PAGE" : {
+      "NAME": "page"
     }
   }
 }

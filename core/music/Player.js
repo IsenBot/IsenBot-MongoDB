@@ -19,6 +19,7 @@ class Player extends EventEmitter {
     static async createPlayer(client) {
         const player = new this(client);
         await player.twitchApi.fetchToken();
+        await player.spotifyClient.fetchToken();
         return player;
     }
 
@@ -67,15 +68,31 @@ class Player extends EventEmitter {
 
         const stream = await twitch.getStream(username);
 
-        if (!stream || stream.length === 0) return null;
+        const user = (await this.client.player.twitchApi.fetchUser(username)).data[0];
+
+        if (!user) return { error: 'User not found' };
+
+        const streamData = (await this.client.player.twitchApi.fetchStream({ user_id: user.id, user_login: null, type: null, language: null, limit: 1 }))?.data[0];
+
+        if (!streamData) return { error: 'Stream not found' };
+
+        if (!stream || stream.length === 0) return { error: 'Stream not found' };
 
         let track = stream.filter((item) => {return item.quality === 'audio_only'; })[0];
 
         if (!track) track = stream[stream.length - 1];
 
-        if (track.url.length < 2) return null;
+        if (track.url.length < 2) return { error: 'Stream not found' };
 
-        return { title: username + ' stream', channelTitle: username, url: 'https://www.twitch.tv/' + username.toLowerCase(), twitchUrl: track.url, type: 'twitch' };
+        return {
+            channelTitle: username,
+            url: 'https://www.twitch.tv/' + username.toLowerCase(),
+            twitchUrl: track.url,
+            type: 'twitch',
+            title: streamData.title,
+            thumbnail: streamData.thumbnail_url?.replace('{width}', '1920').replace('{height}', '1080'),
+            avatarUrl: user.profile_image_url,
+        };
     }
 
 
@@ -95,12 +112,12 @@ class Player extends EventEmitter {
             this.emit('stop', q);
         });
 
-        queue.on('voiceConnectionConnected', (q) => {
-            this.emit('voiceConnectionConnected', q);
+        queue.on('voiceConnectionReady', (q) => {
+            this.emit('voiceConnectionReady', q);
         });
 
-        queue.on('voiceConnectionDestroyed', (q) => {
-            this.emit('voiceConnectionDestroyed', q);
+        queue.on('voiceConnectionDisconnected', (q) => {
+            this.emit('voiceConnectionDisconnected', q);
         });
 
         this.setQueue(guildId, queue);

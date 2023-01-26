@@ -56,7 +56,10 @@ module.exports = {
             highWaterMark: 1 << 62,
             liveBuffer: 1 << 62,
             dlChunkSize: 0,
-            bitrate: 128,
+            bitrate: 64,
+        },
+        m3u8stream_options: {
+            highWaterMark: 1 << 62,
         },
     },
 };

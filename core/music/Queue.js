@@ -24,7 +24,7 @@ class Queue extends EventEmitter {
                     if (this.history.length > 5) {
                         this.history.pop();
                     }
-                    this.history.unshift(this.queue.shift());
+                    this.history.unshift(this.actualTrack);
                 }
                 setTimeout(() => {
                     this.play();
@@ -48,23 +48,36 @@ class Queue extends EventEmitter {
     }
 
     connect(channel) {
-        this.musicChannel = channel;
-        this.connection = joinVoiceChannel({
-            channelId: channel.id,
-            guildId: channel.guild.id,
-            adapterCreator: channel.guild.voiceAdapterCreator,
-        });
 
-        this.connection.on(VoiceConnectionStatus.Connecting, () => {
-            this.emit('voiceConnectionConnected', this);
-        });
+        if (this.connection?.state?.status === 'ready') return;
 
-        this.connection.on(VoiceConnectionStatus.Destroyed, () => {
-            this.emit('voiceConnectionDestroyed', this);
-        });
+        if (this.connection?.state?.status === 'disconnected') {
+            console.log('disconnected try to join');
+            this.connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: channel.guild.id,
+            });
+            this.connection.subscribe(this.AudioPlayer);
+        } else {
+            this.musicChannel = channel;
+            this.connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: channel.guild.id,
+                adapterCreator: channel.guild.voiceAdapterCreator,
+            });
 
-        this.connection.subscribe(this.AudioPlayer);
+            this.connection.on(VoiceConnectionStatus.Ready, () => {
+                this.emit('voiceConnectionReady', this);
+            });
+
+            this.connection.on(VoiceConnectionStatus.Disconnected, () => {
+                this.emit('voiceConnectionDisconnected', this);
+            });
+
+            this.connection.subscribe(this.AudioPlayer);
+        }
     }
+
     addTrack(track) {
         this.queue.push(track);
     }
@@ -87,9 +100,8 @@ class Queue extends EventEmitter {
         this.playing = false;
         this.actualResource = null;
         this.queue = [];
-        this.history = [];
-        this.AudioPlayer.stop();
-        this.connection?.destroy();
+        this.AudioPlayer.stop(true);
+        this.connection?.disconnect();
         this.emit('stop', this);
     }
 
@@ -97,22 +109,30 @@ class Queue extends EventEmitter {
         if (this.queue.length > 0) {
 
             switch (this.loop) {
+            // OFF
+            case 0:
+                this.actualTrack = this.queue.shift();
+                break;
+
+            // TRACK
+            case 1:
+                break;
+
+            // QUEUE
+            case 2:
+                this.actualTrack = this.queue.shift();
+                this.queue.push(this.actualTrack);
+                break;
+
+            // RANDOM
             case 3:
                 this.actualTrack = this.queue[Math.floor(Math.random() * this.queue.length)];
-                break;
-            case 0:
-                this.actualTrack = this.queue[0];
-                break;
-            case 1:
-                this.actualTrack = this.queue[0];
-                this.queue.push(this.queue.shift());
-                break;
-            case 2:
                 break;
             }
 
             if (this.actualTrack?.type === 'twitch') {
-                this.actualResource = this.player.createResource(m3u8stream(this.actualTrack.twitchUrl));
+                this.actualResource = this.player.createResource(m3u8stream(this.actualTrack.twitchUrl, this.client.config.m3u8stream_options));
+                this.setBitrate(64000);
             } else {
                 this.actualResource = this.player.createResource(ytdl(this.actualTrack?.url, this.client.config.player.ytdl_options));
             }
@@ -142,7 +162,7 @@ class Queue extends EventEmitter {
                 if (this.history.length > 5) {
                     this.history.pop();
                 }
-                this.history.unshift(this.queue.shift());
+                this.history.unshift(this.actualTrack);
             }
             this.play();
         }, 1000);
@@ -166,6 +186,20 @@ class Queue extends EventEmitter {
 
     getLoopMode() {
         return this.loop;
+    }
+
+    insert(index, track) {
+        this.queue.splice(index, 0, track);
+    }
+
+    back() {
+        if (this.history.length > 0) {
+            this.queue.unshift(this.history.shift());
+        }
+    }
+
+    setBitrate(bitrate) {
+        this.actualResource?.encoder?.setBitrate(bitrate);
     }
 }
 

@@ -80,11 +80,39 @@ module.exports = {
         })
         .addSubcommand(s => {
             return s.setName('queue')
-                .setDescription('show queue');
+                .setDescription('show queue')
+                .addIntegerOption(o => {
+                    return o.setName('page')
+                        .setDescription('page to show')
+                        .setRequired(false);
+                });
         })
         .addSubcommand(s => {
             return s.setName('loop')
-                .setDescription('loop mode');
+                .setDescription('loop mode')
+                .addIntegerOption(o => {
+                    return o.setName('mode')
+                        .setDescription('mode')
+                        .setRequired(true)
+                        .addChoices(
+                            {
+                                name: 'off',
+                                value: 0,
+                            },
+                            {
+                                name: 'track',
+                                value: 1,
+                            },
+                            {
+                                name: 'queue',
+                                value: 2,
+                            },
+                            {
+                                name: 'random',
+                                value: 3,
+                            },
+                        );
+                });
         })
         .addSubcommandGroup(s => {
             return s.setName('search')
@@ -167,16 +195,49 @@ module.exports = {
                         value: user.broadcaster_login,
                     })));
                 } else if (subcommand === 'spotify') {
+
                     if (query.length < 3) return await interaction.respond([]);
 
-                    const tracks = (await client.player.spotifyClient.search(query, 10)).tracks;
+                    const result = await client.player.spotifyClient.search(query, ['track', 'playlist', 'album'], 3);
 
-                    if (!tracks || tracks.length < 1) return;
+                    if (!result) return await interaction.respond([]);
 
-                    interaction.respond(tracks.map((track) => ({
-                        name: (track.artists[0].name + ' - ' + track.name + (track.album ? ' - album : ' + track.album.name : '')).length > 90 ? (track.artists[0].name + ' - ' + track.name + (track.album ? ' - album : ' + track.album.name : '')).slice(0, 90) + '...' : (track.artists[0].name + ' - ' + track.name + (track.album ? ' - album : ' + track.album.name : '')),
-                        value: track.uri || track.externalURL.spotify,
-                    })));
+                    const data = [];
+
+                    Object.keys(result).map((key) => {
+                        result[key].items.forEach((item) => {
+                            if (item.type === 'track') {
+                                data.push({
+                                    name: `${item.type.toUpperCase()} 🎧 - ${item.artists[0].name} - ${item.name}`,
+                                    uri: item.uri,
+                                });
+                            } else if (item.type === 'playlist' && item.tracks.total > 0) {
+                                data.push({
+                                    name: `${item.type.toUpperCase()} 🎶 - ${item.name} - ${item.owner.display_name}`,
+                                    uri: item.uri,
+                                });
+                            } else if (item.type === 'album' && item.total_tracks > 0) {
+                                data.push({
+                                    name: `${item.type.toUpperCase()} 💿 - ${item.artists[0].name} - ${item.name}`,
+                                    uri: item.uri,
+                                });
+                            }
+                        });
+                    });
+
+                    if (!data.length) return await interaction.respond([]);
+
+                    if (!interaction) return;
+
+                    try {
+                        await interaction.respond(data.map((item) => ({
+                            name: item.name,
+                            value: item.uri,
+                        })));
+                    } catch (e) {
+                        // Do nothing
+                    }
+
                 }
             }
         }

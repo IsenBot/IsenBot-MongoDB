@@ -1,33 +1,111 @@
-const { Client } = require('spotify-api.js');
 class SpotifyApi {
     constructor(client) {
-        this.bot = client;
-        this.client = new Client({ token: { clientID: this.bot.config.player.key.spotifyClient, clientSecret: this.bot.config.player.key.spotifySecret } });
+        this.client = client;
+        this.access_token = null;
+        this.client_id = this.client.config.player.key.spotifyClient;
+        this.client_secret = this.client.config.player.key.spotifySecret;
     }
 
-    async searchTrack(query) {
-        return await this.client.tracks.get(query);
+    async fetchToken() {
+        const data = await fetch(`https://accounts.spotify.com/api/token?grant_type=client_credentials&client_id=${this.client_id}&client_secret=${this.client_secret}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+
+        this.access_token = data.access_token;
+
+        this.client.log({
+            textContent: 'Spotify token fetch',
+            headers: 'Spotify',
+            type: 'Success',
+        });
+
+        setTimeout(() => {
+            this.fetchToken();
+        }, data.expires_in * 1000);
     }
 
-    async searchArtist(query) {
-        return await this.client.artists.get(query);
+    async search(query, type = ['track'], limit = 1) {
+        return await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${type.join(',')}&limit=${limit}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.access_token}`,
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
     }
 
-    async searchAlbum(query) {
-        return await this.client.albums.get(query);
+    async getById(id, type = 'track') {
+        switch (type) {
+
+        case 'track':
+            return this.trackById(id);
+
+        case 'artist':
+            return this.artistById(id);
+
+        case 'playlist':
+            return this.playlistById(id);
+
+        case 'album':
+            return this.albumById(id);
+        default:
+            return null;
+        }
     }
 
-    async searchPlaylist(query) {
-        return await this.client.playlists.get(query);
+    async trackById(id) {
+        return await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.access_token}`,
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
     }
 
-    async search(query, limit = 1) {
-        const options = {
-            limit,
-            offset: 0,
-            types: ['album', 'artist', 'track', 'episode'],
-        };
-        return await this.client.search(query, options);
+    async artistById(id) {
+        return await fetch(`https://api.spotify.com/v1/artists/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.access_token}`,
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+    }
+
+    async playlistById(id) {
+        return await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.access_token}`,
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+    }
+
+    async albumById(id) {
+        return await fetch(`https://api.spotify.com/v1/albums/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.access_token}`,
+            },
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
     }
 }
 

@@ -1,11 +1,11 @@
 const { formatLog } = require('../../utility/Log');
 module.exports = {
-    name : 'voiceConnectionConnected',
+    name : 'voiceConnectionReady',
     once : false,
 
     execute(queue) {
         queue.client.log({
-            textContent: formatLog('Voice connection created', { 'Music channel' : queue.musicChannel?.id, 'Bitrate' : queue.musicChannel.bitrate }),
+            textContent: formatLog('Voice connection ready', { 'Music channel' : queue.musicChannel?.id }),
             headers: ['Logger', 'Music'],
             type: 'event',
         });
