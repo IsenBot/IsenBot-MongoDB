@@ -10,7 +10,7 @@ module.exports = async (interaction) => {
 
     if (!interaction.member?.voice.channel) {
         return interaction.followUp({
-            content: 'You need to be in a voice channel to use this command!',
+            content: await interaction.translate('music/music:exe:user_not_in_voice'),
             ephemeral: true,
         });
     }
@@ -26,7 +26,7 @@ module.exports = async (interaction) => {
     const embed = new EmbedBuilder()
         .setTitle('Twitch Stream')
         .setImage(track.thumbnail)
-        .setDescription(`Add to queue \`${track.title}\` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`);
+        .setDescription(await interaction.translate('music/music:exe:play:add_track_to_queue', { title: track.title }) + ` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`);
 
     const result = await interaction.followUp({ embeds: [embed] });
 
