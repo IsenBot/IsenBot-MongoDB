@@ -4,5 +4,5 @@ module.exports = async (interaction) => {
 
     queue.stop();
 
-    await interaction.reply({ content: 'Stop the song' });
+    await interaction.reply({ content: await interaction.translate('music/music:exe:stop') });
 };

@@ -3,24 +3,24 @@ module.exports = async (interaction) => {
 
     await interaction.reply({ content: 'Recherche for ...!', ephemeral: true });
 
+    const id = interaction.options.getString('query', true);
+
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
-    if (!queue) return interaction.reply({ content: 'Error with the queue i\'m sorry', ephemeral: true });
-
-    await interaction.client.player.searchYoutubeTrackById('rOnIpoJ1Ygw');
+    if (!queue) return interaction.reply({ content: await interaction.translate('music/music:exe:error:error'), ephemeral: true });
 
     const channel = interaction.member.voice.channel;
 
-    if (!channel) return interaction.reply({ content: 'You need to be in a voice channel to use this command', ephemeral: true });
+    if (!channel) return interaction.reply({ content: await interaction.translate('music/music:exe:error:user_not_in_voice'), ephemeral: true });
 
     queue.connect(channel);
 
-    const track = await interaction.client.player.searchYoutubeTrack('rOnIpoJ1Ygw');
+    const track = await interaction.client.player.searchYoutubeTrack(id);
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')
         .setImage(track.thumbnail)
-        .setDescription(`Add to queue \`${track.title}\` by [${track.channelTitle}](${track.url} "The best youtuber ever")`);
+        .setDescription(await interaction.translate('music/music:exe:play:add_track_to_queue', { title: track.title }) + ` by [${track.channelTitle}](${track.url} "The best youtuber ever")`);
 
     const result = await interaction.followUp({ embeds: [embed] });
 

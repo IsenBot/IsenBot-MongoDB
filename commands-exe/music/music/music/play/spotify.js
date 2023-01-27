@@ -1,6 +1,5 @@
 const { isUrl } = require('../../../../../utility/Function');
 
-// TODO change everything because that is not optimal
 module.exports = async (interaction) => {
 
     const client = interaction.client;
@@ -13,7 +12,7 @@ module.exports = async (interaction) => {
 
     const voiceChannel = member.voice.channel;
 
-    await interaction.reply({ content: 'Searching music ...', ephemeral: true });
+    await interaction.reply({ content: await interaction.translate('music/music:exe:play:recherche'), ephemeral: true });
 
     if (isUrl(query)) {
 
@@ -31,7 +30,9 @@ module.exports = async (interaction) => {
                     if (ytTrack) {
                         ytTrack.type = 'spotify';
                         queue.addTrack(ytTrack);
-                        await interaction.followUp({ content: `Add ${ytTrack.title} to Queue`, ephemeral: false });
+                        await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack?.title }), ephemeral: false });
+                    } else {
+                        return interaction.followUp({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
                     }
                 }
                 break;
@@ -39,6 +40,7 @@ module.exports = async (interaction) => {
             case 'playlist':
                 if (data.tracks) {
                     const listTrack = [];
+                    await interaction.editReply({ content: await interaction.translate('music/music:exe:play:loading') });
                     for (const track of data.tracks.items) {
                         if (track?.name) {
                             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
@@ -49,7 +51,7 @@ module.exports = async (interaction) => {
                         }
                     }
                     queue.addTracks(listTrack);
-                    await interaction.followUp({ content: `Add ${data.name} to Queue - ${listTrack.length} tracks`, ephemeral: false });
+                    await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_tracks_to_queue', { title: data.name, nb: listTrack.length }), ephemeral: false });
                 }
                 break;
             }
@@ -61,12 +63,12 @@ module.exports = async (interaction) => {
 
         if (data.tracks?.items) {
             const track = data.tracks.items[0];
-            if (!track?.name) return interaction.followUp({ content: 'No results found!', ephemeral: true });
+            if (!track?.name) return interaction.followUp({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
-            if (!ytTrack) return interaction.followUp({ content: 'No results found!', ephemeral: true });
+            if (!ytTrack) return interaction.followUp({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
             ytTrack.type = 'spotify';
             queue.addTrack(ytTrack);
-            await interaction.followUp({ content: `Add ${ytTrack.title} to Queue`, ephemeral: false });
+            await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack.title }), ephemeral: false });
         }
     }
 
@@ -77,6 +79,4 @@ module.exports = async (interaction) => {
             queue.play();
         }, 1000);
     }
-
-    await interaction.followUp({ content: 'This command is currently disabled', ephemeral: true });
 };

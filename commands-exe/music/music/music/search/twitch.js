@@ -8,13 +8,13 @@ module.exports = async (interaction) => {
     const type = interaction.options.getBoolean('live', false) ? 'live' : 'all';
     const limit = interaction.options.getInteger('limit', false) || 5;
 
-    if (limit > 25 || limit < 1) return interaction.reply({ content: 'Limit must be between 1 and 25', ephemeral: true });
+    if (limit > 25 || limit < 1) return interaction.reply({ content: await interaction.translate('music/music:exe:error:limit_out_of_range', { min: 0, max: 100 }), ephemeral: true });
 
     const data = await client.player.twitchApi.fetchStream({ user_login, language, type, user_id: null, limit });
 
     if (data.error) return interaction.reply({ content: data.status + ' ' + data.message, ephemeral: true });
 
-    if (!data?.data?.length) return interaction.reply({ content: 'No results found!', ephemeral: true });
+    if (!data?.data?.length) return interaction.reply({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
 
     const embed = new EmbedBuilder()
         .setTitle('Twitch Stream Search')

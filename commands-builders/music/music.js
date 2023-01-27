@@ -54,8 +54,8 @@ module.exports = {
             return s.setName('pause')
                 .setDescription('pause music')
                 .addStringOption(o => {
-                    return o.setName('query')
-                        .setDescription('query to search')
+                    return o.setName('mode')
+                        .setDescription('mode')
                         .setRequired(true)
                         .addChoices(
                             {
@@ -153,6 +153,15 @@ module.exports = {
                                 .setDescription('limit of the search')
                                 .setRequired(false);
                         });
+                });
+        })
+        .addSubcommand(s => {
+            return s.setName('remove')
+                .setDescription('remove a track')
+                .addIntegerOption(o => {
+                    return o.setName('index')
+                        .setDescription('index of the track to remove')
+                        .setRequired(true);
                 });
         })
     , 'MUSIC'),

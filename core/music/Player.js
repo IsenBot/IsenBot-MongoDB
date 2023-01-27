@@ -30,23 +30,6 @@ class Player extends EventEmitter {
         });
     }
 
-    async searchYoutubeTrackById(id) {
-        const track = await YouTube.search(id, { type: 'video', limit: 1 });
-
-        if (!track) return null;
-
-        return {
-            title: track[0].title || 'No title',
-            channelTitle: track[0].channel?.name,
-            url: track[0].url,
-            type: 'youtube',
-            thumbnail: track[0].thumbnail?.url,
-            avatarUrl: track[0].channel?.icon?.url,
-            duration: track[0].duration,
-            description: track[0].description,
-        };
-    }
-
     async searchYoutubeTrack(query, limit = 1) {
         const search = await YouTube.search(query, { type: 'video', limit });
 

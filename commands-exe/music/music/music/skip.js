@@ -4,5 +4,5 @@ module.exports = async (interaction) => {
 
     queue.skip();
 
-    await interaction.reply({ content: 'Skip the song' });
+    await interaction.reply({ content: await interaction.translate('music/music:exe:skip') });
 };

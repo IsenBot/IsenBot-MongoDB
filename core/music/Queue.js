@@ -52,10 +52,10 @@ class Queue extends EventEmitter {
         if (this.connection?.state?.status === 'ready') return;
 
         if (this.connection?.state?.status === 'disconnected') {
-            console.log('disconnected try to join');
             this.connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
+                adapterCreator: channel.guild.voiceAdapterCreator,
             });
             this.connection.subscribe(this.AudioPlayer);
         } else {
@@ -132,10 +132,11 @@ class Queue extends EventEmitter {
 
             if (this.actualTrack?.type === 'twitch') {
                 this.actualResource = this.player.createResource(m3u8stream(this.actualTrack.twitchUrl, this.client.config.m3u8stream_options));
-                this.setBitrate(64000);
             } else {
                 this.actualResource = this.player.createResource(ytdl(this.actualTrack?.url, this.client.config.player.ytdl_options));
             }
+
+            this.setBitrate(64000);
 
             if (!this.actualTrack) return;
             this.actualResource?.volume?.setVolume(this.volume);
@@ -200,6 +201,10 @@ class Queue extends EventEmitter {
 
     setBitrate(bitrate) {
         this.actualResource?.encoder?.setBitrate(bitrate);
+    }
+
+    remove(index) {
+        return this.queue.splice(index, 1);
     }
 }
 

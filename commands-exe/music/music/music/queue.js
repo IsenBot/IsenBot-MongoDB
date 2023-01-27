@@ -7,13 +7,13 @@ module.exports = async (interaction) => {
 
     const queueList = queue.getQueue();
 
-    if (queueList.length === 0) return interaction.reply({ content: 'No track in queue', ephemeral: true });
+    if (queueList.length === 0) return interaction.reply({ content: await interaction.translate('music:music/exe:error:no_track_in_queue'), ephemeral: true });
 
     const actualTrack = queue.actualTrack;
 
     if (actualTrack) {
         const nomplaying = new EmbedBuilder()
-            .setTitle('Now Playing')
+            .setTitle(await interaction.translate('music:music/exe:now_playing'))
             .setThumbnail(actualTrack.thumbnail)
             .setDescription(`**${actualTrack.type}** - ${actualTrack.title} - **${actualTrack.channelTitle}**`)
             .setTimestamp(new Date());
@@ -21,7 +21,7 @@ module.exports = async (interaction) => {
         await interaction.reply({ embeds: [nomplaying] });
     }
 
-    if ((page - 1) * 10 > queueList.length - 1) return interaction.reply({ content: 'Page not found', ephemeral: true });
+    if ((page - 1) * 10 > queueList.length - 1) return interaction.reply({ content: await interaction.translate('music/music:exe:error:404_page'), ephemeral: true });
 
     let message = '';
 
@@ -33,5 +33,5 @@ module.exports = async (interaction) => {
 
     if (queueList.length > 10) message += `Page ${page}/${Math.ceil(queueList.length / 10)}`;
 
-    await interaction.followUp({ content: message.length < 1 ? 'queue is Empty' : message, ephemeral: message.length < 1 });
+    await interaction.followUp({ content: message.length < 1 ? await interaction.translate('music/music:exe:error:queue_empty') : message, ephemeral: message.length < 1 });
 };
