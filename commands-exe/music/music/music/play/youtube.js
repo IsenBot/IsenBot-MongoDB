@@ -1,13 +1,18 @@
 const { EmbedBuilder } = require('discord.js');
+const { checkUserChannel } = require('../../../../../utility/Function');
+
+// TODO verify for youtube playlist
 module.exports = async (interaction) => {
 
-    await interaction.reply({ content: 'Recherche for ...!', ephemeral: true });
+    const check = await checkUserChannel(interaction);
+
+    if (!check) return;
+
+    await interaction.reply({ content: await interaction.translate('music/music:exe:play:recherche'), ephemeral: true });
 
     const id = interaction.options.getString('query', true);
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
-
-    if (!queue) return interaction.reply({ content: await interaction.translate('music/music:exe:error:error'), ephemeral: true });
 
     const channel = interaction.member.voice.channel;
 
@@ -16,6 +21,8 @@ module.exports = async (interaction) => {
     queue.connect(channel);
 
     const track = await interaction.client.player.searchYoutubeTrack(id);
+
+    if (!track) return interaction.reply({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')

@@ -1,19 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
+const { checkUserChannel } = require('../../../../../utility/Function');
 
 module.exports = async (interaction) => {
+
+    const check = await checkUserChannel(interaction);
+
+    if (!check) return;
 
     const username = interaction.options.getString('query', true);
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
-    await interaction.reply({ content: `Searching for **${username}**`, ephemeral: true });
-
-    if (!interaction.member?.voice.channel) {
-        return interaction.followUp({
-            content: await interaction.translate('music/music:exe:user_not_in_voice'),
-            ephemeral: true,
-        });
-    }
+    await interaction.reply({ content: await interaction.translate('music/music:exe:play:recherche'), ephemeral: true });
 
     queue.connect(interaction.member.voice.channel);
 

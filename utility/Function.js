@@ -21,8 +21,31 @@ function decodeString(html) {
     });
 }
 
+async function checkUserChannel(interaction) {
+    if (!interaction.member?.voice.channel) {
+        await interaction.reply({
+            content: await interaction.translate('music/music:exe:error:user_not_in_voice'),
+            ephemeral: true,
+        });
+
+        return false;
+    }
+
+    if (interaction?.guild?.me?.channel && interaction.member?.voice.channel.id !== interaction.guild.me?.voice?.channel?.id) {
+        await interaction.reply({
+            content: await interaction.translate('music/music:exe:error:user_not_in_same_voice'),
+            ephemeral: true,
+        });
+
+        return false;
+    }
+
+    return true;
+}
+
 module.exports = {
     shuffleArray,
     isUrl,
     decodeString,
+    checkUserChannel,
 };

@@ -74,8 +74,7 @@ module.exports = {
                 .setDescription('change volume')
                 .addIntegerOption(o => {
                     return o.setName('volume')
-                        .setDescription('volume to set')
-                        .setRequired(true);
+                        .setDescription('volume to set');
                 });
         })
         .addSubcommand(s => {

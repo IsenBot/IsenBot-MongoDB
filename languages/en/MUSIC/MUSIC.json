@@ -66,7 +66,7 @@
     "ERROR": {
       "404_RESULT": "No result found",
       "USER_NOT_IN_VOICE": "You must be in a voice channel",
-      "ERROR": "An error occured",
+      "ERROR": "An error occurred",
       "NO_TRACK_IN_QUEUE": "No track in queue",
       "404_PAGE": "Page not found",
       "INDEX_OUT_OF_RANGE": "Index out off range",
@@ -74,7 +74,8 @@
       "VOLUME_OUT_OF_RANGE": "Volume must be between {{volMin}} et {{volMax}}",
       "MODE_INVALID": "Invalid mode",
       "LIMIT_OUT_OF_RANGE": "Limit must be between {{min}} and {{max}}",
-      "QUEUE_EMPTY": "Queue is empty"
+      "QUEUE_EMPTY": "Queue is empty",
+      "USER_NOT_IN_SAME_VOICE": "You are not in the same voice channel than the bot"
     },
     "PLAY": {
       "RECHERCHE": "Recherche ...",
@@ -89,6 +90,7 @@
     "REMOVE": "Delete {{title}} from the queue",
     "SKIP": "Skip the current song",
     "STOP": "Stop the music",
-    "VOLUME": "Volume set to {{volume}}%"
+    "SET_VOLUME": "Volume set to {{volume}}%",
+    "GET_VOLUME": "Volume : {{volume}}%"
   }
 }

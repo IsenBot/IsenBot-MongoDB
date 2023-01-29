@@ -96,6 +96,10 @@ class Queue extends EventEmitter {
         this.actualResource?.volume?.setVolume(volume / 100);
     }
 
+    getVolume() {
+        return this.volume;
+    }
+
     stop() {
         this.playing = false;
         this.actualResource = null;
