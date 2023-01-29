@@ -7,6 +7,7 @@ const YouTube = require('youtube-sr').default;
 const twitch = require('twitch-m3u8');
 const Queue = require('./Queue');
 const TwitchApi = require('./TwitchApi');
+const { isUrl } = require('../../utility/Function');
 class Player extends EventEmitter {
     constructor(client) {
         super();
@@ -31,20 +32,42 @@ class Player extends EventEmitter {
     }
 
     async searchYoutubeTrack(query, limit = 1) {
-        const search = await YouTube.search(query, { type: 'video', limit });
+
+        if (!isUrl(query)) query = `https://www.youtube.com/watch?v=${query}`;
+
+        const search = await YouTube.getVideo(query, { type: 'video', limit });
 
         if (search.length === 0) return null;
 
         return {
-            title: search[0].title || 'No title',
-            channelTitle: search[0].channel?.name,
-            url: search[0].url,
+            title: search.title || 'No title',
+            channelTitle: search.channel?.name,
+            url: search.url,
             type: 'youtube',
-            thumbnail: search[0].thumbnail?.url,
-            avatarUrl: search[0].channel?.icon?.url,
-            duration: search[0].duration,
-            description: search[0].description,
+            thumbnail: search.thumbnail?.url,
+            avatarUrl: search.channel?.icon?.url,
+            duration: search.duration,
+            description: search.description,
         };
+    }
+
+    async searchYoutubePlaylist(id) {
+        const search = await YouTube.getPlaylist(id, { fetchAll: true });
+
+        if (search.length === 0) return null;
+
+        return search.videos.map((video) => {
+            return {
+                title: video.title || 'No title',
+                channelTitle: video.channel?.name,
+                url: video.url,
+                type: 'youtube',
+                thumbnail: video.thumbnail?.url,
+                avatarUrl: video.channel?.icon?.url,
+                duration: video.duration,
+                description: video.description,
+            };
+        });
     }
 
     async searchTwitchStreamTrack(username) {

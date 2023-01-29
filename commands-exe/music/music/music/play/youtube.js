@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { checkUserChannel } = require('../../../../../utility/Function');
+const { checkUserChannel, isUrl } = require('../../../../../utility/Function');
 
-// TODO verify for youtube playlist
 module.exports = async (interaction) => {
 
     const check = await checkUserChannel(interaction);
@@ -14,26 +13,45 @@ module.exports = async (interaction) => {
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
-    const channel = interaction.member.voice.channel;
+    queue.connect(interaction.member.voice.channel);
 
-    if (!channel) return interaction.reply({ content: await interaction.translate('music/music:exe:error:user_not_in_voice'), ephemeral: true });
+    let track = null;
 
-    queue.connect(channel);
+    if (isUrl(id)) {
+        const url = new URL(id);
 
-    const track = await interaction.client.player.searchYoutubeTrack(id);
+        if (url.hostname === 'www.youtube.com' || url.hostname === 'youtube.com') {
 
-    if (!track) return interaction.reply({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
+            if (url.pathname === '/playlist') {
+                const playlistId = url.searchParams.get('list');
+                track = await interaction.client.player.searchYoutubePlaylist(playlistId);
+            } else {
+                track = [await interaction.client.player.searchYoutubeTrack(id)];
+            }
+        }
+    } else {
+        track = [await interaction.client.player.searchYoutubeTrack(id)];
+    }
+
+    if (!track) return interaction.editReply({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')
-        .setImage(track.thumbnail)
-        .setDescription(await interaction.translate('music/music:exe:play:add_track_to_queue', { title: track.title }) + ` by [${track.channelTitle}](${track.url} "The best youtuber ever")`);
+        .setThumbnail(track[0].thumbnail);
+
+    if (track.length > 1) {
+        embed.setDescription(await interaction.translate('music/music:exe:play:add_tracks_to_queue', { title: track[0].title, nb: track.length }));
+    } else {
+        embed.setDescription(await interaction.translate('music/music:exe:play:add_track_to_queue', { title: track[0].title }));
+    }
 
     const result = await interaction.followUp({ embeds: [embed] });
 
-    track.discordMessageUrl = result.url;
+    track.forEach((t) => {
+        t.discordMessageUrl = result.url;
+    });
 
-    queue.addTrack(track);
+    queue.addTracks(track);
 
     if (!queue.playing) {
         queue.play();

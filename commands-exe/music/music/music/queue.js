@@ -18,7 +18,7 @@ module.exports = async (interaction) => {
 
     if (actualTrack) {
         const nomplaying = new EmbedBuilder()
-            .setTitle(await interaction.translate('music:music/exe:now_playing'))
+            .setTitle(await interaction.translate('music/music:exe:now_playing'))
             .setThumbnail(actualTrack.thumbnail)
             .setDescription(`**${actualTrack.type}** - ${actualTrack.title} - **${actualTrack.channelTitle}**`)
             .setTimestamp(new Date());

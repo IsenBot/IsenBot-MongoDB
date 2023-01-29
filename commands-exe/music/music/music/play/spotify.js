@@ -12,11 +12,13 @@ module.exports = async (interaction) => {
 
     let query = interaction.options.getString('query', true);
 
-    const member = interaction.member;
-
-    const voiceChannel = member.voice.channel;
+    queue.connect(interaction.member.voice.channel);
 
     await interaction.reply({ content: await interaction.translate('music/music:exe:play:recherche'), ephemeral: true });
+
+    const tracks = [];
+
+    let result = null;
 
     if (isUrl(query)) {
 
@@ -33,8 +35,8 @@ module.exports = async (interaction) => {
                     const ytTrack = await client.player.searchYoutubeTrack(`${data.name} ${data.artists[0].name}`);
                     if (ytTrack) {
                         ytTrack.type = 'spotify';
-                        queue.addTrack(ytTrack);
-                        await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack?.title }), ephemeral: false });
+                        tracks.push(ytTrack);
+                        result = await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack?.title }), ephemeral: false });
                     } else {
                         return interaction.followUp({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
                     }
@@ -43,7 +45,6 @@ module.exports = async (interaction) => {
             case 'album':
             case 'playlist':
                 if (data.tracks) {
-                    const listTrack = [];
                     await interaction.editReply({ content: await interaction.translate('music/music:exe:play:loading') });
                     // eslint-disable-next-line prefer-const
                     for (let [index, value] of data.tracks.items.entries()) {
@@ -53,12 +54,11 @@ module.exports = async (interaction) => {
                             const ytTrack = await client.player.searchYoutubeTrack(`${value.name} ${value.artists[0].name}`);
                             if (ytTrack) {
                                 ytTrack.type = 'spotify';
-                                listTrack.push(ytTrack);
+                                tracks.push(ytTrack);
                             }
                         }
                     }
-                    queue.addTracks(listTrack);
-                    await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_tracks_to_queue', { title: data.name, nb: listTrack.length }), ephemeral: false });
+                    result = await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_tracks_to_queue', { title: data.name, nb: tracks.length }), ephemeral: false });
                 }
                 break;
             }
@@ -74,12 +74,16 @@ module.exports = async (interaction) => {
             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
             if (!ytTrack) return interaction.followUp({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });
             ytTrack.type = 'spotify';
-            queue.addTrack(ytTrack);
-            await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack.title }), ephemeral: false });
+            tracks.push(ytTrack);
+            result = await interaction.followUp({ content: await interaction.translate('music/music:exe:play:add_track_to_queue', { title: ytTrack.title }), ephemeral: false });
         }
     }
 
-    queue.connect(voiceChannel);
+    tracks.forEach((track) => {
+        track.discordMessageUrl = result.url;
+    });
+
+    queue.addTracks(tracks);
 
     if (!queue.playing) {
         setTimeout(() => {
