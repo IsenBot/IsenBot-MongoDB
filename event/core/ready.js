@@ -159,6 +159,9 @@ module.exports = {
             type: 'success',
         });
 
+        await client.player.twitchApi.fetchToken();
+        await client.player.spotifyClient.fetchToken();
+
         await checkNewGuild(client);
 
         log({
@@ -166,6 +169,7 @@ module.exports = {
             headers: ['Ready', 'Logger'],
             type: 'event',
         });
+
         // Initialise the guild loggers
         await client.createLoggers();
         log({
@@ -173,6 +177,7 @@ module.exports = {
             headers: ['Ready', 'Logger'],
             type: 'success',
         });
+
         /*
         // cache all guild and message where we look for a reaction
         log({

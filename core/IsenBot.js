@@ -25,7 +25,7 @@ class IsenBot extends Client {
         this.mongodb = new MongoClient(this.config.database.uri);
         this.guildsDB = {};
         // Create the music player
-        this.player = undefined;
+        this.player = new Player(this);
         // Store the blaguesAPI token and the last joke
         this.blagues = new BlaguesAPI(this.config.apiKeys.blagues);
         // The root path of the command exe
@@ -50,7 +50,6 @@ class IsenBot extends Client {
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
-        client.player = await Player.createPlayer(client);
         return client;
     }
 

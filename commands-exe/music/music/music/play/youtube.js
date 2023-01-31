@@ -26,11 +26,11 @@ module.exports = async (interaction) => {
                 const playlistId = url.searchParams.get('list');
                 track = await interaction.client.player.searchYoutubePlaylist(playlistId);
             } else {
-                track = [await interaction.client.player.searchYoutubeTrack(id)];
+                track = [await interaction.client.player.searchYoutubeId(id)];
             }
         }
     } else {
-        track = [await interaction.client.player.searchYoutubeTrack(id)];
+        track = [await interaction.client.player.searchYoutubeId(id)];
     }
 
     if (!track) return interaction.editReply({ content: await interaction.translate('music/music:exe:error:404_result'), ephemeral: true });

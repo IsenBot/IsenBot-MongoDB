@@ -17,13 +17,6 @@ class Player extends EventEmitter {
         this.queue = new Collection();
     }
 
-    static async createPlayer(client) {
-        const player = new this(client);
-        await player.twitchApi.fetchToken();
-        await player.spotifyClient.fetchToken();
-        return player;
-    }
-
     createResource(resource) {
         return createAudioResource(resource, {
             inlineVolume: true,
@@ -32,6 +25,23 @@ class Player extends EventEmitter {
     }
 
     async searchYoutubeTrack(query, limit = 1) {
+        const search = await YouTube.search(query, { type: 'video', limit });
+
+        if (search.length === 0) return null;
+
+        return {
+            title: search[0].title || 'No title',
+            channelTitle: search[0].channel?.name,
+            url: search[0].url,
+            type: 'youtube',
+            thumbnail: search[0].thumbnail?.url,
+            avatarUrl: search[0].channel?.icon?.url,
+            duration: search[0].duration,
+            description: search[0].description,
+        };
+    }
+
+    async searchYoutubeId(query, limit = 1) {
 
         if (!isUrl(query)) query = `https://www.youtube.com/watch?v=${query}`;
 

@@ -49,7 +49,7 @@ module.exports = {
             spotifySecret: process.env.SPOTIFY_CLIENT_SECRET,
         },
         ytdl_options: {
-            quality: 'highestaudio',
+            quality: 'lowestaudio',
             filter: 'audioonly',
 
             // Do not modify

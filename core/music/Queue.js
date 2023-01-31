@@ -19,7 +19,7 @@ class Queue extends EventEmitter {
         this.player = player;
 
         this.AudioPlayer.on('stateChange', (oldState, newState) => {
-            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
+            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle && this.queue.length > 0) {
                 if (this.loop === 0) {
                     if (this.history.length > 5) {
                         this.history.pop();
