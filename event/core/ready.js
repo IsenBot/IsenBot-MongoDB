@@ -12,7 +12,7 @@ async function startDB(client) {
         await client.mongodb.db(client.config.database.databaseName).command({ ping: 1 });
     } catch (e) {
         client.log({
-            textContent: 'Database start error ...',
+            textContent: formatLog('Database start error ...', { 'Error message': e }),
             headers: ['Ready', 'MongoDB'],
             type: 'error',
         });
