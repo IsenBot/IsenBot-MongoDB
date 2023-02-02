@@ -9,13 +9,13 @@ Object.defineProperties(BaseInteraction.prototype, {
         },
     },
     translate: {
-        value: async function(messageComponentPath, args = {}) {
-            return await this.client.translate(messageComponentPath, args, this.locale);
+        value: function(messageComponentPath, args = {}) {
+            return this.client.translate(messageComponentPath, args, this.locale);
         },
     },
     getLocales: {
-        value: async function(messageComponentPath) {
-            return await this.client.getLocales(messageComponentPath);
+        value: function(messageComponentPath) {
+            return this.client.getLocales(messageComponentPath);
         },
     },
     log: {
@@ -55,7 +55,6 @@ async function main() {
     });
 
     exports.client = client;
-
     // Some logs
     client.log({
         textContent: startLogo,
