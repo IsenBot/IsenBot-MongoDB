@@ -6,7 +6,8 @@ module.exports = {
         uri: process.env.DATABASE_URI,
         databaseName: 'guildConfiguration',
         guildTableName: 'guild',
-        rolesReactionsTableName: 'roleReactMessage',
+        rolesReactionsTableName: 'roleReact',
+        rolesReactionsConfigTableName: 'roleReactConfig',
     },
     // Config for the log on discord and console
     log : {
