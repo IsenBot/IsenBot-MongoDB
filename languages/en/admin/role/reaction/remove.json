@@ -1,0 +1,21 @@
+{
+  "BUILDER": {
+    "NAME": "remove",
+    "DESCRIPTION": "Remove one role reaction on a message",
+    "REACTION": {
+      "NAME": "reaction",
+      "DESCRIPTION": "The reaction, of the role react, to remove"
+    },
+    "CHANNEL": {
+      "NAME": "channel",
+      "DESCRIPTION": "The channel of the message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "The id of the message on which to remove the role react"
+    }
+  },
+  "SUCCESS": "The reaction `{{emoji}}` dont give anymore the role.s **{{roles}}** on the message {{link}}",
+  "ERROR": "Sorry, but I can't remove the reaction `{{emoji}}` on the message {{link}}",
+  "NOT_USE": "The reaction `{{emoji}}` doesn't gave any role on the message {{link}}"
+}
