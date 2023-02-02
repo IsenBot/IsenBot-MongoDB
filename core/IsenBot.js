@@ -122,35 +122,11 @@ class IsenBot extends Client {
         await guildsCollection.updateOne(query, update);
     }
     // Execute a command file.
-    executeCommand(interaction, command) {
+    executeCommand(interaction, category) {
         const commandPath = Object.assign({}, this.commandsExePath);
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
-        commandPath.dir = path.join(commandPath.root, command.category);
-        command = command.data;
-        if (subCommand || subCommandGroup) {
-            commandPath.dir = path.join(commandPath.dir, command.name);
-            if (subCommandGroup) {
-                for (const option in Object.values(command.options)) {
-                    if (option?.name === subCommandGroup) {
-                        command = option;
-                        commandPath.dir = path.join(commandPath.dir, command.name);
-                        break;
-                    }
-                }
-            }
-            if (subCommand) {
-                for (const option in Object.values(command.options)) {
-                    if (option?.name === subCommand) {
-                        commandPath.name = option.name;
-                        break;
-                    }
-                }
-            }
-
-        } else {
-            commandPath.name = command.name;
-        }
+        commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
         return (require(path.format(commandPath)))(interaction);
     }
     // Load the command in the client.
@@ -175,7 +151,7 @@ class IsenBot extends Client {
                 });
                 // Get the command builder file
                 const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
-                this.commands.set(command.data.name, command);
+                this.commands.set(command.data.name, command.category);
             }
         }
         this.log({
@@ -222,7 +198,6 @@ class IsenBot extends Client {
 
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
     replaceVariable(string, variablesObject) {
-        // TODO : Put the wrapper config in the config ?
         const leftWrapper = '{{';
         const rightWrapper = '}}';
         const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
