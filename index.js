@@ -53,6 +53,17 @@ async function main() {
             GatewayIntentBits.GuildMessageReactions,
         ],
     });
+    function gracefullyShutdown(signal) {
+        console.info(`${signal} signal received`);
+        console.info('Close database connection');
+        client.mongodb.close();
+        console.info('Destroy discord client');
+        client.destroy();
+        console.info('Exit the process');
+        process.exit();
+    }
+    process.on('SIGTERM', gracefullyShutdown);
+    process.on('SIGINT', gracefullyShutdown);
 
     exports.client = client;
     // Some logs
