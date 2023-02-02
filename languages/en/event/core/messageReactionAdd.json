@@ -1,0 +1,5 @@
+{
+  "ROLE_REACT": {
+    "ROLE_ADDED": "You just received the roles `{{roles}}` on the server **{{guild}}**"
+  }
+}
