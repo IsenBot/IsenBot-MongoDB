@@ -1,4 +1,4 @@
-const { getMessageFromId } = require('../../../../utility/commandOptions');
+const { getMessageFromId } = require('../../../../utility/commandUtility');
 const { removeRoleReactionByMessage } = require('../../../../utility/database');
 
 

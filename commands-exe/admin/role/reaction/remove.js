@@ -1,5 +1,5 @@
 const { removeRoleReaction } = require('../../../../utility/database');
-const { getMessageFromId } = require('../../../../utility/commandOptions');
+const { getMessageFromId } = require('../../../../utility/commandUtility');
 const { formatLog } = require('../../../../utility/Log');
 module.exports = async function(interaction) {
     await interaction.deferReply({ ephemeral: true });
