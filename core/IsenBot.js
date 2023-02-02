@@ -213,11 +213,11 @@ class IsenBot extends Client {
 
     _parseMessageComponentPath(messageComponentPath) {
         const regex = /:(?=\w)/g;
-        messageComponentPath = messageComponentPath.toUpperCase().split(regex);
+        messageComponentPath = messageComponentPath.split(regex);
         if (messageComponentPath.length < 2) {
             throw 'Not a path';
         }
-        return messageComponentPath;
+        return messageComponentPath.map((component, index) => index === 0 ? component : component.toUpperCase());
     }
 
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
@@ -230,8 +230,7 @@ class IsenBot extends Client {
     }
 
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
-    // TODO : test if it work
-    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
+    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name, allowEmpty = false) {
         messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
         const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
@@ -261,6 +260,8 @@ class IsenBot extends Client {
         }
         if (component) {
             return this.replaceVariable(component, args);
+        } else if ((typeof component === 'string' || component instanceof String) && allowEmpty) {
+            return component;
         }
         this.log({
             textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
@@ -270,11 +271,11 @@ class IsenBot extends Client {
         return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
     }
 
-    getLocales(messageComponentPath) {
+    getLocales(messageComponentPath, allowEmpty = true) {
         const localesMessageObject = {};
         const languagesObj = this.getLanguages();
         for (const [key, value] of Object.entries(languagesObj)) {
-            localesMessageObject[key] = this.translate(messageComponentPath, {}, value);
+            localesMessageObject[key] = this.translate(messageComponentPath, {}, value, allowEmpty);
         }
         return localesMessageObject;
     }
