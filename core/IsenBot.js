@@ -13,6 +13,7 @@ const fs = require('node:fs');
 // TODO : cache guildLanguage so we dont fetch it all the time
 
 class IsenBot extends Client {
+    #database;
     constructor(options) {
         super(options);
         // Store the config of the bot like token.
@@ -22,6 +23,7 @@ class IsenBot extends Client {
             .setThumbnail(this.config.embed.thumbnail);
         // Client to connect to the database.
         this.mongodb = new MongoClient(this.config.database.uri);
+        this.#database = this.mongodb.db(this.config.database.databaseName);
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {
@@ -49,12 +51,18 @@ class IsenBot extends Client {
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
+        await client.mongodb.connect();
         return client;
     }
 
     get guildsCollection() {
-        const database = this.mongodb.db(this.config.database.databaseName);
-        return database.collection(this.config.database.guildTableName);
+        return this.#database.collection(this.config.database.guildTableName);
+    }
+    get roleReactCollection() {
+        return this.#database.collection(this.config.database.rolesReactionsTableName);
+    }
+    get roleReactConfigCollection() {
+        return this.#database.collection(this.config.database.rolesReactionsConfigTableName);
     }
 
     log = (...options) => {
@@ -87,48 +95,31 @@ class IsenBot extends Client {
 
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
-        const mongodb = this.mongodb;
-        try {
-            await mongodb.connect();
-
-            const guildsCollection = this.guildsCollection;
-            const query = {};
-            const projection = { id_ : 1, logChannelId : 1 };
-
-            const guildsData = guildsCollection.find(query).project(projection);
-
-            for await (const guildData of guildsData) {
-                const guild = this.guilds.cache.get(guildData['_id']);
-                if (!guild) {
-                    // TODO : Maybe delete the guild from the database if the client cant access it anymore
-                    return;
-                }
-                if (!(guild.logger)) {
-                    guild.logger = await Logger.create(this, { guild, logChannelId: guildData.logChannelId });
-                }
-                guild.logger.emit('ready');
+        const guildsCollection = this.guildsCollection;
+        const query = {};
+        const projection = { id_: 1, logChannelId: 1 };
+        const guildsData = guildsCollection.find(query).project(projection);
+        for await (const guildData of guildsData) {
+            const guild = this.guilds.cache.get(guildData['_id']);
+            if (!guild) {
+                // TODO : Maybe delete the guild from the database if the client cant access it anymore
+                return;
             }
-        } finally {
-            // Ensures that the client will close when you finish/error
-            await mongodb.close();
+            if (!(guild.logger)) {
+                guild.logger = await Logger.create(this, { guild, logChannelId: guildData.logChannelId });
+            }
+            guild.logger.emit('ready');
         }
     }
     // Get the logChannel channel from the database for the given guild and then return the fetched logChannel on discord.
     // Remove the logChannel from the logger and the database for the given guild.
     async removeLogChannel(guild) {
         this.guild.logger.removeLogChannel();
-        const mongodb = this.mongodb;
-        try {
-            await mongodb.connect();
-            // Set the logChannelId for the guild to null in the database.
-            const guildsCollection = this.guildsCollection;
-            const query = { _id: guild.id };
-            const update = { logChannelId: null };
-            await guildsCollection.updateOne(query, update);
-
-        } finally {
-            await mongodb.close();
-        }
+        // Set the logChannelId for the guild to null in the database.
+        const guildsCollection = this.guildsCollection;
+        const query = { _id: guild.id };
+        const update = { logChannelId: null };
+        await guildsCollection.updateOne(query, update);
     }
     // Execute a command file.
     executeCommand(interaction, command) {

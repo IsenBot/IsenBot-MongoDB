@@ -2,41 +2,30 @@ const { formatLog } = require('../../utility/Log');
 const { GuildSchema } = require('../../utility/Schema');
 
 async function checkNewGuild(client) {
-    try {
-        await client.mongodb.connect();
-
-        const guildsCollection = client.guildsCollection;
-        const query = {};
-        const projection = { id_ : 1 };
-
-        const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
-
-        let change = false;
-
-        for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
-            if (!guildsId.includes(guild.id)) {
-                change = true;
-                client.log({
-                    textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
-                    headers: 'Ready',
-                    type: 'log',
-                });
-                await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
-            }
-        }
-        if (!change) {
+    const guildsCollection = client.guildsCollection;
+    const query = {};
+    const projection = { id_: 1 };
+    const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
+    let change = false;
+    for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
+        if (!guildsId.includes(guild.id)) {
+            change = true;
             client.log({
-                textContent: 'No new guild detected',
+                textContent: formatLog('New guild detected', { 'Id': guild.id, 'Name': guild.name }),
                 headers: 'Ready',
                 type: 'log',
             });
+            await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
         }
-
-    } finally {
-        await client.mongodb.close();
+    }
+    if (!change) {
+        client.log({
+            textContent: 'No new guild detected',
+            headers: 'Ready',
+            type: 'log',
+        });
     }
 }
-
 function getUrl(guildId, channelId = undefined, messageId = undefined) {
     const baseUrl = 'https://discord.com/channels/';
     let link = baseUrl + guildId;
@@ -59,53 +48,53 @@ async function cacheRoleReactMessage(client) {
         headers: ['Ready', 'Cache', 'RoleReact'],
         type: 'log',
     });
-    try {
-        await client.mongodb.connect();
-
-        const database = client.mongodb.db(client.config.database.databaseName);
-        const rolesReactionsMessages = database.collection(client.config.database.rolesReactionsTableName);
-
-        const query = {};
-        const projection = { id_ : 1, channelId : 1, guildId : 1 };
-
-        const guildsRolesReactions = await rolesReactionsMessages.find(query).project(projection);
-
-        for await (const guildRoleReactions of guildsRolesReactions) {
-            const messageId = guildRoleReactions._id;
-            const channelId = guildRoleReactions.channelId;
-            const guildId = guildRoleReactions.guildId;
-
+    // const database = client.mongodb.db(client.config.database.databaseName);
+    // const rolesReactionsMessages = database.collection(client.config.database.rolesReactionsTableName);
+    const rolesReactionsMessages = client.roleReactCollection;
+    const query = {};
+    const projection = { id_: 1, channelId: 1, guildId: 1 };
+    const guildsRolesReactions = await rolesReactionsMessages.find(query).project(projection);
+    for await (const guildRoleReactions of guildsRolesReactions) {
+        const messageId = guildRoleReactions._id;
+        const channelId = guildRoleReactions.channelId;
+        const guildId = guildRoleReactions.guildId;
+        try {
+            const channel = await client.channels.fetch(channelId);
             try {
-                const channel = await client.channels.fetch(channelId);
-                try {
-                    const message = await channel.messages.fetch(messageId);
-                    client.log({
-                        textContent: formatLog('Role reaction\'s message fetched', { 'MessageId' : messageId, 'GuildId' : guildId }),
-                        headers: ['Ready', 'Cache', 'RoleReact'],
-                        type: 'success',
-                        url: message.url,
-                    });
-                } catch (e) {
-                    // TODO : If the error code says that the message does not exist, delete the role react
-                    client.log({
-                        textContent: formatLog('Cant fetch the message for the wanted role reaction', { 'MessageId' : messageId, 'GuildId' : guildId }),
-                        headers: ['Ready', 'Cache', 'RoleReact'],
-                        type: 'error',
-                        url: getUrl(guildId, channelId, messageId),
-                    });
-                }
-            } catch (e) {
-                // TODO : If the error code says that the channel does not exist, delete all the role react of the channel
+                const message = await channel.messages.fetch(messageId);
                 client.log({
-                    textContent: formatLog('Cant fetch the channel for the wanted role reaction', { 'ChannelId' : channelId, 'GuildId' : guildId }),
+                    textContent: formatLog('Role reaction\'s message fetched', {
+                        'MessageId': messageId,
+                        'GuildId': guildId,
+                    }),
+                    headers: ['Ready', 'Cache', 'RoleReact'],
+                    type: 'success',
+                    url: message.url,
+                });
+            } catch (e) {
+                // TODO : If the error code says that the message does not exist, delete the role react
+                client.log({
+                    textContent: formatLog('Cant fetch the message for the wanted role reaction', {
+                        'MessageId': messageId,
+                        'GuildId': guildId,
+                    }),
                     headers: ['Ready', 'Cache', 'RoleReact'],
                     type: 'error',
                     url: getUrl(guildId, channelId, messageId),
                 });
             }
+        } catch (e) {
+            // TODO : If the error code says that the channel does not exist, delete all the role react of the channel
+            client.log({
+                textContent: formatLog('Cant fetch the channel for the wanted role reaction', {
+                    'ChannelId': channelId,
+                    'GuildId': guildId,
+                }),
+                headers: ['Ready', 'Cache', 'RoleReact'],
+                type: 'error',
+                url: getUrl(guildId, channelId, messageId),
+            });
         }
-    } finally {
-        await client.mongodb.close();
     }
     client.log({
         textContent: '... All message cached for role reaction',
