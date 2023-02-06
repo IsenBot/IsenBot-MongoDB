@@ -1,0 +1,5 @@
+{
+  "ROLE_REACT": {
+    "ROLE_REMOVED": "Vous avez perdu le rôle `{{roles}}` sur le serveur **{{guild}}**"
+  }
+}

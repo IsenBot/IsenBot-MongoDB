@@ -9,23 +9,18 @@ Object.defineProperties(BaseInteraction.prototype, {
         },
     },
     translate: {
-        value: async function(messageComponentPath, args = {}) {
-            return await this.client.translate(messageComponentPath, args, this.locale);
+        value: function(messageComponentPath, args = {}) {
+            return this.client.translate(messageComponentPath, args, this.locale);
         },
     },
     getLocales: {
-        value: async function(messageComponentPath) {
-            return await this.client.getLocales(messageComponentPath);
+        value: function(messageComponentPath) {
+            return this.client.getLocales(messageComponentPath);
         },
     },
     log: {
         value: function(...param) {
             return this.logger?.log(...param);
-        },
-    },
-    mongodb: {
-        get: async function() {
-            return await this.client.guildDB(this.guildId);
         },
     },
 });
@@ -58,9 +53,19 @@ async function main() {
             GatewayIntentBits.GuildMessageReactions,
         ],
     });
+    function gracefullyShutdown(signal) {
+        console.info(`${signal} signal received`);
+        console.info('Close database connection');
+        client.mongodb.close();
+        console.info('Destroy discord client');
+        client.destroy();
+        console.info('Exit the process');
+        process.exit();
+    }
+    process.on('SIGTERM', gracefullyShutdown);
+    process.on('SIGINT', gracefullyShutdown);
 
     exports.client = client;
-
     // Some logs
     client.log({
         textContent: startLogo,

@@ -1,5 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const { formatLog } = require('../../utility/Log');
+const { HoursSchema } = require('../../utility/Schema');
 
 module.exports = async function(interaction) {
     const hoursSelect = new StringSelectMenuBuilder()
@@ -47,18 +48,12 @@ module.exports = async function(interaction) {
     await interaction.reply({ embeds: [embed], components:[row, row2, row3] });
 
     const reply = await interaction.fetchReply();
-    const db = await interaction.mongodb;
-    db.collection('isen/hours').insertOne(
-        {
-            messageId: reply.id,
-            userId: interaction.user.id,
-            author: interaction.user.username,
-            minutes: 0,
-            hours: 0,
-            title: undefined,
-            description: undefined,
-            added: new Date().toLocaleString('fr-FR'),
-        });
+    // Add data to database
+    await interaction.client.hours.insertOne(new HoursSchema({
+        messageId: reply.id,
+        userId: interaction.user.id,
+        author: interaction.user.username,
+    }));
 
     interaction.log({
         textContent: formatLog('', {}),

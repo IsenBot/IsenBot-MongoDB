@@ -1,0 +1,23 @@
+{
+  "BUILDER": {
+    "NAME": "nouveau",
+    "DESCRIPTION": "Crée un nouveau message avec un rôle réaction dessus",
+    "REACTION": {
+      "NAME": "réaction",
+      "DESCRIPTION": "La réaction qui donne le rôle"
+    },
+    "ROLE": {
+      "NAME": "rôle",
+      "DESCRIPTION": "Le rôle à donner"
+    },
+    "CHANNEL": {
+      "NAME": "salon",
+      "DESCRIPTION": "Le salon sur lequel envoyer le message"
+    }
+  },
+  "MESSAGE": {
+    "MAIN_CONTENT": "Réagissez pour obtenir un role :\n\n",
+    "LIST_ELEMENT": "\t\t{{reaction}}: {{role}}\n"
+  },
+  "REPLY": "La réaction `{{emoji}}` donne maintenant le.s rôle.s **{{role}}** sur le message {{link}}"
+}
