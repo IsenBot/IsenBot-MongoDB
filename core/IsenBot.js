@@ -50,22 +50,17 @@ class IsenBot extends Client {
 
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
+
+        this.guildsCollection = this.#database.collection(this.config.database.guildTableName);
+        this.roleReactCollection = this.#database.collection(this.config.database.rolesReactionsTableName);
+        this.roleReactConfigCollection = this.#database.collection(this.config.database.rolesReactionsConfigTableName);
+        this.hours = this.#database.collection(this.config.database.hoursTableName);
     }
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
         await client.mongodb.connect();
         return client;
-    }
-
-    get guildsCollection() {
-        return this.#database.collection(this.config.database.guildTableName);
-    }
-    get roleReactCollection() {
-        return this.#database.collection(this.config.database.rolesReactionsTableName);
-    }
-    get roleReactConfigCollection() {
-        return this.#database.collection(this.config.database.rolesReactionsConfigTableName);
     }
 
     log = (...options) => {
@@ -101,7 +96,9 @@ class IsenBot extends Client {
         const guildsCollection = this.guildsCollection;
         const query = {};
         const projection = { id_: 1, logChannelId: 1 };
+
         const guildsData = guildsCollection.find(query).project(projection);
+
         for await (const guildData of guildsData) {
             const guild = this.guilds.cache.get(guildData['_id']);
             if (!guild) {
