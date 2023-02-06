@@ -28,7 +28,6 @@ module.exports = async function(interaction) {
         await message.react(emoji).catch(err => {message.delete; throw err;});
         await addRoleReaction(interaction.client, message, emoji, role.id, false);
         await interaction.editReply(interaction.translate('admin/role/reaction/new:REPLY', { emoji:emoji, role:role.toString(), link: message.url }));
-        interaction.client.save();
     } catch (e) {
         throw fetchError(e);
     }

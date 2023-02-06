@@ -5,13 +5,7 @@ const { initLanguage } = require('../../utility/commandBuilder');
 module.exports = {
     category: path.basename(__dirname),
     data: initLanguage(new SlashCommandBuilder()
-        .setName('invite')
-        .setDescription('test')
-        .addChannelOption((channel) =>
-            channel
-                .setName('channelinput')
-                .setDescription('test')
-                .setRequired(false),
-        )
-    , 'CORE'),
+        .setName('gethours')
+        .setDescription('Get a CSV file of all registered hours')
+    , 'ISEN'),
 };

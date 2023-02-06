@@ -8,6 +8,7 @@ module.exports = {
         guildTableName: 'guild',
         rolesReactionsTableName: 'roleReact',
         rolesReactionsConfigTableName: 'roleReactConfig',
+        hoursTableName: 'hours',
     },
     // Config for the log on discord and console
     log : {
@@ -41,5 +42,5 @@ module.exports = {
         color: '#e40613',
         thumbnail: 'https://upload.wikimedia.org/wikipedia/fr/f/f0/Yncrea_BM_ISEN-_horizontal-1.jpg',
     },
-    dontDeploy: []
+    dontDeploy:[],
 };

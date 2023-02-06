@@ -5,13 +5,7 @@ const { initLanguage } = require('../../utility/commandBuilder');
 module.exports = {
     category: path.basename(__dirname),
     data: initLanguage(new SlashCommandBuilder()
-        .setName('invite')
-        .setDescription('test')
-        .addChannelOption((channel) =>
-            channel
-                .setName('channelinput')
-                .setDescription('test')
-                .setRequired(false),
-        )
-    , 'CORE'),
+        .setName('hours')
+        .setDescription('Log & track your club hours at isen')
+    , 'ISEN'),
 };

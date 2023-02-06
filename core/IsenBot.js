@@ -40,6 +40,9 @@ class IsenBot extends Client {
         };
         this.commandsBuilderPath = path.resolve(__dirname, '../commands-builders/');
         this.eventsPath = path.resolve(__dirname, '../event');
+        this.buttonPath = path.resolve(__dirname, '../interactions/button');
+        this.selectPath = path.resolve(__dirname, '../interactions/select');
+        this.modalPath = path.resolve(__dirname, '../interactions/modal');
         // Contain all the command of the bot
         this.commands = new Collection();
         // The client's logger
@@ -127,6 +130,27 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a button action
+    executeButton(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.buttonPath, interaction.customId);
+        console.log(commandPath);
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a select interaction
+    executeSelect(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.selectPath, interaction.customId);
+        console.log(commandPath);
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Execute a modal submission
+    executeModal(interaction) {
+        const commandPath = {};
+        commandPath.dir = path.join(this.modalPath, interaction.customId);
+        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Load the command in the client.

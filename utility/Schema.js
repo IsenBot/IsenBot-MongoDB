@@ -28,7 +28,23 @@ class RoleReactionSchema {
     }
 }
 
+class HoursSchema {
+    constructor(fields) {
+        const { messageId, guildId, userId, author, minutes, hours, title, description, added } = fields;
+        this.messageId = messageId;
+        this.guildId = guildId ?? null;
+        this.userId = userId ?? null;
+        this.author = author ?? null;
+        this.title = title ?? null;
+        this.description = description ?? null;
+        this.minutes = minutes ?? 0;
+        this.hours = hours ?? 0;
+        this.added = added ?? new Date().toLocaleString('fr-FR');
+    }
+}
+
 module.exports = {
     GuildSchema,
     RoleReactionSchema,
+    HoursSchema,
 };
