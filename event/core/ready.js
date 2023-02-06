@@ -4,8 +4,9 @@ const { GuildSchema } = require('../../utility/Schema');
 async function checkNewGuild(client) {
     const guildsCollection = client.guildsCollection;
     const query = {};
-    const projection = { id_: 1 };
+    const projection = { _id: 1 };
     const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
+
     let change = false;
     for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
         if (!guildsId.includes(guild.id)) {
@@ -26,6 +27,7 @@ async function checkNewGuild(client) {
         });
     }
 }
+
 function getUrl(guildId, channelId = undefined, messageId = undefined) {
     const baseUrl = 'https://discord.com/channels/';
     let link = baseUrl + guildId;
@@ -48,14 +50,12 @@ async function cacheRoleReactMessage(client) {
         headers: ['Ready', 'Cache', 'RoleReact'],
         type: 'log',
     });
-    // const database = client.mongodb.db(client.config.database.databaseName);
-    // const rolesReactionsMessages = database.collection(client.config.database.rolesReactionsTableName);
     const rolesReactionsMessages = client.roleReactCollection;
     const query = {};
-    const projection = { id_: 1, channelId: 1, guildId: 1 };
+    const projection = { _id: 0, messageId:1, channelId: 1, guildId: 1 };
     const guildsRolesReactions = await rolesReactionsMessages.find(query).project(projection);
     for await (const guildRoleReactions of guildsRolesReactions) {
-        const messageId = guildRoleReactions._id;
+        const messageId = guildRoleReactions.messageId;
         const channelId = guildRoleReactions.channelId;
         const guildId = guildRoleReactions.guildId;
         try {
