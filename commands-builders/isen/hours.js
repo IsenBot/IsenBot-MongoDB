@@ -7,5 +7,5 @@ module.exports = {
     data: initLanguage(new SlashCommandBuilder()
         .setName('hours')
         .setDescription('Log & track your club hours at isen')
-    , 'ISEN'),
+    , 'isen'),
 };

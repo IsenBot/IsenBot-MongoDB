@@ -1,0 +1,14 @@
+{
+  "BUILDER": {
+    "NAME": "volume",
+    "DESCRIPTION": "Volume",
+    "VOLUME": {
+      "NAME": "volume",
+      "DESCRIPTION": "Volume | 1 - 100"
+    }
+  },
+  "EXE": {
+    "SET_VOLUME": "Volume set to {{volume}}%",
+    "GET_VOLUME": "Volume : {{volume}}%"
+  }
+}

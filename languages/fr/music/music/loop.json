@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "boucle",
+    "DESCRIPTION": "Mode de lecture en boucle",
+    "MODE": {
+      "NAME": "boucle",
+      "DESCRIPTION": "Mode de boucle"
+    }
+  },
+  "EXE": {
+    "LOOP": "Boucle en mode {{mode}}"
+  }
+}

@@ -47,7 +47,7 @@ class Player extends EventEmitter {
 
         const search = await YouTube.getVideo(query, { type: 'video', limit });
 
-        if (search.length === 0) return null;
+        if (!search) return null;
 
         return {
             title: search.title || 'No title',
@@ -113,6 +113,9 @@ class Player extends EventEmitter {
 
 
     getQueue(guildId) {
+
+        if (!this.queue.has(guildId)) this.createQueue(guildId);
+
         return this.queue.get(guildId);
     }
 

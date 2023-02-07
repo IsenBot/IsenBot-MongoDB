@@ -6,10 +6,11 @@ module.exports = {
         const client = interaction.client;
 
         if (interaction.isAutocomplete()) {
+            const cmd = client.commands.get(interaction.commandName);
 
-            const entry = interaction.options.getFocused();
+            if (!cmd) return;
 
-            await client.commands.get(interaction.commandName)?.handleAutoComplete(interaction, client, entry);
+            await client.handleInteraction(interaction, cmd);
         }
 
 

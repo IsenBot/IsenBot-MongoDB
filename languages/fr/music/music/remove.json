@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "remove",
+    "DESCRIPTION": "Enlever un song de la file",
+    "INDEX": {
+      "NAME": "index",
+      "DESCRIPTION": "l'index du song a enlever"
+    }
+  },
+  "EXE": {
+    "REMOVE": "Suppression de {{title}} de la file"
+  }
+}

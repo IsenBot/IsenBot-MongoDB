@@ -146,6 +146,14 @@ class IsenBot extends Client {
         console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
+
+    async handleInteraction(interaction, category) {
+        const entry = interaction.options.getFocused();
+        const commandPath = Object.assign({}, this.commandsExePath);
+        commandPath.root = path.join(commandPath.root, category, interaction.commandName, 'handleInteraction');
+        return await (require(path.format(commandPath)))(interaction, this, entry);
+    }
+
     // Load the command in the client.
     async loadCommand() {
         this.log({

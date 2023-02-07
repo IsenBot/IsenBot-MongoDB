@@ -1,0 +1,9 @@
+{
+  "BUILDER": {
+    "NAME": "skip",
+    "DESCRIPTION": "Passer le song actuellement en cours"
+  },
+  "EXE": {
+    "SKIP": "Passage au song suivant"
+  }
+}

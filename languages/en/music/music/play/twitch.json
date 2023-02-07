@@ -1,0 +1,10 @@
+{
+  "BUILDER": {
+    "NAME": "twitch",
+    "DESCRIPTION": "Twitch",
+    "QUERY": {
+      "NAME": "query",
+      "DESCRIPTION": "Search query"
+    }
+  }
+}

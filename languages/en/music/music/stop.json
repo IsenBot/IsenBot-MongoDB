@@ -1,0 +1,9 @@
+{
+  "BUILDER": {
+    "NAME": "stop",
+    "DESCRIPTION": "Stop the current song"
+  },
+  "EXE": {
+    "STOP": "Stop the music"
+  }
+}

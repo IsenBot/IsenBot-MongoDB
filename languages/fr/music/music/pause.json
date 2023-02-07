@@ -1,0 +1,14 @@
+{
+  "BUILDER": {
+    "NAME": "pause",
+    "DESCRIPTION": "Mettre en pause ou relancer la musique",
+    "MODE": {
+      "NAME": "mode",
+      "DESCRIPTION": "Mettre en pause ou relancer la musique"
+    }
+  },
+  "EXE": {
+    "PAUSE": "Pause du song actuel",
+    "RESUME": "Reprise du song actuel"
+  }
+}

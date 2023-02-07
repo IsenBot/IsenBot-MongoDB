@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "queue",
+    "DESCRIPTION": "Queue",
+    "PAGE": {
+      "NAME": "page",
+      "DESCRIPTION": "La page a afficher"
+    }
+  },
+  "EXE": {
+    "NOW_PLAYING": "En cours de lecture"
+  }
+}
