@@ -1,0 +1,23 @@
+{
+  "BUILDER": {
+    "NAME": "new",
+    "DESCRIPTION": "Create a role reaction on a new message",
+    "REACTION": {
+      "NAME": "reaction",
+      "DESCRIPTION": "The reaction on which to give a role"
+    },
+    "ROLE": {
+      "NAME": "role",
+      "DESCRIPTION": "The role to give on the reaction"
+    },
+    "CHANNEL": {
+      "NAME": "channel",
+      "DESCRIPTION": "The channel on which to send the message with the role react"
+    }
+  },
+  "MESSAGE": {
+    "MAIN_CONTENT": "React to obtain a role :\n\n",
+    "LIST_ELEMENT": "\t\t{{reaction}}: {{role}}\n"
+  },
+  "REPLY": "The reaction `{{emoji}}` now give the role.s **{{role}}** on the message {{link}}"
+}

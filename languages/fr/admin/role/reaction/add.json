@@ -1,0 +1,25 @@
+{
+  "BUILDER": {
+    "NAME": "ajouter",
+    "DESCRIPTION": "Ajoute un rôle réaction sur un message",
+    "REACTION": {
+      "NAME": "réaction",
+      "DESCRIPTION": "La réaction pour la quelle donner le rôle"
+    },
+    "ROLE": {
+      "NAME": "rôle",
+      "DESCRIPTION": "Le rôle à donner sur la réaction"
+    },
+    "CHANNEL": {
+      "NAME": "salon",
+      "DESCRIPTION": "Le salon du message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "L'id du message sur lequel ajouter le rôle réaction"
+    }
+  },
+  "SUCCESS": "La réaction `{{emoji}}` donne maintenant le.s rôle.s **{{role}}** sur le message {{link}}",
+  "ERROR": "Désoler, mais je ne peut pas utiliser la reaction `{{emoji}}` sur le message {{link}}",
+  "ALREADY_USE": "La réaction `{{emoji}}` est déjà utilisée pour le.s rôle.s **{{roles}}** sur le message {{link}}"
+}

@@ -1,0 +1,25 @@
+{
+  "BUILDER": {
+    "NAME": "add",
+    "DESCRIPTION": "Add a role reaction on a message",
+    "REACTION": {
+      "NAME": "reaction",
+      "DESCRIPTION": "The reaction on which to give a role"
+    },
+    "ROLE": {
+      "NAME": "role",
+      "DESCRIPTION": "The role to give on the reaction"
+    },
+    "CHANNEL": {
+      "NAME": "channel",
+      "DESCRIPTION": "The channel of the message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "The id of the message on which to add the role react"
+    }
+  },
+  "SUCCESS": "The reaction `{{emoji}}` now give the role.s **{{role}}** on the message {{link}}",
+  "ERROR": "Sorry, but I cant use the reaction '{{emoji}}' on the message {{link}}",
+  "ALREADY_USE": "The reaction `{{emoji}}` is already use for the role.s **{{roles}}** on the message {{link}}"
+}

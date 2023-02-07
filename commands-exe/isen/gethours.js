@@ -27,8 +27,7 @@ class csvSplit extends Transform {
 module.exports = async function(interaction) {
     let csvStringified = false;
     let filesCounter = 0;
-    const db = await interaction.mongodb;
-    const dbResultStream = db.collection('isen/hours').find().sort({ added: 1 }).project(
+    const dbResultStream = interaction.client.hours.find().sort({ added: 1 }).project(
         {
             _id: 0,
             messageId: 0,

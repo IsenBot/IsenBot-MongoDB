@@ -1,0 +1,15 @@
+name : "Get commit type"
+description : "Determines type of each commit between first and last between ['patch', 'minor' or  'major'] and updates package.json version"
+inputs:
+  repo-token:
+    description: "Github repository token with push authorisation"
+    required: true
+  first-commit:
+    description: "First commit of push or pull request"
+    required: true
+  last-commit:
+    description: "Last commit of push or pull request"
+    required: true  
+runs:
+  using: 'node16'
+  main: setVersionFromCommits.js

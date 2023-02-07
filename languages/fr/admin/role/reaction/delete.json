@@ -1,0 +1,17 @@
+{
+  "BUILDER": {
+    "NAME": "supprimer",
+    "DESCRIPTION": "Enlève tous les rôles réactions d'un message",
+    "CHANNEL": {
+      "NAME": "salon",
+      "DESCRIPTION": "Le salon du message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "L'id du message sur lequel enlever tous les role react"
+    }
+  },
+  "SUCCESS": "Le message {{link}} ne donne plus aucun rôle",
+  "ERROR": "Désoler, mais je n'ai pas pu enlever certaines réaction du message {{link}}",
+  "NOT_USE": "Le message {{link}} ne donnait aucun role"
+}

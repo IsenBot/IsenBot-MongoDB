@@ -1,9 +1,7 @@
 const { formatLog } = require('../../utility/Log');
 
 module.exports = async function(interaction) {
-    const db = await interaction.mongodb;
-
-    db.collection('isen/hours').updateOne(
+    interaction.client.hours.updateOne(
         {
             messageId: interaction.message.id,
         },
@@ -16,7 +14,7 @@ module.exports = async function(interaction) {
 
     const embed = interaction.message.embeds[0];
     const minuteSelect = interaction.message.components[1].components[0];
-    const query = await db.collection('isen/hours').findOne({ messageId: interaction.message.id });
+    const query = await interaction.client.hours.findOne({ messageId: interaction.message.id });
 
     if (parseInt(interaction.values[0], 10) !== 0) {
         embed.data.title = await interaction.translate('isen/hours:TIME', {

@@ -1,0 +1,17 @@
+{
+  "BUILDER": {
+    "NAME": "delete",
+    "DESCRIPTION": "Remove all the roles reactions on a message",
+    "CHANNEL": {
+      "NAME": "channel",
+      "DESCRIPTION": "The channel of the message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "The id of the message on which to remove all the role react"
+    }
+  },
+  "SUCCESS": "The message {{link}} don't give any role anymore",
+  "ERROR": "Sorry, but I can't remove some reaction on the message {{link}}",
+  "NOT_USE": "The message {{link}} doesn't gave any role"
+}
