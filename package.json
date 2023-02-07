@@ -1,6 +1,6 @@
 {
   "name": "isenbot",
-  "version": "0.1.3",
+  "version": "0.2.2",
   "description": "ISEN Nantes's promo 5's discord bot with various command categories like admin, music, core ...",
   "main": "index.js",
   "scripts": {
@@ -58,7 +58,9 @@
     "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
-    "eslint": "^8.29.0"
+    "eslint": "^8.29.0",
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
