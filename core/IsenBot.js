@@ -95,12 +95,12 @@ class IsenBot extends Client {
     async createLoggers() {
         const guildsCollection = this.guildsCollection;
         const query = {};
-        const projection = { id_: 1, logChannelId: 1 };
+        const projection = { _id: 0, guildId: 1, logChannelId: 1 };
 
         const guildsData = guildsCollection.find(query).project(projection);
 
         for await (const guildData of guildsData) {
-            const guild = this.guilds.cache.get(guildData['_id']);
+            const guild = this.guilds.cache.get(guildData.guildId);
             if (!guild) {
                 // TODO : Maybe delete the guild from the database if the client cant access it anymore
                 return;

@@ -1,11 +1,12 @@
 const { formatLog } = require('../../utility/Log');
 const { GuildSchema } = require('../../utility/Schema');
+const Logger = require('../../core/Log');
 
 async function checkNewGuild(client) {
     const guildsCollection = client.guildsCollection;
     const query = {};
-    const projection = { _id: 1 };
-    const guildsId = await guildsCollection.find(query).project(projection).map(p => p._id).toArray();
+    const projection = { _id: 0, guildId: 1 };
+    const guildsId = await guildsCollection.find(query).project(projection).map(p => p.guildId).toArray();
 
     let change = false;
     for (const guild of client.guilds.cache.map(guildCache => guildCache)) {
@@ -16,7 +17,8 @@ async function checkNewGuild(client) {
                 headers: 'Ready',
                 type: 'log',
             });
-            await guildsCollection.insertOne(new GuildSchema({ _id: String(guild.id) }));
+            await guildsCollection.insertOne(new GuildSchema({ guildId: guild.id }));
+            guild.logger = await Logger.create(client, { guild });
         }
     }
     if (!change) {
