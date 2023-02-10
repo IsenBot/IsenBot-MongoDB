@@ -4,7 +4,7 @@ module.exports = {
     token : process.env.TOKEN,
     database: {
         uri: process.env.DATABASE_URI,
-        databaseName: 'guildConfiguration',
+        databaseName: 'isenbot_db',
         guildTableName: 'guild',
         rolesReactionsTableName: 'roleReact',
         rolesReactionsConfigTableName: 'roleReactConfig',
