@@ -42,7 +42,7 @@ async function main() {
         '            ██████╔╝╚██████╔╝   ██║   \n' +
         '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
         '    ..  ...  .  -.   -...  ---  -    \n';
-
+    console.log(startLogo);
     // Create a new client instance
     const client = await IsenBot.create({
         intents: [
@@ -53,13 +53,27 @@ async function main() {
             GatewayIntentBits.GuildMessageReactions,
         ],
     });
-    function gracefullyShutdown(signal) {
-        console.info(`${signal} signal received`);
-        console.info('Close database connection');
-        client.mongodb.close();
-        console.info('Destroy discord client');
+    async function gracefullyShutdown(signal) {
+        client.log({
+            textContent: `${signal} signal received. Shutting down ...`,
+            type: 'event',
+        });
+        client.log({
+            textContent: 'Closing database connection...',
+            type: 'log',
+        });
+        await client.mongodb.close();
+        client.log({
+            textContent: 'Database Connection closed',
+            type: 'log',
+        });
+        client.log({
+            textContent: 'Destroying discord client...',
+            type: 'log',
+        });
         client.destroy();
-        console.info('Exit the process');
+        console.log('Discord client destroyed');
+        console.log('Exit the process');
         process.exit();
     }
     process.on('SIGTERM', gracefullyShutdown);
@@ -67,11 +81,6 @@ async function main() {
 
     exports.client = client;
     // Some logs
-    client.log({
-        textContent: startLogo,
-        isEmbed: false,
-        isCodeBlock: true,
-    });
     client.log({
         textContent: 'The bot is starting ...',
         type: 'log',

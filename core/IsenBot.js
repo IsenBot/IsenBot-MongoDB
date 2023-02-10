@@ -59,7 +59,37 @@ class IsenBot extends Client {
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
+        const discordStartLogo =
+            '    ..  ...  .  -.   -...  ---  -    \n\n' +
+            '██╗███████╗███████╗███╗   ██╗         \n' +
+            '██║██╔════╝██╔════╝████╗  ██║         \n' +
+            '██║███████╗█████╗  ██╔██╗ ██║         \n' +
+            '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
+            '██║███████║███████╗██║ ╚████║         \n' +
+            `╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝  ${process.env.npm_package_version}\n` +
+            '                                      \n' +
+            '            ██████╗  ██████╗ ████████╗\n' +
+            '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
+            '            ██████╔╝██║   ██║   ██║   \n' +
+            '            ██╔══██╗██║   ██║   ██║   \n' +
+            '            ██████╔╝╚██████╔╝   ██║   \n' +
+            '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
+            '    ..  ...  .  -.   -...  ---  -    \n';
+        client.log({
+            textContent: discordStartLogo,
+            isEmbed: false,
+            isCodeBlock: true,
+            isConsoleLog: false,
+        });
+        client.log({
+            textContent: 'Login into database...',
+            type: 'log',
+        });
         await client.mongodb.connect();
+        client.log({
+            textContent: 'Database connection establish',
+            type: 'success',
+        });
         return client;
     }
 
