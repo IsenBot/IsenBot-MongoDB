@@ -11,5 +11,6 @@
   "LIMIT_OUT_OF_RANGE": "Limit must be between {{min}} and {{max}}",
   "QUEUE_EMPTY": "Queue is empty",
   "USER_NOT_IN_SAME_VOICE": "You are not in the same voice channel than the bot",
-  "INVALID_URL": "Invalid URL\n(Ps: if you think that is a real url, please contact the developer or create an issue on [github](https://github.com/IsenBot/IsenBot-MongoDB/issues))"
+  "INVALID_URL": "Invalid URL\n(Ps: if you think that is a real url, please contact the developer or create an issue on [github](https://github.com/IsenBot/IsenBot-MongoDB/issues))",
+  "404_STREAMER": "The streamer is maybe offline or doesn't exist"
 }

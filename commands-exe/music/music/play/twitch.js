@@ -13,7 +13,13 @@ module.exports = async (interaction) => {
 
     await interaction.reply({ content: await interaction.translate('music/music/play:exe:recherche'), ephemeral: true });
 
-    const track = await interaction.client.player.searchTwitchStreamTrack(username);
+    let track;
+
+    try {
+        track = await interaction.client.player.searchTwitchStreamTrack(username);
+    } catch (e) {
+        return interaction.followUp({ content: await interaction.translate('music/music/error:404_streamer'), ephemeral: true });
+    }
 
     if (track.error) {
         return interaction.followUp({ content: track.error, ephemeral: true });
@@ -22,7 +28,7 @@ module.exports = async (interaction) => {
     const embed = new EmbedBuilder()
         .setTitle('Twitch Stream')
         .setThumbnail(track.thumbnail)
-        .setDescription(await interaction.translate('music/music/play:exe:add_track_to_queue', { title: track.title }) + ` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`);
+        .setDescription(await interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${track.title}**` }) + ` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`);
 
     const result = await interaction.followUp({ embeds: [embed] });
 

@@ -36,7 +36,7 @@ module.exports = async (interaction) => {
         track = [await interaction.client.player.searchYoutubeId(id)];
     }
 
-    if (!track) return interaction.editReply({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
+    if (!track || !track[0]) return interaction.editReply({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')
