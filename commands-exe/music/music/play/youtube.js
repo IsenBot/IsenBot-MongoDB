@@ -56,7 +56,9 @@ module.exports = async (interaction) => {
 
     queue.addTracks(track);
 
-    queue.connect(interaction.member.voice.channel);
+    const b = queue.connect(interaction.member.voice.channel);
+
+    if (!b) return interaction.followUp({ content: await interaction.translate('music/music/error:404_channel'), ephemeral: true });
 
     if (!queue.playing) {
         queue.play();

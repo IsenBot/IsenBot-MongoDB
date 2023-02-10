@@ -49,7 +49,12 @@ class Queue extends EventEmitter {
 
     connect(channel) {
 
-        if (this.connection?.state?.status === 'ready') return;
+        if (!channel) {
+            this.queue = [];
+            return false;
+        }
+
+        if (this.connection?.state?.status === 'ready') return false;
 
         if (this.connection?.state?.status === 'disconnected') {
             this.connection = joinVoiceChannel({
@@ -58,6 +63,7 @@ class Queue extends EventEmitter {
                 adapterCreator: channel.guild.voiceAdapterCreator,
             });
             this.connection.subscribe(this.AudioPlayer);
+            return true;
         } else {
             this.musicChannel = channel;
             this.connection = joinVoiceChannel({
@@ -75,6 +81,7 @@ class Queue extends EventEmitter {
             });
 
             this.connection.subscribe(this.AudioPlayer);
+            return true;
         }
     }
 
@@ -210,6 +217,13 @@ class Queue extends EventEmitter {
 
     remove(index) {
         return this.queue.splice(index, 1);
+    }
+
+    destroy() {
+        this.queue = [];
+        this.AudioPlayer.stop(true);
+        this.connection?.destroy();
+        this.removeAllListeners();
     }
 }
 

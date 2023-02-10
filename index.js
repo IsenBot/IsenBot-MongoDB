@@ -57,6 +57,10 @@ async function main() {
         console.info(`${signal} signal received`);
         console.info('Close database connection');
         client.mongodb.close();
+
+        console.info('Close music proccess');
+        client.player.close();
+
         console.info('Destroy discord client');
         client.destroy();
         console.info('Exit the process');

@@ -1,6 +1,7 @@
 {
   "404_RESULT": "Aucun résultat trouvé",
   "USER_NOT_IN_VOICE": "Vous n'êtes pas dans un salon vocal",
+  "404_CHANNEL": "Le salon vocal n'a pas été trouvé",
   "ERROR": "Une erreur est survenue",
   "NO_TRACK_IN_QUEUE": "Aucune musique dans la file",
   "404_PAGE": "Page introuvable",

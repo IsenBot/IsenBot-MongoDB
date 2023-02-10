@@ -1,6 +1,7 @@
 {
   "404_RESULT": "No result found",
   "USER_NOT_IN_VOICE": "You must be in a voice channel",
+  "404_CHANNEL": "Channel not found",
   "ERROR": "An error occurred",
   "NO_TRACK_IN_QUEUE": "No track in queue",
   "404_PAGE": "Page not found",
