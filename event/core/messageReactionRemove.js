@@ -8,11 +8,10 @@ module.exports = {
             return;
         }
         const client = messageReaction.client;
-        // TODO : MULTI ROLE REACT
         // Check if a role react is set on this message
         const roleReactData = await getRoleReaction(client, messageReaction.message, messageReaction.emoji.toString());
         if (roleReactData) {
-            if (messageReaction.me) {
+            if (messageReaction.me && await messageReaction.message.guild.members.fetch(roleReactData.roles[0])) {
                 const guild = messageReaction.message.guild;
                 try {
                     const role = await guild.roles.fetch(roleReactData.roles[0]);

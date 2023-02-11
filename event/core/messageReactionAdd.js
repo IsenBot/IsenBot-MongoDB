@@ -4,7 +4,7 @@ const { getRoleReaction } = require('../../utility/database');
 function hasAlreadyReact(messageReaction, user) {
     const messageReactions = messageReaction.message.reactions.cache.map(mR => mR);
     for (const mR of messageReactions) {
-        if (mR !== messageReaction && mR.users.cache.has(user)) {
+        if (mR !== messageReaction && mR.users.resolve(user.id)) {
             return true;
         }
     }
@@ -21,8 +21,8 @@ module.exports = {
         // TODO : MULTI ROLE REACT
         // Check if a role react is set on this message
         const roleReactData = await getRoleReaction(client, messageReaction.message, messageReaction.emoji.toString());
-        if (roleReactData && !(!roleReactData.isMultipleChoice && hasAlreadyReact(messageReaction, user))) {
-            if (messageReaction.me) {
+        if (roleReactData) {
+            if (messageReaction.me && !(!roleReactData.isMultipleChoice && hasAlreadyReact(messageReaction, user))) {
                 const guild = messageReaction.message.guild;
                 try {
                     const role = await guild.roles.fetch(roleReactData.roles[0]);
