@@ -27,7 +27,7 @@ module.exports = {
                         target: user,
                         url: messageReaction.message.url,
                     });
-                    user.send(client.translate('EVENT/CORE/MESSAGEREACTIONREMOVE:ROLE_REACT:ROLE_REMOVED', {
+                    user.send(client.translate('event/core/messageReactionRemove:ROLE_REACT:ROLE_REMOVED', {
                         roles: role.name,
                         guild: guild.name,
                     }, user.local)).catch();
