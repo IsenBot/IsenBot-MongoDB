@@ -13,6 +13,7 @@ const fs = require('node:fs');
 // TODO : cache guildLanguage so we dont fetch it all the time
 
 class IsenBot extends Client {
+    #database;
     constructor(options) {
         super(options);
         // Store the config of the bot like token.
@@ -22,7 +23,7 @@ class IsenBot extends Client {
             .setThumbnail(this.config.embed.thumbnail);
         // Client to connect to the database.
         this.mongodb = new MongoClient(this.config.database.uri);
-        this.guildsDB = {};
+        this.#database = this.mongodb.db(this.config.database.databaseName);
         // Create the music player
         this.player = new Player(this, {
             ytdlOptions: {
@@ -49,37 +50,47 @@ class IsenBot extends Client {
 
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
-    }
 
+        this.guildsCollection = this.#database.collection(this.config.database.guildTableName);
+        this.roleReactCollection = this.#database.collection(this.config.database.rolesReactionsTableName);
+        this.roleReactConfigCollection = this.#database.collection(this.config.database.rolesReactionsConfigTableName);
+        this.hours = this.#database.collection(this.config.database.hoursTableName);
+    }
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
+        const discordStartLogo =
+            '    ..  ...  .  -.   -...  ---  -    \n\n' +
+            '██╗███████╗███████╗███╗   ██╗         \n' +
+            '██║██╔════╝██╔════╝████╗  ██║         \n' +
+            '██║███████╗█████╗  ██╔██╗ ██║         \n' +
+            '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
+            '██║███████║███████╗██║ ╚████║         \n' +
+            `╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝  ${process.env.npm_package_version}\n` +
+            '                                      \n' +
+            '            ██████╗  ██████╗ ████████╗\n' +
+            '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
+            '            ██████╔╝██║   ██║   ██║   \n' +
+            '            ██╔══██╗██║   ██║   ██║   \n' +
+            '            ██████╔╝╚██████╔╝   ██║   \n' +
+            '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
+            '    ..  ...  .  -.   -...  ---  -    \n';
+        client.log({
+            textContent: discordStartLogo,
+            isEmbed: false,
+            isCodeBlock: true,
+            isConsoleLog: false,
+        });
+        client.log({
+            textContent: 'Login into database...',
+            type: 'log',
+        });
+        await client.mongodb.connect();
+        client.log({
+            textContent: 'Database connection establish',
+            type: 'success',
+        });
         return client;
-    }
-
-    get guildsCollection() {
-        if (!this.database) {
-            this.database = this.mongodb.db(this.config.database.databaseName);
-        }
-        return this.database.collection(this.config.database.guildTableName);
-    }
-
-    async guildDB(id) {
-        if (id in this.guildsDB) {// If db socket is cached, returns it
-            return this.guildsDB[id];
-        }
-        if (id in Array.from(this.guilds.cache.keys())) {// Verifies if guild id correspond to a guild the client is in
-            const db = await this.mongodb.db(id.toString(10));
-            this.guildsDB[id] = db;// Adds the socket to cache
-            return db;
-        } else {
-            const guild = await this.guilds.fetch(id);// Fetches the id to see if it corresponds to a guild the bot is in
-            if (guild) {
-                const db = await this.mongodb.db(id.toString(10));
-                this.guildsDB[id] = db;
-                return db;
-            }
-        }
     }
 
     log = (...options) => {
@@ -112,18 +123,14 @@ class IsenBot extends Client {
 
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
-        const mongodb = this.mongodb;
-        // try {
-        await mongodb.connect();
-
         const guildsCollection = this.guildsCollection;
         const query = {};
-        const projection = { id_ : 1, logChannelId : 1 };
+        const projection = { _id: 0, guildId: 1, logChannelId: 1 };
 
         const guildsData = guildsCollection.find(query).project(projection);
 
         for await (const guildData of guildsData) {
-            const guild = this.guilds.cache.get(guildData['_id']);
+            const guild = this.guilds.cache.get(guildData.guildId);
             if (!guild) {
                 // TODO : Maybe delete the guild from the database if the client cant access it anymore
                 return;
@@ -133,58 +140,23 @@ class IsenBot extends Client {
             }
             guild.logger.emit('ready');
         }
-        /* } finally {
-            // Ensures that the client will close when you finish/error
-            await mongodb.close();
-        }*/
     }
     // Get the logChannel channel from the database for the given guild and then return the fetched logChannel on discord.
     // Remove the logChannel from the logger and the database for the given guild.
     async removeLogChannel(guild) {
         this.guild.logger.removeLogChannel();
-        const mongodb = this.mongodb;
-        // try {
-        await mongodb.connect();
         // Set the logChannelId for the guild to null in the database.
         const guildsCollection = this.guildsCollection;
         const query = { _id: guild.id };
         const update = { logChannelId: null };
         await guildsCollection.updateOne(query, update);
-
-        /* } finally {
-            await mongodb.close();
-        }*/
     }
     // Execute a command file.
-    executeCommand(interaction, command) {
+    executeCommand(interaction, category) {
         const commandPath = Object.assign({}, this.commandsExePath);
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
-        commandPath.dir = path.join(commandPath.root, command.category);
-        command = command.data;
-        if (subCommand || subCommandGroup) {
-            commandPath.dir = path.join(commandPath.dir, command.name);
-            if (subCommandGroup) {
-                for (const option in Object.values(command.options)) {
-                    if (option?.name === subCommandGroup) {
-                        command = option;
-                        commandPath.dir = path.join(commandPath.dir, command.name);
-                        break;
-                    }
-                }
-            }
-            if (subCommand) {
-                for (const option in Object.values(command.options)) {
-                    if (option?.name === subCommand) {
-                        commandPath.name = option.name;
-                        break;
-                    }
-                }
-            }
-
-        } else {
-            commandPath.name = command.name;
-        }
+        commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a button action
@@ -230,7 +202,7 @@ class IsenBot extends Client {
                 });
                 // Get the command builder file
                 const command = require(`${commandsBuilderPath}/${dir}/${commandFile}`);
-                this.commands.set(command.data.name, command);
+                this.commands.set(command.data.name, command.category);
             }
         }
         this.log({
@@ -268,16 +240,15 @@ class IsenBot extends Client {
 
     _parseMessageComponentPath(messageComponentPath) {
         const regex = /:(?=\w)/g;
-        messageComponentPath = messageComponentPath.toUpperCase().split(regex);
+        messageComponentPath = messageComponentPath.split(regex);
         if (messageComponentPath.length < 2) {
             throw 'Not a path';
         }
-        return messageComponentPath;
+        return messageComponentPath.map((component, index) => index === 0 ? component : component.toUpperCase());
     }
 
     // replace {{variable}} in the string according to the given object {variable: value}, can have multiple variable
     replaceVariable(string, variablesObject) {
-        // TODO : Put the wrapper config in the config ?
         const leftWrapper = '{{';
         const rightWrapper = '}}';
         const regex = new RegExp(`${leftWrapper}([\\w-]+)${rightWrapper}`, 'g');
@@ -285,8 +256,7 @@ class IsenBot extends Client {
     }
 
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
-    // TODO : test if it work
-    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name) {
+    translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name, allowEmpty = false) {
         messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
         const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
@@ -316,6 +286,8 @@ class IsenBot extends Client {
         }
         if (component) {
             return this.replaceVariable(component, args);
+        } else if ((typeof component === 'string' || component instanceof String) && allowEmpty) {
+            return component;
         }
         this.log({
             textContent: formatLog('Failed loading translation', { 'path' : `${languageMeta.name}/${messageComponentPath.join(':')}` }),
@@ -325,17 +297,13 @@ class IsenBot extends Client {
         return languageMeta === this.defaultLanguageMeta ? 'unknown' : this.translate(messageComponentPath.join(':'), args);
     }
 
-    getLocales(messageComponentPath) {
+    getLocales(messageComponentPath, allowEmpty = true) {
         const localesMessageObject = {};
         const languagesObj = this.getLanguages();
         for (const [key, value] of Object.entries(languagesObj)) {
-            localesMessageObject[key] = this.translate(messageComponentPath, {}, value);
+            localesMessageObject[key] = this.translate(messageComponentPath, {}, value, allowEmpty);
         }
         return localesMessageObject;
-    }
-
-    async startDB() {
-        await this.mongodb.connect();
     }
 }
 

@@ -1,0 +1,21 @@
+{
+  "BUILDER": {
+    "NAME": "enlever",
+    "DESCRIPTION": "Enleve un rôle réaction d'un message",
+    "REACTION": {
+      "NAME": "réaction",
+      "DESCRIPTION": "La réaction du rôle réaction à enlever"
+    },
+    "CHANNEL": {
+      "NAME": "salon",
+      "DESCRIPTION": "Le salon du message"
+    },
+    "MESSAGE_ID": {
+      "NAME": "message_id",
+      "DESCRIPTION": "L'id du message sur lequel enlever le role react"
+    }
+  },
+  "SUCCESS": "La réaction `{{emoji}}` ne donne plus le.s rôle.s **{{roles}}** sur le message {{link}}",
+  "ERROR": "Désoler, mais je ne peut pas enlever la réaction `{{emoji}}` sur message {{link}}",
+  "NOT_USE": "La réaction `{{emoji}}` ne donnait aucun rôle sur le message {{link}}"
+}

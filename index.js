@@ -9,23 +9,18 @@ Object.defineProperties(BaseInteraction.prototype, {
         },
     },
     translate: {
-        value: async function(messageComponentPath, args = {}) {
-            return await this.client.translate(messageComponentPath, args, this.locale);
+        value: function(messageComponentPath, args = {}) {
+            return this.client.translate(messageComponentPath, args, this.locale);
         },
     },
     getLocales: {
-        value: async function(messageComponentPath) {
-            return await this.client.getLocales(messageComponentPath);
+        value: function(messageComponentPath) {
+            return this.client.getLocales(messageComponentPath);
         },
     },
     log: {
         value: function(...param) {
             return this.logger?.log(...param);
-        },
-    },
-    mongodb: {
-        get: async function() {
-            return await this.client.guildDB(this.guildId);
         },
     },
 });
@@ -47,7 +42,7 @@ async function main() {
         '            ██████╔╝╚██████╔╝   ██║   \n' +
         '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
         '    ..  ...  .  -.   -...  ---  -    \n';
-
+    console.log(startLogo);
     // Create a new client instance
     const client = await IsenBot.create({
         intents: [
@@ -58,15 +53,34 @@ async function main() {
             GatewayIntentBits.GuildMessageReactions,
         ],
     });
+    async function gracefullyShutdown(signal) {
+        client.log({
+            textContent: `${signal} signal received. Shutting down ...`,
+            type: 'event',
+        });
+        client.log({
+            textContent: 'Closing database connection...',
+            type: 'log',
+        });
+        await client.mongodb.close();
+        client.log({
+            textContent: 'Database Connection closed',
+            type: 'log',
+        });
+        client.log({
+            textContent: 'Destroying discord client...',
+            type: 'log',
+        });
+        client.destroy();
+        console.log('Discord client destroyed');
+        console.log('Exit the process');
+        process.exit();
+    }
+    process.on('SIGTERM', gracefullyShutdown);
+    process.on('SIGINT', gracefullyShutdown);
 
     exports.client = client;
-
     // Some logs
-    client.log({
-        textContent: startLogo,
-        isEmbed: false,
-        isCodeBlock: true,
-    });
     client.log({
         textContent: 'The bot is starting ...',
         type: 'log',

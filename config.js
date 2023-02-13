@@ -4,13 +4,15 @@ module.exports = {
     token : process.env.TOKEN,
     database: {
         uri: process.env.DATABASE_URI,
-        databaseName: 'guildConfiguration',
+        databaseName: 'isenbot_db',
         guildTableName: 'guild',
-        rolesReactionsTableName: 'roleReactMessage',
+        rolesReactionsTableName: 'roleReact',
+        rolesReactionsConfigTableName: 'roleReactConfig',
+        hoursTableName: 'hours',
     },
     // Config for the log on discord and console
     log : {
-        globalLogChannelId: "id",
+        globalLogChannelId: 'id',
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
         // Color rule for log message in console
