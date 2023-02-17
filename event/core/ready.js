@@ -146,7 +146,7 @@ module.exports = {
             headers: ['Ready', 'Cache'],
             type: 'success',
         });
-
+        await client.loadTasksFromDB();
         log({
             textContent: '... Bot fully start now\n',
             headers: 'Ready',
