@@ -9,6 +9,7 @@ module.exports = {
         rolesReactionsTableName: 'roleReact',
         rolesReactionsConfigTableName: 'roleReactConfig',
         hoursTableName: 'hours',
+        messagesToDeleteTableName: 'messageToDelete',
     },
     // Config for the log on discord and console
     log : {
