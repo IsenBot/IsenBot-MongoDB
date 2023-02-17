@@ -1,15 +1,21 @@
 const { formatLog } = require('../../utility/Log');
 const { userMention, hyperlink, time } = require('discord.js');
 
-function incrementDate(date, value, identifier) {
+const enIdentifiers = ['y', 'mon', 'd', 'h', 'min', 's'];
+const frIdentifiers = ['a', 'mo', 'j', 'h', 'min', 's'];
+
+function incrementDate(date, identifier, value) { // could maybe be enhanced for different languages
     switch (identifier) {
     case 'y':
+    case 'a':
         date.setYear(date.getYear() + value);
         break;
     case 'mon':
+    case 'mo':
         date.setMonth(date.getMonth() + value);
         break;
     case 'd':
+    case 'j':
         date.setDate(date.getDate() + value);
         break;
     case 'h':
@@ -59,10 +65,11 @@ module.exports = async function(interaction) {
         });
     }
 
+    let deleteDate = new Date();
     if (deleteIn) {
-        const identifiers = ['y', 'mon', 'd', 'h', 'min', 's'];
-        let deleteDate = new Date();
+        const identifiers = interaction.locale === 'fr' ? frIdentifiers : enIdentifiers;
         for (const [key, value] of Object.entries(sliceDateString(deleteIn, identifiers))) {
+            console.log(key, ':', value);
             deleteDate = incrementDate(deleteDate, key, parseInt(value, 10));
         }
         message = message + await interaction.translate('core/send:DELETE', { date: time(deleteDate) });
@@ -73,6 +80,10 @@ module.exports = async function(interaction) {
     }
 
     const sent = await channelToSend.send(message);
+
+    if (deleteIn) {
+        interaction.client.tasks.addMessageToDelete(sent, deleteDate);
+    }
 
     interaction.reply({
         content: await interaction.translate('core/send:SENT', { link: hyperlink('message', sent.url) }),

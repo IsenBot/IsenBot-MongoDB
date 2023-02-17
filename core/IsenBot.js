@@ -7,6 +7,8 @@ const BlaguesAPI = require('blagues-api');
 const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
 
+const cronTasker = require('./Cron');
+
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -48,6 +50,7 @@ class IsenBot extends Client {
         // The client's logger
         this.logger = undefined;
 
+        this.tasks = new cronTasker(this);
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
 
@@ -55,6 +58,7 @@ class IsenBot extends Client {
         this.roleReactCollection = this.#database.collection(this.config.database.rolesReactionsTableName);
         this.roleReactConfigCollection = this.#database.collection(this.config.database.rolesReactionsConfigTableName);
         this.hours = this.#database.collection(this.config.database.hoursTableName);
+        this.messagesToDelete = this.#database.collection(this.config.database.messagesToDeleteTableName);
     }
     static async create(options) {
         const client = new this(options);
@@ -163,21 +167,18 @@ class IsenBot extends Client {
     executeButton(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.buttonPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a select interaction
     executeSelect(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.selectPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a modal submission
     executeModal(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.modalPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Load the command in the client.

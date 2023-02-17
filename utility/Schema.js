@@ -43,8 +43,21 @@ class HoursSchema {
     }
 }
 
+
+class MessagesToDeleteSchema {
+    constructor(fields) {
+        const { id, messageId, channelId, guildId, deleteTimestamp } = fields;
+        this.id = id;
+        this.messageId = messageId;
+        this.channelId = channelId;
+        this.guildId = guildId;
+        this.deleteTimestamp = deleteTimestamp;
+    }
+}
+
 module.exports = {
     GuildSchema,
     RoleReactionSchema,
     HoursSchema,
+    MessagesToDeleteSchema,
 };
