@@ -51,6 +51,7 @@ module.exports = async function(interaction) {
     // Add data to database
     await interaction.client.hours.insertOne(new HoursSchema({
         messageId: reply.id,
+        guildId: interaction.guildId,
         userId: interaction.user.id,
         author: interaction.user.username,
     }));
