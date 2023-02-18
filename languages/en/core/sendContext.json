@@ -1,0 +1,13 @@
+{
+    "BUILDER": {
+        "NAME": "Send with Isenbot"
+    },
+    "MODAL": {
+        "TITLE": "Channel choice",
+        "PLACEHOLDER": "Channel URL (copy link)"
+    },
+    "REPLY": {
+        "SUCCESS": "Your message was send successfully. Click to see : {{url}}",
+        "ERROR": "Sorry, {{channelUrl}} is not a valid channel URL"
+    }
+}

@@ -21,7 +21,7 @@ module.exports = {
             } catch (error) {
                 // In case of error, tell that the command failed
                 interaction.guild.logger.log({
-                    textContent: formatLog('Failed using command', { 'CommandName': command.commandName }),
+                    textContent: formatLog('Failed using command', { 'CommandName': command.commandName, 'Error message': error.message }),
                     headers: 'CommandHandler',
                     type: 'error',
                     author: interaction.user,
@@ -48,7 +48,7 @@ module.exports = {
             } catch (error) {
                 // In case of error, tell that the command failed
                 interaction.guild.logger.log({
-                    textContent: formatLog('Failed using button', { 'ButtonName': interaction.customId }),
+                    textContent: formatLog('Failed using button', { 'ButtonName': interaction.customId, 'Error message': error.message }),
                     headers: 'InteractionHandler',
                     type: 'error',
                     author: interaction.user,
@@ -75,7 +75,7 @@ module.exports = {
             } catch (error) {
                 // In case of error, tell that the command failed
                 interaction.guild.logger.log({
-                    textContent: formatLog('Failed using select', { 'SelectName': interaction.customId }),
+                    textContent: formatLog('Failed using select', { 'SelectName': interaction.customId, 'Error message': error.message }),
                     headers: 'InteractionHandler',
                     type: 'error',
                     author: interaction.user,
@@ -102,7 +102,7 @@ module.exports = {
             } catch (error) {
                 // In case of error, tell that the command failed
                 interaction.guild.logger.log({
-                    textContent: formatLog('Failed submitting modal', { 'ModalName': interaction.customId }),
+                    textContent: formatLog('Failed submitting modal', { 'ModalName': interaction.customId, 'Error message': error.message }),
                     headers: 'InteractionHandler',
                     type: 'error',
                     author: interaction.user,
