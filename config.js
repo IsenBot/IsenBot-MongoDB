@@ -44,4 +44,25 @@ module.exports = {
         thumbnail: 'https://upload.wikimedia.org/wikipedia/fr/f/f0/Yncrea_BM_ISEN-_horizontal-1.jpg',
     },
     dontDeploy:[],
+    player: {
+        key: {
+            twitchClient: process.env.TWITCH_CLIENT_ID,
+            twitchSecret: process.env.TWITCH_CLIENT_SECRET,
+            spotifyClient: process.env.SPOTIFY_CLIENT_ID,
+            spotifySecret: process.env.SPOTIFY_CLIENT_SECRET,
+        },
+        ytdl_options: {
+            quality: 'lowestaudio',
+            filter: 'audioonly',
+
+            // Do not modify
+            highWaterMark: 1 << 62,
+            liveBuffer: 1 << 62,
+            dlChunkSize: 0,
+            bitrate: 64,
+        },
+        m3u8stream_options: {
+            highWaterMark: 1 << 62,
+        },
+    },
 };

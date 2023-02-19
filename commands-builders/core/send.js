@@ -37,5 +37,5 @@ module.exports = {
                 .setDescription('show the author of the message')
                 .setRequired(false),
         )
-    , 'CORE'),
+    , 'core'),
 };
