@@ -1,3 +1,5 @@
+const { formatLog } = require('../../utility/Log');
+
 class SpotifyApi {
     constructor(client) {
         this.client = client;
@@ -7,26 +9,44 @@ class SpotifyApi {
     }
 
     async fetchToken() {
-        const data = await fetch(`https://accounts.spotify.com/api/token?grant_type=client_credentials&client_id=${this.client_id}&client_secret=${this.client_secret}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-            .then(res => res.json())
-            .catch(err => console.error(err));
+        try {
+            const data = await fetch(`https://accounts.spotify.com/api/token?grant_type=client_credentials&client_id=${this.client_id}&client_secret=${this.client_secret}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            });
 
-        this.access_token = data.access_token;
+            if (data.status === 200) {
+                this.access_token = data.access_token;
 
-        this.client.log({
-            textContent: 'Spotify token fetch',
-            headers: 'Spotify',
-            type: 'Success',
-        });
+                this.client.log({
+                    textContent: 'Spotify token fetch',
+                    headers: 'Spotify',
+                    type: 'Success',
+                });
 
-        setTimeout(() => {
-            this.fetchToken();
-        }, data.expires_in * 1000);
+                setTimeout(() => {
+                    this.fetchToken();
+                }, data.expires_in * 1000);
+            } else {
+                this.client.log({
+                    textContent: formatLog('Could not fetch Spotify Token. Try resetting client id and secret', { error: data.statusText }),
+                    headers: 'Spotify',
+                    type: 'Error',
+                });
+            }
+        } catch (error) {
+            this.client.log({
+                textContent: formatLog('Could not fetch Spotify Token because of networking error. Retrying in 30 sec', { error: error.message }),
+                headers: 'Spotify',
+                type: 'Error',
+            });
+
+            setTimeout(() => {
+                this.fetchToken();
+            }, 30000);
+        }
     }
 
     async search(query, type = ['track'], limit = 1) {
