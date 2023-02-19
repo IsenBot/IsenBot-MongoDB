@@ -8,11 +8,10 @@ module.exports = {
             return;
         }
         const client = messageReaction.client;
-        // TODO : MULTI ROLE REACT
         // Check if a role react is set on this message
         const roleReactData = await getRoleReaction(client, messageReaction.message, messageReaction.emoji.toString());
         if (roleReactData) {
-            if (messageReaction.me) {
+            if (messageReaction.me && await messageReaction.message.guild.roles.fetch(roleReactData.roles[0])) {
                 const guild = messageReaction.message.guild;
                 try {
                     const role = await guild.roles.fetch(roleReactData.roles[0]);
@@ -28,7 +27,7 @@ module.exports = {
                         target: user,
                         url: messageReaction.message.url,
                     });
-                    user.send(client.translate('EVENT/CORE/MESSAGEREACTIONREMOVE:ROLE_REACT:ROLE_REMOVED', {
+                    user.send(client.translate('event/core/messageReactionRemove:ROLE_REACT:ROLE_REMOVED', {
                         roles: role.name,
                         guild: guild.name,
                     }, user.local)).catch();

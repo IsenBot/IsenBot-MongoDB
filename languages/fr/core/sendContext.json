@@ -1,0 +1,13 @@
+{
+    "BUILDER": {
+        "NAME": "Envoyer avec Isenbot"
+    },
+    "MODAL": {
+        "TITLE": "Salon de destination",
+        "PLACEHOLDER": "URL du salon (copier le lien)"
+    },
+    "REPLY": {
+        "SUCCESS": "Votre message a bien été envoyé. Cliquer pour voir : {{url}}",
+        "ERROR": "Désolé, {{channelUrl}} n'est pas un URL de salon valide"
+    }
+}

@@ -1,10 +1,10 @@
 class GuildSchema {
     constructor(fields) {
-        if (!fields?.messageId) {
-            throw new Error('you must give at least the messageId field');
+        if (!fields?.guildId) {
+            throw new Error('you must give at least the guildId field');
         }
-        const { messageId, logChannelId } = fields;
-        this.messageId = messageId;
+        const { guildId, logChannelId } = fields;
+        this.guildId = guildId;
         this.logChannelId = logChannelId ?? null;
     }
 }
@@ -43,8 +43,21 @@ class HoursSchema {
     }
 }
 
+
+class MessagesToDeleteSchema {
+    constructor(fields) {
+        const { id, messageId, channelId, guildId, deleteTimestamp } = fields;
+        this.id = id;
+        this.messageId = messageId;
+        this.channelId = channelId;
+        this.guildId = guildId;
+        this.deleteTimestamp = deleteTimestamp;
+    }
+}
+
 module.exports = {
     GuildSchema,
     RoleReactionSchema,
     HoursSchema,
+    MessagesToDeleteSchema,
 };

@@ -1,0 +1,30 @@
+{
+    "BUILDER": {
+        "NAME": "send",
+        "DESCRIPTION": "Sends a message with IsenBot",
+        "DELETEIN": {
+            "NAME": "delete_in",
+            "DESCRIPTION": "timer before deleting message"
+        },
+        "MESSAGELINK": {
+            "NAME": "message_link",
+            "DESCRIPTION": "link to the message to copy and send"
+        },
+        "CHANNEL": {
+            "NAME": "channel",
+            "DESCRIPTION": "channel to send message to"
+        },
+        "MESSAGE": {
+            "NAME": "message",
+            "DESCRIPTION": "message to send"
+        },
+        "SHOWME": {
+            "NAME": "show_me",
+            "DESCRIPTION": "wether or not author should be visible"
+        }
+    },
+    "AUTHOR": "\n*Sent with {{bot}} by {{user}}*",
+    "DELETE": "\n\n*Ephemeral message : will be deleted on {{date}}*",
+    "SENT": "Message succesfully sent at : {{link}}",
+    "NOMESSAGE": "No message to send"
+}

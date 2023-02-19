@@ -8,6 +8,8 @@ const { formatLog } = require('../utility/Log');
 
 const { Player } = require('./music/Player');
 
+const cronTasker = require('./Cron');
+
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -44,6 +46,7 @@ class IsenBot extends Client {
         // The client's logger
         this.logger = undefined;
 
+        this.tasks = new cronTasker(this);
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
 
@@ -51,11 +54,42 @@ class IsenBot extends Client {
         this.roleReactCollection = this.#database.collection(this.config.database.rolesReactionsTableName);
         this.roleReactConfigCollection = this.#database.collection(this.config.database.rolesReactionsConfigTableName);
         this.hours = this.#database.collection(this.config.database.hoursTableName);
+        this.messagesToDelete = this.#database.collection(this.config.database.messagesToDeleteTableName);
     }
     static async create(options) {
         const client = new this(options);
         client.logger = await Logger.create(client, { isClientLogger: true });
+        const discordStartLogo =
+            '    ..  ...  .  -.   -...  ---  -    \n\n' +
+            '██╗███████╗███████╗███╗   ██╗         \n' +
+            '██║██╔════╝██╔════╝████╗  ██║         \n' +
+            '██║███████╗█████╗  ██╔██╗ ██║         \n' +
+            '██║╚════██║██╔══╝  ██║╚██╗██║         \n' +
+            '██║███████║███████╗██║ ╚████║         \n' +
+            `╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝  ${process.env.npm_package_version}\n` +
+            '                                      \n' +
+            '            ██████╗  ██████╗ ████████╗\n' +
+            '            ██╔══██╗██╔═══██╗╚══██╔══╝\n' +
+            '            ██████╔╝██║   ██║   ██║   \n' +
+            '            ██╔══██╗██║   ██║   ██║   \n' +
+            '            ██████╔╝╚██████╔╝   ██║   \n' +
+            '            ╚═════╝  ╚═════╝    ╚═╝ \n\n' +
+            '    ..  ...  .  -.   -...  ---  -    \n';
+        client.log({
+            textContent: discordStartLogo,
+            isEmbed: false,
+            isCodeBlock: true,
+            isConsoleLog: false,
+        });
+        client.log({
+            textContent: 'Login into database...',
+            type: 'log',
+        });
         await client.mongodb.connect();
+        client.log({
+            textContent: 'Database connection establish',
+            type: 'success',
+        });
         return client;
     }
 
@@ -91,12 +125,12 @@ class IsenBot extends Client {
     async createLoggers() {
         const guildsCollection = this.guildsCollection;
         const query = {};
-        const projection = { id_: 1, logChannelId: 1 };
+        const projection = { _id: 0, guildId: 1, logChannelId: 1 };
 
         const guildsData = guildsCollection.find(query).project(projection);
 
         for await (const guildData of guildsData) {
-            const guild = this.guilds.cache.get(guildData['_id']);
+            const guild = this.guilds.cache.get(guildData.guildId);
             if (!guild) {
                 // TODO : Maybe delete the guild from the database if the client cant access it anymore
                 return;
@@ -129,21 +163,18 @@ class IsenBot extends Client {
     executeButton(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.buttonPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a select interaction
     executeSelect(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.selectPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a modal submission
     executeModal(interaction) {
         const commandPath = {};
         commandPath.dir = path.join(this.modalPath, interaction.customId);
-        console.log(commandPath);
         return (require(path.format(commandPath)))(interaction);
     }
 
@@ -180,39 +211,56 @@ class IsenBot extends Client {
             }
         }
         this.log({
-            textContent: ' ... All commands load',
+            textContent: ' ... All commands loaded',
             headers: 'CommandLoader',
             type: 'success',
         });
     }
 
     loadEventHandler() {
-        const client = this;
-        client.log({
+        this.log({
             textContent: 'Loading events ...',
             headers: 'EventLoader',
             type: 'event',
         });
         fs.readdirSync(this.eventsPath).forEach(dirs => {
             const eventFiles = fs.readdirSync(`${this.eventsPath}/${dirs}`).filter(file => file.endsWith('.js'));
-            const handler = (dirs === 'core' ? client : dirs === 'music' ? client.player : undefined);
+            const handler = (dirs === 'core' ? this : dirs === 'music' ? this.player : undefined);
             for (const file of eventFiles) {
                 const event = require(`${this.eventsPath}/${dirs}/${file}`);
                 if (event.once) {
-                    client.once(event.name, (...args) => event.execute(...args));
+                    this.once(event.name, (...args) => event.execute(...args));
                 } else {
                     handler?.on(event.name, (...args) => event.execute(...args));
                 }
             }
         });
-        client.log({
-            textContent: '... All events load',
+        this.log({
+            textContent: '... All events loaded',
             headers: 'EventLoader',
             type: 'success',
         });
     }
 
-    _parseMessageComponentPath(messageComponentPath) {
+    loadTasksFromDB() {
+        this.log({
+            textContent: 'Loading tasks ...',
+            headers: 'TaskLoader',
+            type: 'event',
+        });
+        this.messagesToDelete.find().forEach(async messageToDelete => {
+            const channel = await this.channels.fetch(messageToDelete.channelId);
+            const message = await channel.messages.fetch(messageToDelete.messageId);
+            this.tasks.addMessageToDelete(message, messageToDelete.deleteTimestamp, messageToDelete.id);
+        });
+        this.log({
+            textContent: '... All tasks loaded',
+            headers: 'TaskLoader',
+            type: 'success',
+        });
+    }
+
+    #parseMessageComponentPath(messageComponentPath) {
         const regex = /:(?=\w)/g;
         messageComponentPath = messageComponentPath.split(regex);
         if (messageComponentPath.length < 2) {
@@ -231,7 +279,7 @@ class IsenBot extends Client {
 
     // Get the message component based on the lang and the path (separator : ":") (also cache it to get it again faster)
     translate(messageComponentPath, args = {}, languageIdentifier = this.defaultLanguageMeta.name, allowEmpty = false) {
-        messageComponentPath = this._parseMessageComponentPath(messageComponentPath);
+        messageComponentPath = this.#parseMessageComponentPath(messageComponentPath);
         const languageMeta = this.getLanguageMeta(languageIdentifier);
         if (!languageMeta) {
             return 'unknown';
