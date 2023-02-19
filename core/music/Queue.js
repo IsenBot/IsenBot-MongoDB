@@ -54,7 +54,7 @@ class Queue extends EventEmitter {
             return false;
         }
 
-        if (this.connection?.state?.status === 'ready') return false;
+        if (this.connection?.state?.status === 'ready') return this.connection?.joinConfig?.channelId === channel.id;
 
         if (this.connection?.state?.status === 'disconnected') {
             this.connection = joinVoiceChannel({
