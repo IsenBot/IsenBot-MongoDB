@@ -32,7 +32,7 @@ module.exports = async (interaction) => {
 
     let message = '';
 
-    for (let i = (page - 1) * 10; i < (page * 10 > queueList.length ? (queueList.length - 1) : page * 10); i++) {
+    for (let i = (page - 1) * 10; i < (page * 10 > queueList.length ? queueList.length : page * 10); i++) {
         if (queueList[i]) {
             message += `${i + 1}. **${queueList[i].type}** -  ${queueList[i].title} - **${queueList[i].channelTitle}**\n`;
         }
