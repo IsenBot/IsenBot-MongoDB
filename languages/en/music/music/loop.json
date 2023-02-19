@@ -1,10 +1,10 @@
 {
   "BUILDER": {
     "NAME": "loop",
-    "DESCRIPTION": "Loop",
+    "DESCRIPTION": "Setup loop mode",
     "MODE": {
       "NAME": "loop",
-      "DESCRIPTION": "Loop"
+      "DESCRIPTION": "Loop mode"
     }
   },
   "EXE": {

@@ -1,7 +1,7 @@
 {
   "BUILDER": {
     "NAME": "youtube",
-    "DESCRIPTION": "YouTube",
+    "DESCRIPTION": "Jouer depuis YouTube",
     "QUERY": {
       "NAME": "recherche",
       "DESCRIPTION": "Recherche"

@@ -1,18 +1,18 @@
 {
   "BUILDER": {
     "NAME": "twitch",
-    "DESCRIPTION": "Twitch search",
+    "DESCRIPTION": "Rechercher sur Twitch",
     "QUERY": {
       "NAME": "recherche",
       "DESCRIPTION": "Recherche"
     },
     "LANGUAGE": {
-      "NAME": "language",
-      "DESCRIPTION": "le language du streamer"
+      "NAME": "langage",
+      "DESCRIPTION": "Le langage du streamer"
     },
     "LIVE": {
       "NAME": "live",
-      "DESCRIPTION": "le streamer dois etre ne live ?"
+      "DESCRIPTION": "le streamer doit être en live ?"
     },
     "LIMIT": {
       "NAME" : "limit",

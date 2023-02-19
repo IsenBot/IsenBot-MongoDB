@@ -1,7 +1,7 @@
 {
   "BUILDER": {
     "NAME": "volume",
-    "DESCRIPTION": "Volume",
+    "DESCRIPTION": "Setup volume",
     "VOLUME": {
       "NAME": "volume",
       "DESCRIPTION": "Volume | 1 - 100"

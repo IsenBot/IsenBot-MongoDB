@@ -1,14 +1,14 @@
 {
   "BUILDER": {
     "NAME": "volume",
-    "DESCRIPTION": "Volume",
+    "DESCRIPTION": "Régler le volume sonore",
     "VOLUME": {
       "NAME": "volume",
-      "DESCRIPTION": "Volume à mettre | 1 - 100"
+      "DESCRIPTION": "Valeur du volume sonore | 1 - 100"
     }
   },
   "EXE": {
-    "SET_VOLUME": "Volume mis à {{volume}}%",
-    "GET_VOLUME": "le volume est à {{volume}}%"
+    "SET_VOLUME": "Volume réglé à {{volume}}%",
+    "GET_VOLUME": "Le volume est à {{volume}}%"
   }
 }

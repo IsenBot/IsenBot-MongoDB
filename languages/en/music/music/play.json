@@ -3,7 +3,7 @@
     "NAME": "play"
   },
   "EXE": {
-    "RECHERCHE": "Recherche ...",
+    "RECHERCHE": "Searching ...",
     "LOADING": "Loading ...",
     "ADD_TRACK_TO_QUEUE": "Add {{title}} to queue",
     "ADD_TRACKS_TO_QUEUE": "Add {{title}} to queue - {{nb}} tracks"

@@ -5,7 +5,7 @@
   "ERROR": "An error occurred",
   "NO_TRACK_IN_QUEUE": "No track in queue",
   "404_PAGE": "Page not found",
-  "INDEX_OUT_OF_RANGE": "Index out off range",
+  "INDEX_OUT_OF_RANGE": "Index out of range",
   "NO_TRACK": "No track found",
   "VOLUME_OUT_OF_RANGE": "Volume must be between {{volMin}} and {{volMax}}",
   "MODE_INVALID": "Invalid mode",

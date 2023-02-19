@@ -1,11 +1,11 @@
 {
   "BUILDER": {
-    "NAME": "play"
+    "NAME": "jouer"
   },
   "EXE": {
       "RECHERCHE": "Recherche ...",
       "LOADING": "Chargement ...",
       "ADD_TRACK_TO_QUEUE": "Ajout de {{title}} à la file",
-      "ADD_TRACKS_TO_QUEUE": "Ajout de {{title}} à la file - {{nb}} tracks"
+      "ADD_TRACKS_TO_QUEUE": "Ajout de {{title}} à la file - {{nb}} morceaux"
   }
 }

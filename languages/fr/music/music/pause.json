@@ -8,7 +8,7 @@
     }
   },
   "EXE": {
-    "PAUSE": "Pause du song actuel",
-    "RESUME": "Reprise du song actuel"
+    "PAUSE": "Pause du morceau actuel",
+    "RESUME": "Reprise du morceau actuel"
   }
 }

@@ -5,12 +5,12 @@
   "ERROR": "Une erreur est survenue",
   "NO_TRACK_IN_QUEUE": "Aucune musique dans la file",
   "404_PAGE": "Page introuvable",
-  "INDEX_OUT_OF_RANGE": "Index hors de la limite}",
-  "NO_TRACK": "Aucune musique n'est joué actuelement",
+  "INDEX_OUT_OF_RANGE": "Index hors de la limite",
+  "NO_TRACK": "Aucune musique n'est jouée actuellement",
   "VOLUME_OUT_OF_RANGE": "Le volume doit être compris entre {{volMin}} et {{volMax}}",
   "MODE_INVALID": "Mode invalide",
-  "LIMIT_OUT_OF_RANGE": "Limit doit etre entre {{min}} et {{max}}",
+  "LIMIT_OUT_OF_RANGE": "La limite doit être entre {{min}} et {{max}}",
   "QUEUE_EMPTY": "La file est vide",
   "USER_NOT_IN_SAME_VOICE": "Vous n'êtes pas dans le même salon vocal que le bot",
-  "404_STREAMER": "Le streamer est surement hors ligne ou inexistant"
+  "404_STREAMER": "Le streamer est sûrement hors ligne ou inexistant"
 }

@@ -1,10 +1,10 @@
 {
   "BUILDER": {
-    "NAME": "queue",
-    "DESCRIPTION": "Queue",
+    "NAME": "file",
+    "DESCRIPTION": "Affiche la file d'attente des morceau à jouer",
     "PAGE": {
       "NAME": "page",
-      "DESCRIPTION": "La page a afficher"
+      "DESCRIPTION": "Numéro de page à afficher"
     }
   },
   "EXE": {

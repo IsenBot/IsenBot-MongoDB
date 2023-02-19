@@ -1,7 +1,7 @@
 {
   "BUILDER": {
     "NAME": "spotify",
-    "DESCRIPTION": "Spotify",
+    "DESCRIPTION": "Jouer depuis spotify",
     "QUERY": {
       "NAME": "recherche",
       "DESCRIPTION": "Recherche"
