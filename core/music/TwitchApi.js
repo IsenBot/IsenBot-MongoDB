@@ -1,3 +1,5 @@
+const { formatLog } = require('../../utility/Log');
+
 class TwitchApi {
     constructor(client) {
         this.client = client;
@@ -11,20 +13,39 @@ class TwitchApi {
             headers: {
                 'Content-Type': 'application/json',
             },
-        }).then(res => res.json())
-            .catch(err => console.error(err));
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+                this.client.log({
+                    textContent: formatLog('Couldn\'t fetch Twitch token. Try resetting client id & secret', { status: res.status, error: res.statusText }),
+                    headers: 'Twitch',
+                    type: 'Error',
+                });
+                return;
+            })
+            .catch(error => {
+                this.client.log({
+                    textContent: formatLog('Could not fetch Twitch token because of networking error', { error: error.message }),
+                    headers: ['Twitch'],
+                    type: 'Error',
+                });
+            });
 
-        this.client.log({
-            textContent: 'Twitch token fetch',
-            headers: 'Twitch',
-            type: 'Success',
-        });
+        if (data) {
+            this.client.log({
+                textContent: 'Twitch token fetch',
+                headers: 'Twitch',
+                type: 'Success',
+            });
 
-        this.token = data.access_token;
+            this.token = data.access_token;
 
-        setInterval(() => {
-            this.fetchToken();
-        }, 86400000);
+            setInterval(() => {
+                this.fetchToken();
+            }, 86400000);
+        }
     }
 
     async fetchChannel(userId) {
@@ -35,8 +56,14 @@ class TwitchApi {
                 'Client-Id': this.Client_id,
             },
         })
-            .then(res => res.json())
-            .catch(err => console.error(err));
+            .then(res => res.status === 200 ? res.json() : undefined)
+            .catch(error => {
+                this.client.log({
+                    textContent: formatLog('Could not get channel on Twitch because of networking error', { error: error.message, userId: userId }),
+                    headers: ['Twitch', 'FetchChannel'],
+                    type: 'Error',
+                });
+            });
     }
     async fetchUser(username) {
         return await fetch(`https://api.twitch.tv/helix/users?login=${username}`, {
@@ -45,8 +72,15 @@ class TwitchApi {
                 'Authorization': `Bearer ${this.token}`,
                 'Client-Id': this.Client_id,
             },
-        }).then(res => res.json())
-            .catch(err => console.error(err));
+        })
+            .then(res => res.status === 200 ? res.json() : undefined)
+            .catch(error => {
+                this.client.log({
+                    textContent: formatLog('Could not get user on Twitch because of networking error', { error: error.message, username: username }),
+                    headers: ['Twitch', 'FetchUser'],
+                    type: 'Error',
+                });
+            });
     }
 
     async fetchStream(option) {
@@ -56,8 +90,15 @@ class TwitchApi {
                 'Authorization': `Bearer ${this.token}`,
                 'Client-Id': this.Client_id,
             },
-        }).then(res => res.json())
-            .catch(err => console.error(err));
+        })
+            .then(res => res.status === 200 ? res.json() : undefined)
+            .catch(error => {
+                this.client.log({
+                    textContent: formatLog('Could not get user streams on Twitch because of networking error', { error: error.message, userId: option.user_id }),
+                    headers: ['Twitch', 'FetchStream'],
+                    type: 'Error',
+                });
+            });
     }
 
     async fetchQuery(query, maxResults = 5, isLive = true) {
@@ -67,8 +108,15 @@ class TwitchApi {
                 'Authorization': `Bearer ${this.token}`,
                 'Client-Id': this.Client_id,
             },
-        }).then(res => res.json())
-            .catch(err => console.error(err));
+        })
+            .then(res => res.status === 200 ? res.json() : undefined)
+            .catch(error => {
+                this.client.log({
+                    textContent: formatLog('Could not get query on Twitch because of networking error', { error: error.message, query: query }),
+                    headers: ['Twitch', 'FetchQuery'],
+                    type: 'Error',
+                });
+            });
     }
 }
 
