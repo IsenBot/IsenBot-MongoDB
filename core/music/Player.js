@@ -149,7 +149,7 @@ class Player extends EventEmitter {
         this.queue.delete(guildId);
     }
 
-    close() {
+    destroy() {
         this.queue.forEach(q => {
             q.destroy();
             this.queue.delete(q);
