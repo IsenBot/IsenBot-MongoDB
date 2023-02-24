@@ -12,7 +12,7 @@ module.exports = async (interaction) => {
 
     let query = interaction.options.getString('query', true);
 
-    await interaction.reply({ content: await interaction.translate('music/music/play:exe:recherche'), ephemeral: true });
+    await interaction.reply({ content: interaction.translate('music/music/play:exe:recherche'), ephemeral: true });
 
     const tracks = [];
 
@@ -34,19 +34,19 @@ module.exports = async (interaction) => {
                     if (ytTrack) {
                         ytTrack.type = 'spotify';
                         tracks.push(ytTrack);
-                        result = await interaction.followUp({ content: await interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack?.title}**` }), ephemeral: false });
+                        result = await interaction.followUp({ content: interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack?.title}**` }), ephemeral: false });
                     } else {
-                        return interaction.followUp({ content: await interaction.translate('music/music/error":404_result'), ephemeral: true });
+                        return interaction.followUp({ content: interaction.translate('music/music/error":404_result'), ephemeral: true });
                     }
                 }
                 break;
             case 'album':
             case 'playlist':
                 if (data.tracks) {
-                    await interaction.editReply({ content: await interaction.translate('music/music/play:exe:loading') });
+                    await interaction.editReply({ content: interaction.translate('music/music/play:exe:loading') });
                     // eslint-disable-next-line prefer-const
                     for (let [index, value] of data.tracks.items.entries()) {
-                        await interaction.editReply({ content: await interaction.translate('music/music/play:exe:loading') + ` **${~~(((index + 1) / data.tracks.items.length) * 100)}%**` });
+                        await interaction.editReply({ content: interaction.translate('music/music/play:exe:loading') + ` **${~~(((index + 1) / data.tracks.items.length) * 100)}%**` });
                         if (data.type === 'playlist') value = value?.track;
                         if (value?.name) {
                             const ytTrack = await client.player.searchYoutubeTrack(`${value.name} ${value.artists[0].name}`);
@@ -56,7 +56,7 @@ module.exports = async (interaction) => {
                             }
                         }
                     }
-                    result = await interaction.followUp({ content: await interaction.translate('music/music/play:exe:add_tracks_to_queue', { title: `**${data.name}**`, nb: `**${tracks.length}**` }), ephemeral: false });
+                    result = await interaction.followUp({ content: client.translate('music/music/play:exe:add_tracks_to_queue', { title: `**${data.name}**`, nb: `**${tracks.length}**` }, interaction.guild.preferredLocale), ephemeral: false });
                 }
                 break;
             }
@@ -68,12 +68,12 @@ module.exports = async (interaction) => {
 
         if (data.tracks?.items) {
             const track = data.tracks.items[0];
-            if (!track?.name) return interaction.followUp({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
+            if (!track?.name) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
-            if (!ytTrack) return interaction.followUp({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
+            if (!ytTrack) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
             ytTrack.type = 'spotify';
             tracks.push(ytTrack);
-            result = await interaction.followUp({ content: await interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack.title}**` }), ephemeral: false });
+            result = await interaction.followUp({ content: client.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack.title}**` }, interaction.guild.preferredLocale), ephemeral: false });
         }
     }
 
@@ -81,11 +81,16 @@ module.exports = async (interaction) => {
         track.discordMessageUrl = result.url;
     });
 
-    queue.addTracks(tracks);
-
     const b = queue.connect(interaction.member.voice.channel);
 
-    if (!b) return interaction.followUp({ content: await interaction.translate('music/music/error:404_channel'), ephemeral: true });
+    switch (b) {
+    case 0:
+        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+    case 1:
+        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+    }
+
+    queue.addTracks(tracks);
 
     if (!queue.playing) {
         setTimeout(() => {

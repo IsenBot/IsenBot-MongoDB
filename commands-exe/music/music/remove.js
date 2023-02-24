@@ -7,15 +7,15 @@ module.exports = async (interaction) => {
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
-    const nb = interaction.options.getNumber('number', true);
+    if (!queue || !queue.playing) return interaction.reply({ content: interaction.translate('music/music/error:no_track'), ephemeral: true });
 
-    if (!queue || !queue.playing) return interaction.reply({ content: await interaction.translate('music/music/error:no_track') });
+    const nb = interaction.options.getNumber('index', true) - 1;
 
-    if (nb > queue.queue.length) return interaction.reply({ content: await interaction.translate('music/music/error:index_out_of_range') });
+    if (nb > queue.queue.length) return interaction.reply({ content: interaction.translate('music/music/error:index_out_of_range'), ephemeral: true });
 
-    if (nb < 1) return interaction.reply({ content: await interaction.translate('music/music/error:index_out_of_range') });
+    if (nb < 0) return interaction.reply({ content: interaction.translate('music/music/error:index_out_of_range'), ephemeral: true });
 
-    const track = queue.remove(nb - 1);
+    const track = queue.remove(nb);
 
-    await interaction.reply({ content: await interaction.translate('music/music/remove:exe:remove', { track: track.title }) });
+    await interaction.reply({ content: interaction.client.translate('music/music/remove:exe:remove', { track: track.title }, interaction.guild.preferredLocale) });
 };

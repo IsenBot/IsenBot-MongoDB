@@ -4,7 +4,7 @@
     "DESCRIPTION": "Régler le volume sonore",
     "VOLUME": {
       "NAME": "volume",
-      "DESCRIPTION": "Valeur du volume sonore | 1 - 100"
+      "DESCRIPTION": "Valeur du volume sonore | 0 - 100"
     }
   },
   "EXE": {

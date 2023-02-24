@@ -4,7 +4,7 @@
     "DESCRIPTION": "Setup volume",
     "VOLUME": {
       "NAME": "volume",
-      "DESCRIPTION": "Volume | 1 - 100"
+      "DESCRIPTION": "Volume | 0 - 100"
     }
   },
   "EXE": {

@@ -7,7 +7,9 @@ module.exports = async (interaction) => {
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
+    if (!queue || !queue.playing) return interaction.reply({ content: interaction.translate('music/music/error:no_track'), ephemeral: true });
+
     queue.stop();
 
-    await interaction.reply({ content: await interaction.translate('music/music/stop:exe:stop') });
+    await interaction.reply({ content: await interaction.client.translate('music/music/stop:exe:stop', {}, interaction.guild.preferredLocale) });
 };

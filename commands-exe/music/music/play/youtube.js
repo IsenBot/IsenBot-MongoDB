@@ -7,7 +7,7 @@ module.exports = async (interaction) => {
 
     if (!check) return;
 
-    await interaction.reply({ content: await interaction.translate('music/music/play:exe:recherche'), ephemeral: true });
+    await interaction.reply({ content: interaction.translate('music/music/play:exe:recherche'), ephemeral: true });
 
     const id = interaction.options.getString('query', true);
 
@@ -27,25 +27,25 @@ module.exports = async (interaction) => {
             } else if (url.pathname === '/watch') {
                 track = [await interaction.client.player.searchYoutubeId(id)];
             } else {
-                return interaction.editReply({ content: await interaction.translate('music/music/error:invalid_url'), ephemeral: true });
+                return interaction.editReply({ content: interaction.translate('music/music/error:invalid_url'), ephemeral: true });
             }
         } else {
-            return interaction.editReply({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
+            return interaction.editReply({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
         }
     } else {
         track = [await interaction.client.player.searchYoutubeId(id)];
     }
 
-    if (!track || !track[0]) return interaction.editReply({ content: await interaction.translate('music/music/error:404_result'), ephemeral: true });
+    if (!track || !track[0]) return interaction.editReply({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')
         .setThumbnail(track[0].thumbnail);
 
     if (track.length > 1) {
-        embed.setDescription(await interaction.translate('music/music/play:exe:add_tracks_to_queue', { title: track[0].title, nb: track.length }));
+        embed.setDescription(interaction.client.translate('music/music/play:exe:add_tracks_to_queue', { title: track[0].title, nb: track.length }, interaction.guild.preferredLocale));
     } else {
-        embed.setDescription(await interaction.translate('music/music/play:exe:add_track_to_queue', { title: track[0].title }));
+        embed.setDescription(interaction.client.translate('music/music/play:exe:add_track_to_queue', { title: track[0].title }, interaction.guild.preferredLocale));
     }
 
     const result = await interaction.followUp({ embeds: [embed] });
@@ -54,11 +54,16 @@ module.exports = async (interaction) => {
         t.discordMessageUrl = result.url;
     });
 
-    queue.addTracks(track);
-
     const b = queue.connect(interaction.member.voice.channel);
 
-    if (!b) return interaction.followUp({ content: await interaction.translate('music/music/error:404_channel'), ephemeral: true });
+    switch (b) {
+    case 0:
+        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+    case 1:
+        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+    }
+
+    queue.addTracks(track);
 
     if (!queue.playing) {
         queue.play();
