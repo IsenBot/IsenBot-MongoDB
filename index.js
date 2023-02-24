@@ -68,7 +68,7 @@ async function main() {
             type: 'log',
         });
         client.log({
-            textContent: 'Destroying player ...',
+            textContent: 'Closing player ...',
             type: 'log',
         });
         await client.player.destroy();
