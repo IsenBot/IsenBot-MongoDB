@@ -1,0 +1,18 @@
+{
+    "BUILDER": {
+        "NAME": "défaut",
+        "DESCRIPTION": "modifier la permission d'usage d'une commande pour tous dans tout les salons",
+        "COMMAND": {
+            "NAME": "commande",
+            "DESCRIPTION": "la commande à modifier"
+        },
+        "AUTHORIZATION": {
+            "NAME": "autorisation",
+            "DESCRIPTION": "type de permission (True pour autoriser, False pour interdire)"
+        }
+    },
+    "NOTAUTH": "Autorisez {{bot}} à modifier les permissions pour vous",
+    "BUTTON": "Autoriser",
+    "GRANT": "La commande {{command}} est autorisée pour tous par défaut",
+    "REVOKE": "La commande {{command}} est interdite pour tous par défaut"
+}

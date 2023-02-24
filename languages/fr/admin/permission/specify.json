@@ -1,0 +1,34 @@
+{
+    "BUILDER": {
+        "NAME": "spécifique",
+        "DESCRIPTION": "modifier la permission d'usage d'une commande pour un utilisateur, rôle ou salon",
+        "USER": {
+            "NAME": "utilisateur",
+            "DESCRIPTION": "utilisateur à autoriser/interdire"
+        },
+        "ROLE": {
+            "NAME": "rôle",
+            "DESCRIPTION": "rôle à autoriser/interdire"
+        },
+        "CHANNEL": {
+            "NAME": "salon",
+            "DESCRIPTION": "salon dans lequel autoriser/interdire la commande"
+        },
+        "COMMAND": {
+            "NAME": "commande",
+            "DESCRIPTION": "commande à autoriser/interdire"
+        },
+        "AUTHORIZATION": {
+            "NAME": "autorisation",
+            "DESCRIPTION": "type de permission (True pour autoriser, False pour interdire)"
+        }
+    },
+    "NOMENTIONABLE": "Merci de spécifier au minimum un utilisateur, rôle ou salon (ou utiliser /permission défaut)",
+    "NOTAUTH": "Autorisez {{bot}} à modifier les permissions pour vous",
+    "BUTTON": "Autoriser",
+    "GRANT": "Permissions ajoutées avec succès",
+    "REVOKE": "Permissions supprimées avec succès",
+    "USER": "    :ballot_box_with_check: Pour l'utilisateur {{user}} avec la commande {{command}}",
+    "ROLE": "    :ballot_box_with_check: Pour le rôle {{role}} avec la commande {{command}}",
+    "CHANNEL": "    :ballot_box_with_check: Pour la commande {{command}} dans le salon {{channel}}"
+}

@@ -1,0 +1,34 @@
+{
+    "BUILDER": {
+        "NAME": "specify",
+        "DESCRIPTION": "setup permission to use a command for a specified user, role or channel",
+        "USER": {
+            "NAME": "user",
+            "DESCRIPTION": "user to setup permission for"
+        },
+        "ROLE": {
+            "NAME": "role",
+            "DESCRIPTION": "role to setup permission for"
+        },
+        "CHANNEL": {
+            "NAME": "channel",
+            "DESCRIPTION": "channel in wich permission will be setup"
+        },
+        "COMMAND": {
+            "NAME": "command",
+            "DESCRIPTION": "bot command to setup permission"
+        },
+        "AUTHORIZATION": {
+            "NAME": "authorization",
+            "DESCRIPTION": "permission to setup"
+        }
+    },
+    "NOMENTIONABLE": "Please specify minimum one user, role or channel (or use /permission default)",
+    "NOTAUTH": "Please allow {{bot}} to update permissions for you",
+    "BUTTON": "Authorize",
+    "SUCCESS": "Permissions successfully revoked",
+    "GRANT": "Permissions successfully granted",
+    "USER": "    :ballot_box_with_check: For user {{user}} on command {{command}}",
+    "ROLE": "    :ballot_box_with_check: For role {{role}} on command {{command}}",
+    "CHANNEL": "    :ballot_box_with_check: For command {{command}} in channel {{channel}}"
+}
