@@ -15,28 +15,21 @@ function isUrl(query) {
     }
 }
 
-function decodeString(html) {
-    return html.replace(/&#([0-9]{1,3});/gi, function(match, num) {
-        return String.fromCharCode(parseInt(num));
-    });
-}
-
 async function checkUserChannel(interaction) {
+
     if (!interaction.member?.voice.channel) {
         await interaction.reply({
-            content: await interaction.translate('music/music/error:user_not_in_voice'),
+            content: interaction.translate('music/music/error:user_not_in_voice'),
             ephemeral: true,
         });
-
         return false;
     }
 
-    if (interaction?.guild?.me?.channel && interaction.member?.voice.channel.id !== interaction.guild.me?.voice?.channel?.id) {
+    if (interaction?.guild?.members?.me?.voice?.channel && interaction.member?.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
         await interaction.reply({
-            content: await interaction.translate('music/music/error:user_not_in_same_voice'),
+            content: interaction.translate('music/music/error:user_not_in_same_voice'),
             ephemeral: true,
         });
-
         return false;
     }
 
@@ -46,6 +39,5 @@ async function checkUserChannel(interaction) {
 module.exports = {
     shuffleArray,
     isUrl,
-    decodeString,
     checkUserChannel,
 };
