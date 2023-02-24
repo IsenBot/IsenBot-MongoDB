@@ -8,17 +8,19 @@ module.exports = async (interaction) => {
 
     const queue = interaction.client.player.getQueue(interaction.guildId);
 
+    if (!queue || !queue.playing) return interaction.reply({ content: interaction.translate('music/music/error:no_track'), ephemeral: true });
+
     const page = interaction.options.getInteger('page', false) || 1;
 
     const queueList = queue.getQueue();
 
     const actualTrack = queue.actualTrack;
 
-    if (!actualTrack) return interaction.reply({ content: await interaction.translate('music/music/error:no_track_in_queue'), ephemeral: true });
+    if (!actualTrack) return interaction.reply({ content: interaction.translate('music/music/error:no_track_in_queue'), ephemeral: true });
 
     if (actualTrack) {
         const nomplaying = new EmbedBuilder()
-            .setTitle(await interaction.translate('music/music/queue:exe:now_playing'))
+            .setTitle(await interaction.client.translate('music/music/queue:exe:now_playing', {}, interaction.guild.preferredLocale))
             .setThumbnail(actualTrack.thumbnail)
             .setDescription(`**${actualTrack.type}** - ${actualTrack.title} - **${actualTrack.channelTitle}**`)
             .setTimestamp(new Date());
@@ -28,7 +30,7 @@ module.exports = async (interaction) => {
 
     if (queueList.length === 0) return;
 
-    if ((page - 1) * 10 > queueList.length - 1) return interaction.reply({ content: await interaction.translate('music/music/error:404_page'), ephemeral: true });
+    if ((page - 1) * 10 > queueList.length - 1) return interaction.reply({ content: interaction.translate('music/music/error:404_page'), ephemeral: true });
 
     let message = '';
 
@@ -40,5 +42,5 @@ module.exports = async (interaction) => {
 
     if (queueList.length > 10) message += `Page ${page}/${Math.ceil(queueList.length / 10)}`;
 
-    await interaction.followUp({ content: message.length < 1 ? await interaction.translate('music/music/error:queue_empty') : message, ephemeral: message.length < 1 });
+    await interaction.followUp({ content: message.length < 1 ? interaction.translate('music/music/error:queue_empty') : message, ephemeral: message.length < 1 });
 };
