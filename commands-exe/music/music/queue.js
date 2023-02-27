@@ -18,7 +18,7 @@ module.exports = async (interaction) => {
 
     if (!actualTrack) return interaction.reply({ content: interaction.translate('music/music/error:no_track_in_queue'), ephemeral: true });
 
-    if (actualTrack) {
+    if (page === 1) {
         const nomplaying = new EmbedBuilder()
             .setTitle(await interaction.client.translate('music/music/queue:exe:now_playing', {}, interaction.guild.preferredLocale))
             .setThumbnail(actualTrack.thumbnail)
@@ -42,5 +42,9 @@ module.exports = async (interaction) => {
 
     if (queueList.length > 10) message += `Page ${page}/${Math.ceil(queueList.length / 10)}`;
 
-    await interaction.followUp({ content: message.length < 1 ? interaction.translate('music/music/error:queue_empty') : message, ephemeral: message.length < 1 });
+    if (interaction.replied) {
+        await interaction.followUp({ content: message.length < 1 ? interaction.translate('music/music/error:queue_empty') : message, ephemeral: message.length < 1 });
+    } else {
+        await interaction.reply({ content: message.length < 1 ? interaction.translate('music/music/error:queue_empty') : message, ephemeral: message.length < 1 });
+    }
 };
