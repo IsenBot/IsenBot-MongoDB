@@ -38,6 +38,7 @@ class IsenBot extends Client {
         };
         this.commandsBuilderPath = path.resolve(__dirname, '../commands-builders/');
         this.eventsPath = path.resolve(__dirname, '../event');
+        this.autoCompletePath = path.resolve(__dirname, '../interactions/autocomplete');
         this.buttonPath = path.resolve(__dirname, '../interactions/button');
         this.selectPath = path.resolve(__dirname, '../interactions/select');
         this.modalPath = path.resolve(__dirname, '../interactions/modal');
@@ -161,28 +162,23 @@ class IsenBot extends Client {
     }
     // Execute a button action
     executeButton(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.buttonPath, interaction.customId);
+        const commandPath = { dir: this.buttonPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a select interaction
     executeSelect(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.selectPath, interaction.customId);
+        const commandPath = { dir: this.selectPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a modal submission
     executeModal(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.modalPath, interaction.customId);
+        const commandPath = { dir: this.modalPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
-
-    async handleInteraction(interaction, category) {
-        const entry = interaction.options.getFocused();
-        const commandPath = Object.assign({}, this.commandsExePath);
-        commandPath.root = path.join(commandPath.root, category, interaction.commandName, 'handleInteraction');
-        return await (require(path.format(commandPath)))(interaction, this, entry);
+    // Execute an autocomplete interaction
+    executeAutocomplete(interaction) {
+        const commandPath = { dir: this.autoCompletePath, name: interaction.commandName };
+        return (require(path.format(commandPath)))(interaction);
     }
 
     // Load the command in the client.

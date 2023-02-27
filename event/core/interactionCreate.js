@@ -6,11 +6,26 @@ module.exports = {
         const client = interaction.client;
 
         if (interaction.isAutocomplete()) {
-            const cmd = client.commands.get(interaction.commandName);
-
-            if (!cmd) return;
-
-            await client.handleInteraction(interaction, cmd);
+            const command = client.commands.get(interaction.commandName);
+            if (!command) return;
+            interaction.guild.logger.log({
+                textContent: formatLog('Received autocomplete interaction', { 'CommandName': interaction.commandName }),
+                headers: 'InteractionHandler',
+                type: 'event',
+                author: interaction.user,
+                url: interaction.channel.url,
+            });
+            try {
+                await client.executeAutocomplete(interaction);
+            } catch (error) {
+                interaction.guild.logger.log({
+                    textContent: formatLog('Failed sending autocomplete', { 'CommandName': interaction.commandName, 'Error message': error.message }),
+                    headers: 'InteractionHandler',
+                    type: 'error',
+                    author: interaction.user,
+                });
+                console.log(error);
+            }
         }
 
 

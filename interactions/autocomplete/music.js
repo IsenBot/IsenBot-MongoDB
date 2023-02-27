@@ -1,7 +1,11 @@
 const YouTube = require('youtube-sr').default;
 
-module.exports = async (interaction, client, query) => {
+module.exports = async (interaction) => {
     if (interaction.isAutocomplete()) {
+        const query = interaction.options.getFocused();
+
+        const client = interaction.client;
+
         const subcommand = interaction.options.getSubcommand();
         const subcommandGroup = interaction.options.getSubcommandGroup();
 
