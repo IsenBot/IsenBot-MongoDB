@@ -1,6 +1,6 @@
 {
     "name": "isenbot",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "description": "ISEN Nantes's promo 5's discord bot with various command categories like admin, music, core ...",
     "main": "index.js",
     "scripts": {
