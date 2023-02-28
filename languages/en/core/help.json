@@ -1,0 +1,10 @@
+{
+    "BUILDER": {
+        "NAME": "help",
+        "DESCRIPTION": "Tells you all I can do"
+    },
+    "FUNCTIONLIST": "List of commands you can call with {{name}}",
+    "EMBED_DESCRIPTION": ":small_blue_diamond: usable commands for {{user}}\n:small_orange_diamond: other commands",
+    "LINK": "See more",
+    "HELP": "Show all bot commands"
+}

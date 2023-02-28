@@ -2,5 +2,6 @@
   "BUILDER": {
     "NAME": "role",
     "DESCRIPTION": ""
-  }
+  },
+  "HELP": "Create a 'react to give role' message"
 }

@@ -6,5 +6,6 @@
     "FILENAME": "{{serverName}}_heures.csv",
     "NUMBEREDFILENAME": "{{serverName}}_heures_{{number}}.csv",
     "RESPONSE": "Fichier(s) demandé(s) :",
-    "NUMBEREDRESPONSE": "Fichier n°{{number}}"
+    "NUMBEREDRESPONSE": "Fichier n°{{number}}",
+    "HELP": "Permet de récupérer un CSV des heures de club réalisées par les membres du serveur Discord"
 }

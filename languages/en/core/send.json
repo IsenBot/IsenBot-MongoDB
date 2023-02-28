@@ -26,5 +26,6 @@
     "AUTHOR": "\n*Sent with {{bot}} by {{user}}*",
     "DELETE": "\n\n*Ephemeral message : will be deleted on {{date}}*",
     "SENT": "Message succesfully sent at : {{link}}",
-    "NOMESSAGE": "No message to send"
+    "NOMESSAGE": "No message to send",
+    "HELP": "Send a message with the bot"
 }

@@ -7,5 +7,6 @@
             "DESCRIPTION": "Les utilisateurs invités arriveront dans ce salon"
         }
     },
-    "TITLE": "Lien d'invitation vers le salon #{{channel}} : "
+    "TITLE": "Lien d'invitation vers le salon #{{channel}} : ",
+    "HELP": "Génère un lien d'invitation vers le serveur"
 }

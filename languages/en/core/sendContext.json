@@ -9,5 +9,6 @@
     "REPLY": {
         "SUCCESS": "Your message was send successfully. Click to see : {{url}}",
         "ERROR": "Sorry, {{channelUrl}} is not a valid channel URL"
-    }
+    },
+    "HELP": "Send a message with the bot via a right clic"
 }

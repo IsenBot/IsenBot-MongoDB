@@ -4,6 +4,9 @@
         "DESCRIPTION": "Répond avec pong !"
     },
     "TITLE": "Temps de réponse :",
-    "EMBED_DESCRIPTION": "{{ping}}ms",
-    "REPLY_CONTENT": "Je suis bien réveillé !!"
+    "BOT_PING": "{{bot}} : {{ping}}ms",
+    "MONGO_PING": "Base de données : {{ping}}ms",
+    "UP": ":white_check_mark: Connecté !",
+    "DOWN": ":no_entry_sign: En panne !",
+    "HELP": "Vérifie que le bot est toujours fonctionnel"
 }
