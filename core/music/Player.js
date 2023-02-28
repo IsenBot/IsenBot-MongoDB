@@ -27,9 +27,15 @@ class Player extends EventEmitter {
     async searchYoutubeTrack(query, limit = 1) {
         const search = await YouTube.search(query, { type: 'video', limit });
 
-        if (search.length === 0) return null;
+        if (search.length === 0) {
+            return {
+                status: 404,
+                error: 'Track not found',
+            };
+        }
 
         return {
+            status: 200,
             title: search[0].title || 'No title',
             channelTitle: search[0].channel?.name,
             url: search[0].url,
@@ -47,9 +53,15 @@ class Player extends EventEmitter {
 
         const search = await YouTube.getVideo(query, { type: 'video', limit });
 
-        if (!search) return null;
+        if (!search) {
+            return {
+                status: 404,
+                error: 'Video not found',
+            };
+        }
 
         return {
+            status: 200,
             title: search.title || 'No title',
             channelTitle: search.channel?.name,
             url: search.url,
@@ -64,10 +76,16 @@ class Player extends EventEmitter {
     async searchYoutubePlaylist(id) {
         const search = await YouTube.getPlaylist(id, { fetchAll: true });
 
-        if (search.length === 0) return null;
+        if (search.length === 0) {
+            return {
+                status: 404,
+                error: 'Playlist not found',
+            };
+        }
 
         return search.videos.map((video) => {
             return {
+                status: 200,
                 title: video.title || 'No title',
                 channelTitle: video.channel?.name,
                 url: video.url,
@@ -86,21 +104,22 @@ class Player extends EventEmitter {
 
         const user = (await this.client.player.twitchApi.fetchUser(username)).data[0];
 
-        if (!user) return { error: 'User not found' };
+        if (!user) return { status: 404, error: 'User not found' };
 
         const streamData = (await this.client.player.twitchApi.fetchStream({ user_id: user.id, user_login: null, type: null, language: null, limit: 1 }))?.data[0];
 
-        if (!streamData) return { error: 'Stream not found' };
+        if (!streamData) return { status: 404, error: 'Stream not found' };
 
-        if (!stream || stream.length === 0) return { error: 'Stream not found' };
+        if (!stream || stream.length === 0) return { status: 404, error: 'Stream not found' };
 
         let track = stream.filter((item) => {return item.quality === 'audio_only'; })[0];
 
         if (!track) track = stream[stream.length - 1];
 
-        if (track.url.length < 2) return { error: 'Stream not found' };
+        if (track.url.length < 2) return { status: 404, error: 'Stream not found' };
 
         return {
+            status: 200,
             channelTitle: username,
             url: 'https://www.twitch.tv/' + username.toLowerCase(),
             twitchUrl: track.url,

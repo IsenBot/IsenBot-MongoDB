@@ -31,7 +31,7 @@ module.exports = async (interaction) => {
             case 'track':
                 if (data.name) {
                     const ytTrack = await client.player.searchYoutubeTrack(`${data.name} ${data.artists[0].name}`);
-                    if (ytTrack) {
+                    if (ytTrack && ytTrack.status === 200) {
                         ytTrack.type = 'spotify';
                         tracks.push(ytTrack);
                         result = await interaction.followUp({ content: interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack?.title}**` }), ephemeral: false });
@@ -50,7 +50,7 @@ module.exports = async (interaction) => {
                         if (data.type === 'playlist') value = value?.track;
                         if (value?.name) {
                             const ytTrack = await client.player.searchYoutubeTrack(`${value.name} ${value.artists[0].name}`);
-                            if (ytTrack) {
+                            if (ytTrack && ytTrack.status === 200) {
                                 ytTrack.type = 'spotify';
                                 tracks.push(ytTrack);
                             }
@@ -70,7 +70,7 @@ module.exports = async (interaction) => {
             const track = data.tracks.items[0];
             if (!track?.name) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
-            if (!ytTrack) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
+            if (!ytTrack || ytTrack.status !== 200) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
             ytTrack.type = 'spotify';
             tracks.push(ytTrack);
             result = await interaction.followUp({ content: client.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack.title}**` }, interaction.guild.preferredLocale), ephemeral: false });
