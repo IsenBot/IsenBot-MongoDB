@@ -1,5 +1,5 @@
 const path = require('node:path');
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const { initLanguage } = require('../../utility/commandBuilder');
 
 module.exports = {
@@ -52,5 +52,6 @@ module.exports = {
                         .setRequired(true);
                 });
         })
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     , 'admin'),
 };

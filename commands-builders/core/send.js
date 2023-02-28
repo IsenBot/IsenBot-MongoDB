@@ -1,5 +1,5 @@
 const path = require('node:path');
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const { initLanguage } = require('../../utility/commandBuilder');
 
 module.exports = {
@@ -37,5 +37,6 @@ module.exports = {
                 .setDescription('show the author of the message')
                 .setRequired(false),
         )
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     , 'core'),
 };
