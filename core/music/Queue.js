@@ -1,5 +1,5 @@
 const m3u8stream = require('m3u8stream');
-const ytdl = require('ytdl-core');
+const play = require('play-dl');
 const EventEmitter = require('node:events');
 const { AudioPlayerStatus, createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior, VoiceConnectionStatus } = require('@discordjs/voice');
 const { shuffleArray } = require('../../utility/Function');
@@ -114,7 +114,7 @@ class Queue extends EventEmitter {
         this.emit('stop', this);
     }
 
-    play() {
+    async play() {
         if (this.queue.length > 0) {
 
             switch (this._loop) {
@@ -139,7 +139,8 @@ class Queue extends EventEmitter {
             if (this.actualTrack?.type === 'twitch') {
                 this.actualResource = this.player.createResource(m3u8stream(this.actualTrack.twitchUrl, this.client.config.m3u8stream_options));
             } else {
-                this.actualResource = this.player.createResource(ytdl(this.actualTrack?.url, this.client.config.player.ytdl_options));
+                const source = await play.stream(this.actualTrack?.url);
+                this.actualResource = this.player.createResource(source.stream, source.type);
             }
 
             this.setBitrate(64000);

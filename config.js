@@ -41,9 +41,6 @@ module.exports = {
         URI: 'http://localhost',
         port: 8080,
     },
-    apiKeys: {
-        blagues: process.env.BLAGUES_API_KEY,
-    },
     embed: {
         color: '#e40613',
         thumbnail: 'https://upload.wikimedia.org/wikipedia/fr/f/f0/Yncrea_BM_ISEN-_horizontal-1.jpg',
@@ -55,16 +52,6 @@ module.exports = {
             twitchSecret: process.env.TWITCH_CLIENT_SECRET,
             spotifyClient: process.env.SPOTIFY_CLIENT_ID,
             spotifySecret: process.env.SPOTIFY_CLIENT_SECRET,
-        },
-        ytdl_options: {
-            quality: 'lowestaudio',
-            filter: 'audioonly',
-
-            // Do not modify
-            highWaterMark: 1 << 62,
-            liveBuffer: 1 << 62,
-            dlChunkSize: 0,
-            bitrate: 64,
         },
         m3u8stream_options: {
             highWaterMark: 1 << 62,

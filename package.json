@@ -49,9 +49,9 @@
         "libsodium-wrappers": "^0.7.11",
         "m3u8stream": "^0.8.6",
         "mongodb": "^4.11.0",
+        "play-dl": "^1.9.6",
         "twitch-m3u8": "^1.1.5",
-        "youtube-sr": "^4.3.4",
-        "ytdl-core": "^4.11.2"
+        "youtube-sr": "^4.3.4"
     },
     "devDependencies": {
         "@actions/core": "^1.10.0",
