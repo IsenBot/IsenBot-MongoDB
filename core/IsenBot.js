@@ -7,7 +7,7 @@ const BlaguesAPI = require('blagues-api');
 const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
 
-const cronTasker = require('./Cron');
+const CronTasker = require('./Cron');
 
 const path = require('node:path');
 const fs = require('node:fs');
@@ -42,6 +42,7 @@ class IsenBot extends Client {
         };
         this.commandsBuilderPath = path.resolve(__dirname, '../commands-builders/');
         this.eventsPath = path.resolve(__dirname, '../event');
+        this.autoCompletePath = path.resolve(__dirname, '../interactions/autocomplete');
         this.buttonPath = path.resolve(__dirname, '../interactions/button');
         this.selectPath = path.resolve(__dirname, '../interactions/select');
         this.modalPath = path.resolve(__dirname, '../interactions/modal');
@@ -49,8 +50,10 @@ class IsenBot extends Client {
         this.commands = new Collection();
         // The client's logger
         this.logger = undefined;
+        this.tasks = new CronTasker(this);
+        this.auth = undefined;
+        this.api = undefined;
 
-        this.tasks = new cronTasker(this);
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
 
@@ -161,6 +164,13 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Returns an autocomplete
+    executeAutocomplete(interaction) {
+        const commandPath = {};
+        console.log(interaction.commandName);
+        commandPath.dir = path.join(this.autoCompletePath, interaction.commandName);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a button action

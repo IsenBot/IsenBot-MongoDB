@@ -1,0 +1,6 @@
+{
+  "BUILDER": {
+    "NAME": "permission",
+    "DESCRIPTION": "permission manager for commands"
+  }
+}
