@@ -121,6 +121,10 @@ module.exports = {
             headers: 'Ready',
             type: 'event',
         });
+
+        await client.player.twitchApi.fetchToken();
+        await client.player.spotifyClient.fetchToken();
+
         await checkNewGuild(client);
 
         log({

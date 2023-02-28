@@ -1,0 +1,9 @@
+{
+  "BUILDER": {
+    "NAME": "stopper",
+    "DESCRIPTION": "Stopper la musique"
+  },
+  "EXE": {
+    "STOP": "Arrêt de la musique"
+  }
+}

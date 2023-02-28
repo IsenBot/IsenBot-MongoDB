@@ -50,11 +50,10 @@ class Logger extends EventEmitter {
         } catch (e) {
             logger.logChannel = null;
             logger.log({
-                textContent: formatLog('Failed to fetch log channel', { 'ChannelId': logger.logChannel?.id }),
+                textContent: formatLog('Failed to fetch log channel', { 'channelId': logger.logChannel?.id, error: e.message }),
                 type: 'error',
                 headers: 'Logger',
             });
-            console.error(e);
         }
         return logger;
     }
@@ -76,11 +75,10 @@ class Logger extends EventEmitter {
         } catch (e) {
             this.logChannel = null;
             this.log({
-                textContent: formatLog('Failed to fetch log channel', { 'ChannelId': newLogChannelId }),
+                textContent: formatLog('Failed to fetch log channel', { 'channelId': this.logChannel?.id, error: e.message }),
                 type: 'error',
                 headers: 'Logger',
             });
-            console.error(e);
         }
         this.removeLogThread();
     }

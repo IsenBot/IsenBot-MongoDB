@@ -7,5 +7,5 @@ module.exports = {
     data: initLanguage(new SlashCommandBuilder()
         .setName('gethours')
         .setDescription('Get a CSV file of all registered hours')
-    , 'ISEN'),
+    , 'isen'),
 };

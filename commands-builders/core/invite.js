@@ -13,5 +13,5 @@ module.exports = {
                 .setDescription('test')
                 .setRequired(false),
         )
-    , 'CORE'),
+    , 'core'),
 };

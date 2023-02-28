@@ -1,0 +1,14 @@
+{
+  "BUILDER": {
+    "NAME": "pause",
+    "DESCRIPTION": "Pause or resume the song",
+    "MODE": {
+      "NAME": "mode",
+      "DESCRIPTION": "Pause or resume the song"
+    }
+  },
+  "EXE": {
+    "PAUSE": "Pause of the current song",
+    "RESUME": "Resume of the current song"
+  }
+}

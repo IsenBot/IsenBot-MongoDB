@@ -1,0 +1,10 @@
+{
+  "BUILDER": {
+    "NAME": "twitch",
+    "DESCRIPTION": "Jouer depuis Twitch",
+    "QUERY": {
+      "NAME": "recherche",
+      "DESCRIPTION": "Recherche"
+    }
+  }
+}

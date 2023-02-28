@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "file",
+    "DESCRIPTION": "Affiche la file d'attente des morceau à jouer",
+    "PAGE": {
+      "NAME": "page",
+      "DESCRIPTION": "Numéro de page à afficher"
+    }
+  },
+  "EXE": {
+    "NOW_PLAYING": "En cours de lecture"
+  }
+}

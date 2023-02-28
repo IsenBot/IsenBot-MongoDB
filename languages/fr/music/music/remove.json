@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "retirer",
+    "DESCRIPTION": "Retirer un morceau de la file",
+    "INDEX": {
+      "NAME": "index",
+      "DESCRIPTION": "Index du morceau à supprimer de la file"
+    }
+  },
+  "EXE": {
+    "REMOVE": "Suppression de {{title}} de la file"
+  }
+}
