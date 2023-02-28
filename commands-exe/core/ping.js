@@ -51,7 +51,6 @@ module.exports = async function(interaction) {
     const showGif = true;
     const reply = await interaction.fetchReply().catch(() => {botUp = false;});
     const mongoPing = await interaction.client.pingDB().catch(() => {mongoUp = false;});
-    console.log(mongoPing);
     const embed = new EmbedBuilder(interaction.client.embedTemplate)
         .setTitle(interaction.translate('core/ping:TITLE'))
         .addFields(

@@ -8,16 +8,16 @@
     "TIMEH": "Durée d'activité : {{hour}}h",
     "TIMEM": "Durée d'activité : {{minute}}min",
     "SHORT": {
-        "PLACEHOLDER": "Entrez içi le nom de l'activité"
+        "PLACEHOLDER": "Entrez ici le nom de l'activité"
     },
     "PARAGRAPH": {
-        "PLACEHOLDER": "Entrez içi une description si nécessaire"
+        "PLACEHOLDER": "Entrez ici une description si nécessaire"
     },
     "HOUR": {
         "PLACEHOLDER": "Nombre d'heures d'activité"
     },
     "MINUTE": {
-        "PLACEHOLDER": "Nomde de minutes d'activité"
+        "PLACEHOLDER": "Nombre de minutes d'activité"
     },
     "BUTTON": {
         "UPDATE":  "Modifier",

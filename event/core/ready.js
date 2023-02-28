@@ -111,6 +111,8 @@ module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
+        client.user.setActivity(`v${process.env.npm_package_version}`);
+
         await client.logger.setLogChannelId(client.config.log.globalLogChannelId);
         client.logger.emit('ready');
 
