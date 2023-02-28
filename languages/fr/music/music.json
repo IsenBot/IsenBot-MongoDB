@@ -1,5 +1,6 @@
 {
   "BUILDER": {
     "NAME": "musique"
-  }
+  },
+  "HELP": "Les différentes commandes pour contoler la musique sur le server"
 }

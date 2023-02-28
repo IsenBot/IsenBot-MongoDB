@@ -1,5 +1,6 @@
 {
   "BUILDER": {
     "NAME": "music"
-  }
+  },
+  "HELP": "Different music command to control music on the server"
 }

@@ -33,7 +33,7 @@ module.exports = async (interaction) => {
             return interaction.editReply({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
         }
     } else {
-        track = [await interaction.client.player.searchYoutubeId(id)];
+        track = [await interaction.client.player.searchYoutubeTrack(id)];
     }
 
     if (!track || !track[0] || track[0].status !== 200) return interaction.editReply({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });

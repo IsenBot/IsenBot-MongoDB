@@ -34,7 +34,7 @@ class Queue extends EventEmitter {
         this.actualResource = null;
         this.actualTrack = null;
         this._loop = 0;
-        this._volume = 0;
+        this._volume = 0.3;
         this.musicChannel = null;
         this.playing = false;
     }
@@ -145,11 +145,9 @@ class Queue extends EventEmitter {
 
             this.setBitrate(64000);
 
-            this.actualResource?.volume?.setVolume(this._volume);
+            this.actualResource.volume.setVolume(this._volume);
 
             this.AudioPlayer.play(this.actualResource);
-
-            this.smoothVolume(30, 1000);
 
             this.playing = true;
             this.emit('playNext', this.actualTrack);
