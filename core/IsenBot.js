@@ -1,11 +1,11 @@
 const { Client, Collection, EmbedBuilder } = require('discord.js');
 
 const { MongoClient } = require('mongodb');
-const { Player } = require('discord-player');
-const BlaguesAPI = require('blagues-api');
 
 const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
+
+const { Player } = require('./music/Player');
 
 const CronTasker = require('./Cron');
 
@@ -27,14 +27,7 @@ class IsenBot extends Client {
         this.mongodb = new MongoClient(this.config.database.uri);
         this.#database = this.mongodb.db(this.config.database.databaseName);
         // Create the music player
-        this.player = new Player(this, {
-            ytdlOptions: {
-                quality: 'highestaudio',
-                highWaterMark: 1 << 25,
-            },
-        });
-        // Store the blaguesAPI token and the last joke
-        this.blagues = new BlaguesAPI(this.config.apiKeys.blagues);
+        this.player = new Player(this);
         // The root path of the command exe
         this.commandsExePath = {
             root : path.resolve(__dirname, '../commands-exe/'),
@@ -180,31 +173,27 @@ class IsenBot extends Client {
         commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
         return (require(path.format(commandPath)))(interaction);
     }
-    // Returns an autocomplete
-    executeAutocomplete(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.autoCompletePath, interaction.commandName);
-        console.log(commandPath);
-        return (require(path.format(commandPath)))(interaction);
-    }
     // Execute a button action
     executeButton(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.buttonPath, interaction.customId);
+        const commandPath = { dir: this.buttonPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a select interaction
     executeSelect(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.selectPath, interaction.customId);
+        const commandPath = { dir: this.selectPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a modal submission
     executeModal(interaction) {
-        const commandPath = {};
-        commandPath.dir = path.join(this.modalPath, interaction.customId);
+        const commandPath = { dir: this.modalPath, name: interaction.customId };
         return (require(path.format(commandPath)))(interaction);
     }
+    // Execute an autocomplete interaction
+    executeAutocomplete(interaction) {
+        const commandPath = { dir: this.autoCompletePath, name: interaction.commandName };
+        return (require(path.format(commandPath)))(interaction);
+    }
+
     // Load the command in the client.
     async loadCommand() {
         this.log({

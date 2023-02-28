@@ -7,5 +7,5 @@ module.exports = {
     data: initLanguage(new SlashCommandBuilder()
         .setName('ping')
         .setDescription('test')
-    , 'CORE'),
+    , 'core'),
 };

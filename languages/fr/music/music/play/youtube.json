@@ -1,0 +1,10 @@
+{
+  "BUILDER": {
+    "NAME": "youtube",
+    "DESCRIPTION": "Jouer depuis YouTube",
+    "QUERY": {
+      "NAME": "recherche",
+      "DESCRIPTION": "Recherche"
+    }
+  }
+}

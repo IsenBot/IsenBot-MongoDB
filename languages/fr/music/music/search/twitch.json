@@ -1,0 +1,22 @@
+{
+  "BUILDER": {
+    "NAME": "twitch",
+    "DESCRIPTION": "Rechercher sur Twitch",
+    "QUERY": {
+      "NAME": "recherche",
+      "DESCRIPTION": "Recherche"
+    },
+    "LANGUAGE": {
+      "NAME": "langage",
+      "DESCRIPTION": "Le langage du streamer"
+    },
+    "LIVE": {
+      "NAME": "live",
+      "DESCRIPTION": "le streamer doit être en live ?"
+    },
+    "LIMIT": {
+      "NAME" : "limit",
+      "DESCRIPTION" : "nb limite de recherche | 1 - 20"
+    }
+  }
+}

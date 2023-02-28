@@ -1,0 +1,13 @@
+{
+  "BUILDER": {
+    "NAME": "remove",
+    "DESCRIPTION": "Remove a song from the queue",
+    "INDEX": {
+      "NAME": "index",
+      "DESCRIPTION": "The index of the song to remove"
+    }
+  },
+  "EXE": {
+    "REMOVE": "Delete {{title}} from the queue"
+  }
+}

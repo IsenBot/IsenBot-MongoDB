@@ -68,6 +68,15 @@ async function main() {
             type: 'log',
         });
         client.log({
+            textContent: 'Closing player ...',
+            type: 'log',
+        });
+        await client.player.destroy();
+        client.log({
+            textContent: 'Player closed',
+            type: 'log',
+        });
+        client.log({
             textContent: 'Destroying discord client...',
             type: 'log',
         });

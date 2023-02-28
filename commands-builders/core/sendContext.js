@@ -7,5 +7,5 @@ module.exports = {
     data: initContextLanguage(new ContextMenuCommandBuilder()
         .setName('sendContext')
         .setType(ApplicationCommandType.Message)
-    , 'CORE'),
+    , 'core'),
 };
