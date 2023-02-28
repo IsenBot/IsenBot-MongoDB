@@ -35,7 +35,7 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
         for(let i = commitsMessages.length - 1; i >= 0; i--){
             let commit = commitsMessages[i];
             let messageType = "";
-            if(!commit.toLowerCase().includes("[no-upgrade]") && !commit.toLowerCase().includes("[no-version]")){
+            if(!commit.toLowerCase().includes("[no-upgrade]") && !commit.toLowerCase().includes("[no-version]") && !commit.toLowerCase().includes("merge pull request")){
                 if(commit.toLowerCase().includes("major") || commit.toLowerCase().includes("breaking change")){
                     versionArray[0] += 1;
                     versionArray[1] = 0;
