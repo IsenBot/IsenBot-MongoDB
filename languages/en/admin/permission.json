@@ -2,5 +2,6 @@
   "BUILDER": {
     "NAME": "permission",
     "DESCRIPTION": "permission manager for commands"
-  }
+  },
+  "HELP": "Modify users permission to access commands"
 }

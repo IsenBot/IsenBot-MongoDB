@@ -2,5 +2,6 @@
   "BUILDER": {
     "NAME": "rôle",
     "DESCRIPTION": ""
-  }
+  },
+  "HELP": "Permet de créer un message d'attribution de roles"
 }

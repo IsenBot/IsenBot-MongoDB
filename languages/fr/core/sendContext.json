@@ -9,5 +9,6 @@
     "REPLY": {
         "SUCCESS": "Votre message a bien été envoyé. Cliquer pour voir : {{url}}",
         "ERROR": "Désolé, {{channelUrl}} n'est pas un URL de salon valide"
-    }
+    },
+    "HELP": "Permet d'envoyer un messavec avec le bot depuis un clic droit"
 }
