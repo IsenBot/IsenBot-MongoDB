@@ -1,7 +1,8 @@
 const chalk = require('chalk');
 require('dotenv').config();
 module.exports = {
-    token : process.env.TOKEN,
+    token: process.env.TOKEN,
+    oAuthToken: process.env.DISCORD_OAUTH_TOKEN,
     database: {
         uri: process.env.DATABASE_URI,
         databaseName: 'isenbot_db',
@@ -12,7 +13,7 @@ module.exports = {
         messagesToDeleteTableName: 'messageToDelete',
     },
     // Config for the log on discord and console
-    log : {
+    log: {
         globalLogChannelId: 'id',
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
@@ -35,6 +36,10 @@ module.exports = {
             error: '#e40613',
             event: '#e3bd2c',
         },
+    },
+    api: {
+        URI: 'http://localhost',
+        port: 8080,
     },
     apiKeys: {
         blagues: process.env.BLAGUES_API_KEY,

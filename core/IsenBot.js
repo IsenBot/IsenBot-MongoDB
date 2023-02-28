@@ -46,8 +46,10 @@ class IsenBot extends Client {
         this.commands = new Collection();
         // The client's logger
         this.logger = undefined;
+        this.tasks = new CronTasker(this);
+        this.auth = undefined;
+        this.api = undefined;
 
-        this.tasks = new cronTasker(this);
         this.languagesMeta = require('../languages/languages-meta.json');
         this.languageCache = new Collection();
 
@@ -158,6 +160,13 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
+        return (require(path.format(commandPath)))(interaction);
+    }
+    // Returns an autocomplete
+    executeAutocomplete(interaction) {
+        const commandPath = {};
+        console.log(interaction.commandName);
+        commandPath.dir = path.join(this.autoCompletePath, interaction.commandName);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a button action

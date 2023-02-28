@@ -1,0 +1,18 @@
+{
+    "BUILDER": {
+        "NAME": "default",
+        "DESCRIPTION": "setup permission to use a command for all on all channels",
+        "COMMAND": {
+            "NAME": "command",
+            "DESCRIPTION": "bot command to setup permission"
+        },
+        "AUTHORIZATION": {
+            "NAME": "authorization",
+            "DESCRIPTION": "permission to setup"
+        }
+    },
+    "NOTAUTH": "Please allow {{bot}} to update permissions for you",
+    "BUTTON": "Authorize",
+    "GRANT": "Permission granted for everyone on command {{command}} by default",
+    "REVOKE": "Permission revoked for everyone on command {{command}} by default"
+}

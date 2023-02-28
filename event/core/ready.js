@@ -1,6 +1,8 @@
 const { formatLog } = require('../../utility/Log');
 const { GuildSchema } = require('../../utility/Schema');
 const Logger = require('../../core/Log');
+const Auth = require('../../core/Auth');
+const Api = require('../../core/Api');
 
 async function checkNewGuild(client) {
     const guildsCollection = client.guildsCollection;
@@ -151,6 +153,9 @@ module.exports = {
             type: 'success',
         });
         await client.loadTasksFromDB();
+        client.api = new Api(client);
+        client.api.start();
+        client.auth = new Auth(client); // Auth class creation MUST be after Api class creation
         log({
             textContent: '... Bot fully start now\n',
             headers: 'Ready',
