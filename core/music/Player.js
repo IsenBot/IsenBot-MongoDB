@@ -17,14 +17,15 @@ class Player extends EventEmitter {
         this.queue = new Collection();
     }
 
-    createResource(resource) {
+    createResource(resource, inputType = StreamType.Arbitrary) {
         return createAudioResource(resource, {
             inlineVolume: true,
-            inputType: StreamType.Arbitrary,
+            inputType,
         });
     }
 
     async searchYoutubeTrack(query, limit = 1) {
+
         const search = await YouTube.search(query, { type: 'video', limit });
 
         if (search.length === 0) {
