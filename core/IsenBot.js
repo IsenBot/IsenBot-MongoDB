@@ -8,7 +8,7 @@ const { formatLog } = require('../utility/Log');
 
 const { Player } = require('./music/Player');
 
-const cronTasker = require('./Cron');
+const CronTasker = require('./Cron');
 
 const path = require('node:path');
 const fs = require('node:fs');
@@ -160,13 +160,6 @@ class IsenBot extends Client {
         const subCommandGroup = interaction.options.getSubcommandGroup(false);
         const subCommand = interaction.options.getSubcommand(false);
         commandPath.root = path.join(commandPath.root, category, interaction.commandName, subCommandGroup ?? '', subCommand ?? '');
-        return (require(path.format(commandPath)))(interaction);
-    }
-    // Returns an autocomplete
-    executeAutocomplete(interaction) {
-        const commandPath = {};
-        console.log(interaction.commandName);
-        commandPath.dir = path.join(this.autoCompletePath, interaction.commandName);
         return (require(path.format(commandPath)))(interaction);
     }
     // Execute a button action
