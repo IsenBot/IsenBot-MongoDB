@@ -1,0 +1,10 @@
+{
+    "BUILDER": {
+        "NAME": "aide",
+        "DESCRIPTION": "Explique les fonctionnalités"
+    },
+    "FUNCTIONLIST": "Liste des commandes utilisables avec {{name}}",
+    "EMBED_DESCRIPTION": ":small_blue_diamond: commandes accessibles par {{user}}\n:small_orange_diamond: autres commandes",
+    "LINK": "Voir plus",
+    "HELP": "Affiche les commandes accessibles"
+}

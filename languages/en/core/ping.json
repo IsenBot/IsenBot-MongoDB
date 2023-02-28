@@ -4,6 +4,9 @@
         "DESCRIPTION": "Replies with Pong!"
     },
     "TITLE": "Response time :",
-    "EMBED_DESCRIPTION": "{{ping}}ms",
-    "REPLY_CONTENT": "I'm totally awake !!"
+    "BOT_PING": "{{bot}} : {{ping}}ms",
+    "MONGO_PING": "Database : {{ping}}ms",
+    "UP": ":white_check_mark: Connected !",
+    "DOWN": ":no_entry_sign: Down !",
+    "HELP": "Check if the bot is still running"
 }

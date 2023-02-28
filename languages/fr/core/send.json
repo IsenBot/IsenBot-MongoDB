@@ -26,5 +26,6 @@
     "AUTHOR": "\n*Envoyé avec {{bot}} par {{user}}*",
     "DELETE": "\n\n*Message éphémère : sera supprimé le {{date}}*",
     "SENT": "Message envoyé avec succès à l'adresse : {{link}}",
-    "NOMESSAGE": "Pas de message à envoyer"
+    "NOMESSAGE": "Pas de message à envoyer",
+    "HELP": "Envoie un message avec le bot"
 }

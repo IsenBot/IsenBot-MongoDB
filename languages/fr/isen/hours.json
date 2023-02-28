@@ -23,5 +23,6 @@
         "UPDATE":  "Modifier",
         "VALIDATE":  "Valider",
         "DELETE":  "Supprimer"
-    }
+    },
+    "HELP": "Permet d'ajouter ses heures de club à l'ISEN"
 }

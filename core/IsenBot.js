@@ -121,6 +121,20 @@ class IsenBot extends Client {
         return result;
     }
 
+    async pingDB() {
+        const client = this;
+        return new Promise(function(resolve, reject) {
+            const start = Date.now();
+            client.#database.command(
+                {
+                    ping: 1,
+                },
+            )
+                .then(() => resolve(Date.now() - start))
+                .catch(e => reject(e));
+        });
+    }
+
     // Set up Logger for all guild and the global logger.
     async createLoggers() {
         const guildsCollection = this.guildsCollection;
