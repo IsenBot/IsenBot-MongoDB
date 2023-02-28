@@ -58,7 +58,7 @@ exec.exec(`git log ${last}...${first} --pretty=format:'%s'`, [], options).then((
         if(upgradeCommitsNumber > 0){
             package.version = versionArray.join('.');        
             message = '🚨 New version : ' + package.version + '\n' + message;
-            fs.writeFile('./package.json', JSON.stringify(package), async () => {
+            fs.writeFile('./package.json', JSON.stringify(package, null, 4), async () => {
                 await exec.exec('git config --global user.name "IsenBot Auto Versioning"');
                 await exec.exec('git config --global user.email "isenbot@isenbot.com"');
                 await exec.exec('git commit -a --message=\"' + message + '\"');
