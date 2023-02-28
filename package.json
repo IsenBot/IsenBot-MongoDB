@@ -10,10 +10,6 @@
         "start": "node index.js",
         "test": "npm run lint && npm run start"
     },
-    "config": {
-        "port": "8080",
-        "url": "http://localhost:8080/index"
-    },
     "engines": {
         "node": ">=16.9.0"
     },
