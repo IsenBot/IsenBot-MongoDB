@@ -1,7 +1,6 @@
 const { Client, Collection, EmbedBuilder } = require('discord.js');
 
 const { MongoClient } = require('mongodb');
-const BlaguesAPI = require('blagues-api');
 
 const Logger = require('./Log');
 const { formatLog } = require('../utility/Log');
@@ -29,8 +28,6 @@ class IsenBot extends Client {
         this.#database = this.mongodb.db(this.config.database.databaseName);
         // Create the music player
         this.player = new Player(this);
-        // Store the blaguesAPI token and the last joke
-        this.blagues = new BlaguesAPI(this.config.apiKeys.blagues);
         // The root path of the command exe
         this.commandsExePath = {
             root : path.resolve(__dirname, '../commands-exe/'),
