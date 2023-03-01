@@ -14,7 +14,7 @@ module.exports = {
     },
     // Config for the log on discord and console
     log: {
-        globalLogChannelId: 'id',
+        globalLogChannelId: process.env.GLOBAL_LOG_CHANNEL_ID,
         // If true, log on discord with embed and not plain text
         defaultEmbed: true,
         // Color rule for log message in console
@@ -38,8 +38,8 @@ module.exports = {
         },
     },
     api: {
-        URI: 'http://localhost',
-        port: 8080,
+        URI: process.env.API_URI ? process.env.API_URI : 'http://localhost',
+        port: process.env.API_PORT ? Number(process.env.API_PORT) : 8080,
     },
     embed: {
         color: '#e40613',
