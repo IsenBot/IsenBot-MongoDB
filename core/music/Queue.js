@@ -1,5 +1,5 @@
 const m3u8stream = require('m3u8stream');
-const play = require('play-dl');
+const { stream } = require('play-dl');
 const EventEmitter = require('node:events');
 const { AudioPlayerStatus, createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior, VoiceConnectionStatus } = require('@discordjs/voice');
 const { shuffleArray } = require('../../utility/Function');
@@ -27,7 +27,6 @@ class Queue extends EventEmitter {
         this.AudioPlayer.on('error', (error) => {
             console.log(error);
         });
-
 
         this.queue = [];
         this.history = [];
@@ -62,6 +61,8 @@ class Queue extends EventEmitter {
                 channelId: channel.id,
                 guildId: channel.guild.id,
                 adapterCreator: channel.guild.voiceAdapterCreator,
+                selfDeaf: true,
+                selfMute: false,
             });
 
             this.connection.on(VoiceConnectionStatus.Ready, () => {
@@ -70,6 +71,12 @@ class Queue extends EventEmitter {
 
             this.connection.on(VoiceConnectionStatus.Disconnected, () => {
                 this.emit('voiceConnectionDisconnected', this);
+            });
+
+            this.connection.on('stateChange', (oldState, newState) => {
+                if (oldState.status === VoiceConnectionStatus.Ready && newState.status === VoiceConnectionStatus.Connecting) {
+                    this.connection.configureNetworking();
+                }
             });
 
             this.connection.subscribe(this.AudioPlayer);
@@ -139,7 +146,7 @@ class Queue extends EventEmitter {
             if (this.actualTrack?.type === 'twitch') {
                 this.actualResource = this.player.createResource(m3u8stream(this.actualTrack.twitchUrl, this.client.config.m3u8stream_options));
             } else {
-                const source = await play.stream(this.actualTrack?.url);
+                const source = await stream(this.actualTrack?.url);
                 this.actualResource = this.player.createResource(source.stream, source.type);
             }
 
