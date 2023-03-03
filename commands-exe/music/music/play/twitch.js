@@ -28,7 +28,11 @@ module.exports = async (interaction) => {
     const embed = new EmbedBuilder()
         .setTitle('Twitch Stream')
         .setThumbnail(track.thumbnail)
-        .setDescription(interaction.client.translate('music/music/play:exe:add_track_to_queue', { title: `**${track.title}**` }) + ` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`, interaction.guild.preferredLocale);
+        .setFooter({
+            text: interaction.translate('music/music/play:exe:requested_by', { user: interaction.user.tag }),
+            iconURL: interaction.user.avatarURL('png', 2048),
+        })
+        .setTimestamp();
 
     const result = await interaction.followUp({ embeds: [embed] });
 

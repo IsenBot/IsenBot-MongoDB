@@ -1,4 +1,5 @@
 const { isUrl, checkUserChannel } = require('../../../../utility/Function');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (interaction) => {
 
@@ -77,8 +78,20 @@ module.exports = async (interaction) => {
         }
     }
 
+    const embed = new EmbedBuilder()
+        .setTitle('Spotify search')
+        .setDescription(result)
+        .setFooter({
+            text: interaction.translate('music/music/play:exe:requested_by', { user: interaction.user.tag }),
+            iconURL: interaction.user.avatarURL('png', 2048),
+        })
+        .setTimestamp();
+
+    await interaction.followUp({ embeds: [embed] });
+
     tracks.forEach((track) => {
         track.discordMessageUrl = result.url;
+        track.requestedBy = interaction.user.id;
     });
 
     const b = queue.connect(interaction.member.voice.channel);

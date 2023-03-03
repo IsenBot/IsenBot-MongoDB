@@ -40,7 +40,12 @@ module.exports = async (interaction) => {
 
     const embed = new EmbedBuilder()
         .setTitle('Youtube')
-        .setThumbnail(track[0].thumbnail);
+        .setThumbnail(track[0].thumbnail)
+        .setFooter({
+            text: interaction.translate('music/music/play:exe:requested_by', { user: interaction.user.tag }),
+            iconURL: interaction.user.avatarURL('png', 2048),
+        })
+        .setTimestamp();
 
     if (track.length > 1) {
         embed.setDescription(interaction.client.translate('music/music/play:exe:add_tracks_to_queue', { title: track[0].title, nb: track.length }, interaction.guild.preferredLocale));
@@ -52,6 +57,7 @@ module.exports = async (interaction) => {
 
     track.forEach((t) => {
         t.discordMessageUrl = result.url;
+        t.requestedBy = interaction.user.id;
     });
 
     const b = queue.connect(interaction.member.voice.channel);
