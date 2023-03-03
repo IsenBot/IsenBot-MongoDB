@@ -64,9 +64,20 @@ module.exports = async (interaction) => {
 
     switch (b) {
     case 0:
-        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:404_channel'),
+            ephemeral: true,
+        });
     case 1:
-        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:user_not_in_same_voice'),
+            ephemeral: true,
+        });
+    case 2:
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:bot_permission'),
+            ephemeral: true,
+        });
     }
 
     queue.addTracks(track);

@@ -12,5 +12,6 @@
   "LIMIT_OUT_OF_RANGE": "La limite doit être entre {{min}} et {{max}}",
   "QUEUE_EMPTY": "La file est vide",
   "USER_NOT_IN_SAME_VOICE": "Vous n'êtes pas dans le même salon vocal que le bot",
-  "404_STREAMER": "Le streamer est sûrement hors ligne ou inexistant"
+  "404_STREAMER": "Le streamer est sûrement hors ligne ou inexistant",
+  "BOT_PERMISSION": "le bot n'a pas la permission de rejoindre votre salon vocal"
 }

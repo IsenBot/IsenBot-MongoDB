@@ -37,14 +37,26 @@ module.exports = async (interaction) => {
     const result = await interaction.followUp({ embeds: [embed] });
 
     track.discordMessageUrl = result.url;
+    track.requestedBy = interaction.user.id;
 
     const b = queue.connect(interaction.member.voice.channel);
 
     switch (b) {
     case 0:
-        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:404_channel'),
+            ephemeral: true,
+        });
     case 1:
-        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:user_not_in_same_voice'),
+            ephemeral: true,
+        });
+    case 2:
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:bot_permission'),
+            ephemeral: true,
+        });
     }
 
     queue.addTrack(track);
