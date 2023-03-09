@@ -3,7 +3,7 @@ const { stringify } = require('csv-stringify');
 const { AttachmentBuilder } = require('discord.js');
 const { Transform } = require('node:stream');
 class csvSplit extends Transform {
-    constructor(maxSize) {
+    constructor(guildId, maxSize) {
         super({
             writableObjectMode: true,
             highWaterMark: 2,
@@ -11,13 +11,16 @@ class csvSplit extends Transform {
         // this.write('Adding time, Discord userId, Discord username, Title, Description, Duration\n');
         this.size = 0;
         this.maxSize = maxSize;
+        this.guildId = guildId;
     }
 
     _transform(chunk, encoding, callback) {
-        this.size = this.size + Buffer.byteLength(chunk);
-        this.push(chunk);
-        if (this.size > this.maxSize) {
-            this.end();
+        if (chunk.toString().split(',')[0] === this.guildId || chunk.toString() === 'guildId,userId,author,title,description,minutes,hours,added\n') {
+            this.size = this.size + Buffer.byteLength(chunk);
+            this.push(chunk);
+            if (this.size > this.maxSize) {
+                this.end();
+            }
         }
         callback();
     }
@@ -45,7 +48,7 @@ module.exports = async function(interaction) {
     const result = dbResultStream.pipe(csvString);
 
     async function prepareNewAttachment() {
-        const csvSpliter = new csvSplit(8300000); // Max for free users is 8Mbytes = 8388608 bytes - safety gap = 8300000
+        const csvSpliter = new csvSplit(interaction.guildId, 8300000); // Max for free users is 8Mbytes = 8388608 bytes - safety gap = 8300000
         result.pipe(csvSpliter);
         if (filesCounter === 0) {
             await interaction.reply({
