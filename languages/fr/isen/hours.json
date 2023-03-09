@@ -24,5 +24,6 @@
         "VALIDATE":  "Valider",
         "DELETE":  "Supprimer"
     },
+    "NOTAUTHOR": "Désolé, seulement l'utilisateur peut modifier ceci",
     "HELP": "Permet d'ajouter ses heures de club à l'ISEN"
 }

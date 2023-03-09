@@ -23,5 +23,6 @@
         "UPDATE":  "Modify",
         "VALIDATE":  "Validate",
         "DELETE":  "Delete"
-    }
+    },
+    "NOTAUTHOR": "Sorry only the author can modify this"
 }
