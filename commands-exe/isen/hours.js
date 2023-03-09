@@ -5,7 +5,7 @@ const { HoursSchema } = require('../../utility/Schema');
 module.exports = async function(interaction) {
     const hoursSelect = new StringSelectMenuBuilder()
         .setCustomId('hourSelect')
-        .setPlaceholder(await interaction.translate('isen/hours:HOUR:PLACEHOLDER'));
+        .setPlaceholder(interaction.translate('isen/hours:HOUR:PLACEHOLDER'));
     for (let i = 0; i < 12; i++) {
         hoursSelect.addOptions({
             label: `${i.toString(10)}h`,
@@ -14,7 +14,7 @@ module.exports = async function(interaction) {
     }
     const minuteSelect = new StringSelectMenuBuilder()
         .setCustomId('minuteSelect')
-        .setPlaceholder(await interaction.translate('isen/hours:MINUTE:PLACEHOLDER'));
+        .setPlaceholder(interaction.translate('isen/hours:MINUTE:PLACEHOLDER'));
     for (let i = 0; i < 60; i += 5) {
         minuteSelect.addOptions({
             label: `${i.toString(10)}min`,
@@ -26,22 +26,22 @@ module.exports = async function(interaction) {
     const row3 = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-                .setCustomId('hoursUpdate')
-                .setLabel(await interaction.translate('isen/hours:BUTTON:UPDATE'))
+                .setCustomId('hoursSetText')
+                .setLabel(interaction.translate('isen/hours:BUTTON:UPDATE'))
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
                 .setCustomId('hoursValidate')
-                .setLabel(await interaction.translate('isen/hours:BUTTON:VALIDATE'))
+                .setLabel(interaction.translate('isen/hours:BUTTON:VALIDATE'))
                 .setStyle(ButtonStyle.Success),
             new ButtonBuilder()
                 .setCustomId('hoursDelete')
-                .setLabel(await interaction.translate('isen/hours:BUTTON:DELETE'))
+                .setLabel(interaction.translate('isen/hours:BUTTON:DELETE'))
                 .setStyle(ButtonStyle.Danger),
         );
 
     const embed = new EmbedBuilder()
         .setColor(0x0099FF)
-        .setTitle(await interaction.translate('isen/hours:TITLE'))
+        .setTitle(interaction.translate('isen/hours:TITLE'))
         .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
         .setTimestamp();
 
