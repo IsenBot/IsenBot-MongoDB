@@ -1,0 +1,7 @@
+{
+    "BUILDER": {
+        "NAME": "Clear all since"
+    },
+    "SUCCESS": "{{number}} messages deleted !",
+    "HELP": "Deletes all messages sent after a certain message with a right clic"
+}

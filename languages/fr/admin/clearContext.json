@@ -1,0 +1,7 @@
+{
+    "BUILDER": {
+        "NAME": "Supprimer tous depuis"
+    },
+    "SUCCESS": "{{number}} messages supprimés !",
+    "HELP": "Permet de supprimer tout les messages envoyés après un message avec un clic droit"
+}

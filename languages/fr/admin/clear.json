@@ -1,0 +1,12 @@
+{
+    "BUILDER": {
+        "NAME": "supprimer",
+        "DESCRIPTION": "Supprime un certain nombre de messages dans le salon",
+        "NUMBER": {
+            "NAME": "nombre",
+            "DESCRIPTION": "Nombre de messages à supprimer"
+        }
+    },
+    "SUCCESS": "{{number}} messages supprimés !",
+    "HELP": "Envoie un message avec le bot"
+}

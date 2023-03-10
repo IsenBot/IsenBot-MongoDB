@@ -1,0 +1,12 @@
+{
+    "BUILDER": {
+        "NAME": "clear",
+        "DESCRIPTION": "Clear a  certain number of messages in the channel",
+        "NUMBER": {
+            "NAME": "number",
+            "DESCRIPTION": "Amount of messages to delete"
+        }
+    },
+    "SUCCESS": "{{number}} messages deleted !",
+    "HELP": "Deletes a certain amount of messages"
+}
