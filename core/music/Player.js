@@ -8,6 +8,7 @@ const twitch = require('twitch-m3u8');
 const Queue = require('./Queue');
 const TwitchApi = require('./TwitchApi');
 const { isUrl } = require('../../utility/Function');
+
 class Player extends EventEmitter {
     constructor(client) {
         super();

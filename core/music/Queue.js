@@ -36,16 +36,20 @@ class Queue extends EventEmitter {
         this._volume = 0.3;
         this.musicChannel = null;
         this.playing = false;
+        this.maxHistory = 10;
     }
 
     connect(channel) {
 
-        if (!channel) {
+        if (!channel?.isVoiceBased()) {
             this.queue = [];
             return 0;
         }
 
-        if (this.connection?.state?.status === 'ready') return this.connection?.joinConfig?.channelId === channel.id ? 2 : 1;
+        const perms = channel.permissionsFor(this.client.user);
+        if (!perms.has('CONNECT') || !perms.has('SPEAK')) return 2;
+
+        if (this.connection?.state?.status === 'ready') return this.connection?.joinConfig?.channelId === channel.id ? 3 : 1;
 
         if (this.connection?.state?.status === 'disconnected') {
             this.connection = joinVoiceChannel({
@@ -73,14 +77,9 @@ class Queue extends EventEmitter {
                 this.emit('voiceConnectionDisconnected', this);
             });
 
-            this.connection.on('stateChange', (oldState, newState) => {
-                if (oldState.status === VoiceConnectionStatus.Ready && newState.status === VoiceConnectionStatus.Connecting) {
-                    this.connection.configureNetworking();
-                }
-            });
 
             this.connection.subscribe(this.AudioPlayer);
-            return 2;
+            return 3;
         }
     }
 
@@ -93,7 +92,7 @@ class Queue extends EventEmitter {
     }
 
     addHistory(track) {
-        if (this.history.length > 5) this.history.pop();
+        if (this.history.length > this.maxHistory) this.history.pop();
         this.history.push(track);
     }
 
@@ -150,13 +149,14 @@ class Queue extends EventEmitter {
                 this.actualResource = this.player.createResource(source.stream, source.type);
             }
 
-            this.setBitrate(64000);
+            this.setBitrate(this.musicChannel.bitrate > 64000 ? 64000 : this.musicChannel.bitrate);
 
             this.actualResource.volume.setVolume(this._volume);
 
             this.AudioPlayer.play(this.actualResource);
 
             this.playing = true;
+
             this.emit('playNext', this.actualTrack);
         } else {
             this.stop();
@@ -172,7 +172,7 @@ class Queue extends EventEmitter {
     }
 
     skip() {
-        if (this.queue.length < 0) this.stop();
+        if (this.queue.length < 0) return this.stop();
         if (this.loop === 0) {
             this.addHistory(this.actualTrack);
         }
@@ -192,7 +192,8 @@ class Queue extends EventEmitter {
     }
 
     set loopMode(mode) {
-        if (mode instanceof String) {
+
+        if (typeof mode === 'string') {
             if (mode.length > 0) {
                 mode = loopMode[mode.toLowerCase()];
             } else {
@@ -200,7 +201,7 @@ class Queue extends EventEmitter {
             }
         }
 
-        if (!(mode instanceof Number)) return;
+        if (typeof mode !== 'number') return;
 
         if (mode < 0 || mode > 3) return;
 

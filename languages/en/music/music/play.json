@@ -6,6 +6,7 @@
     "RECHERCHE": "Searching ...",
     "LOADING": "Loading ...",
     "ADD_TRACK_TO_QUEUE": "Add {{title}} to queue",
-    "ADD_TRACKS_TO_QUEUE": "Add {{title}} to queue - {{nb}} tracks"
+    "ADD_TRACKS_TO_QUEUE": "Add {{title}} to queue - {{nb}} tracks",
+    "REQUESTED_BY": "Requested by {{user}}"
   }
 }

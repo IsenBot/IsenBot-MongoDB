@@ -1,4 +1,5 @@
 const { isUrl, checkUserChannel } = require('../../../../utility/Function');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (interaction) => {
 
@@ -34,7 +35,7 @@ module.exports = async (interaction) => {
                     if (ytTrack && ytTrack.status === 200) {
                         ytTrack.type = 'spotify';
                         tracks.push(ytTrack);
-                        result = await interaction.followUp({ content: interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack?.title}**` }), ephemeral: false });
+                        result = interaction.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack?.title}**` });
                     } else {
                         return interaction.followUp({ content: interaction.translate('music/music/error":404_result'), ephemeral: true });
                     }
@@ -56,7 +57,10 @@ module.exports = async (interaction) => {
                             }
                         }
                     }
-                    result = await interaction.followUp({ content: client.translate('music/music/play:exe:add_tracks_to_queue', { title: `**${data.name}**`, nb: `**${tracks.length}**` }, interaction.guild.preferredLocale), ephemeral: false });
+                    result = client.translate('music/music/play:exe:add_tracks_to_queue', {
+                        title: `**${data.name}**`,
+                        nb: `**${tracks.length}**`,
+                    }, interaction.guild.preferredLocale);
                 }
                 break;
             }
@@ -68,26 +72,59 @@ module.exports = async (interaction) => {
 
         if (data.tracks?.items) {
             const track = data.tracks.items[0];
-            if (!track?.name) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
+            if (!track?.name) {
+                return interaction.followUp({
+                    content: interaction.translate('music/music/error:404_result'),
+                    ephemeral: true,
+                });
+            }
             const ytTrack = await client.player.searchYoutubeTrack(`${track.name} ${track.artists[0].name}`);
-            if (!ytTrack || ytTrack.status !== 200) return interaction.followUp({ content: interaction.translate('music/music/error:404_result'), ephemeral: true });
+            if (!ytTrack || ytTrack.status !== 200) {
+                return interaction.followUp({
+                    content: interaction.translate('music/music/error:404_result'),
+                    ephemeral: true,
+                });
+            }
             ytTrack.type = 'spotify';
             tracks.push(ytTrack);
-            result = await interaction.followUp({ content: client.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack.title}**` }, interaction.guild.preferredLocale), ephemeral: false });
+            result = client.translate('music/music/play:exe:add_track_to_queue', { title: `**${ytTrack.title}**` }, interaction.guild.preferredLocale);
         }
     }
 
+    const embed = new EmbedBuilder()
+        .setTitle('Spotify search')
+        .setDescription(result)
+        .setFooter({
+            text: interaction.translate('music/music/play:exe:requested_by', { user: interaction.user.tag }),
+            iconURL: interaction.user.avatarURL('png', 2048),
+        })
+        .setTimestamp();
+
+    await interaction.followUp({ embeds: [embed] });
+
     tracks.forEach((track) => {
         track.discordMessageUrl = result.url;
+        track.requestedBy = interaction.user.id;
     });
 
     const b = queue.connect(interaction.member.voice.channel);
 
     switch (b) {
     case 0:
-        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:404_channel'),
+            ephemeral: true,
+        });
     case 1:
-        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:user_not_in_same_voice'),
+            ephemeral: true,
+        });
+    case 2:
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:bot_permission'),
+            ephemeral: true,
+        });
     }
 
     queue.addTracks(tracks);

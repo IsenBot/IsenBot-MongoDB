@@ -28,24 +28,42 @@ module.exports = async (interaction) => {
     const embed = new EmbedBuilder()
         .setTitle('Twitch Stream')
         .setThumbnail(track.thumbnail)
-        .setDescription(interaction.client.translate('music/music/play:exe:add_track_to_queue', { title: `**${track.title}**` }) + ` by [${track.channelTitle}](${track.channelTitle === 'etoiles' ? track.url + ' "The best streamer ever"' : track.url + ' "an other good streamer"'})`, interaction.guild.preferredLocale);
+        .setFooter({
+            text: interaction.translate('music/music/play:exe:requested_by', { user: interaction.user.tag }),
+            iconURL: interaction.user.avatarURL('png', 2048),
+        })
+        .setTimestamp();
 
     const result = await interaction.followUp({ embeds: [embed] });
 
     track.discordMessageUrl = result.url;
+    track.requestedBy = interaction.user.id;
 
     const b = queue.connect(interaction.member.voice.channel);
 
     switch (b) {
     case 0:
-        return interaction.followUp({ content: interaction.translate('music/music/error:404_channel'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:404_channel'),
+            ephemeral: true,
+        });
     case 1:
-        return interaction.followUp({ content: interaction.translate('music/music/error:user_not_in_same_voice'), ephemeral: true });
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:user_not_in_same_voice'),
+            ephemeral: true,
+        });
+    case 2:
+        return interaction.followUp({
+            content: interaction.translate('music/music/error:bot_permission'),
+            ephemeral: true,
+        });
     }
 
     queue.addTrack(track);
 
     if (!queue.playing) {
-        queue.play();
+        setTimeout(() => {
+            queue.play();
+        }, 1000);
     }
 };
