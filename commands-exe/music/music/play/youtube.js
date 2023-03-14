@@ -83,6 +83,8 @@ module.exports = async (interaction) => {
     queue.addTracks(track);
 
     if (!queue.playing) {
-        queue.play();
+        setTimeout(() => {
+            queue.play();
+        }, 1000);
     }
 };

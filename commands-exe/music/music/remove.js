@@ -9,7 +9,7 @@ module.exports = async (interaction) => {
 
     if (!queue || !queue.playing) return interaction.reply({ content: interaction.translate('music/music/error:no_track'), ephemeral: true });
 
-    const nb = interaction.options.getNumber('index', true) - 1;
+    const nb = interaction.options.getInteger('index', true) - 1;
 
     if (nb > queue.queue.length) return interaction.reply({ content: interaction.translate('music/music/error:index_out_of_range'), ephemeral: true });
 
