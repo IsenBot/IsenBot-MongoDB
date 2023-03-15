@@ -3,6 +3,7 @@ const { stream } = require('play-dl');
 const EventEmitter = require('node:events');
 const { AudioPlayerStatus, createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior, VoiceConnectionStatus } = require('@discordjs/voice');
 const { shuffleArray } = require('../../utility/Function');
+const { PermissionsBitField } = require('discord.js');
 
 class Queue extends EventEmitter {
     constructor(client, guildId, player) {
@@ -47,7 +48,7 @@ class Queue extends EventEmitter {
         }
 
         const perms = channel.permissionsFor(this.client.user);
-        if (!perms.has('CONNECT') || !perms.has('SPEAK')) return 2;
+        if (!perms.has(PermissionsBitField.Flags.Connect)) return 2;
 
         if (this.connection?.state?.status === 'ready') return this.connection?.joinConfig?.channelId === channel.id ? 3 : 1;
 
@@ -58,7 +59,7 @@ class Queue extends EventEmitter {
                 adapterCreator: channel.guild.voiceAdapterCreator,
             });
             this.connection.subscribe(this.AudioPlayer);
-            return 2;
+            return 3;
         } else {
             this.musicChannel = channel;
             this.connection = joinVoiceChannel({
