@@ -5,7 +5,7 @@ class Auth {
         this.usersTokens = {};
         this.secret = client.config.oAuthToken;
         this.id = client.user.id;
-        this.redirectUri = 'http://localhost:8080' + client.api.authPath;
+        this.redirectUri = `${client.api.URI}:${client.api.port}${client.api.authPath}`;
     }
 
     #addAuthUserCredentials(userId, credentials) {
