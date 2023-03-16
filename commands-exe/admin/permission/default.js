@@ -42,7 +42,7 @@ module.exports = async function(interaction) {
                 });
             });
     } else {
-        const authURL = new URL(`https://discord.com/api/oauth2/authorize?client_id=${interaction.client.user.id}&redirect_uri=${interaction.client.api.URI}:${interaction.client.api.port}${interaction.client.api.authPath}&response_type=code&scope=identify applications.commands.permissions.update`);
+        const authURL = new URL(`https://discord.com/api/oauth2/authorize?client_id=${interaction.client.user.id}&redirect_uri=${interaction.client.api.URI}${interaction.client.api.authPath}&response_type=code&scope=identify applications.commands.permissions.update`);
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
