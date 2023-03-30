@@ -31,6 +31,10 @@ class TwitchApi {
                     headers: ['Twitch'],
                     type: 'Error',
                 });
+
+                setTimeout(() => {
+                    this.fetchToken();
+                }, 30000);
             });
 
         if (data) {
@@ -44,7 +48,7 @@ class TwitchApi {
 
             setInterval(() => {
                 this.fetchToken();
-            }, 86400000);
+            }, data.expires_in);
         }
     }
 
