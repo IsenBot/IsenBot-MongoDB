@@ -3,9 +3,9 @@ const express = require('express');
 function getRouter(client) {
     const router = express.Router();
 
-    router.get('*', (req, res) => {
+    router.get('*', async (req, res) => {
         if ('code' in req.query && req.query.code) {
-            const expiresAt = client.auth.addAuthUser(req.query.code);
+            const expiresAt = await client.auth.addAuthUser(req.query.code);
             if (expiresAt) {
                 res.status(200).send(`<h1>Connected !</h1><br><p>Refresh token will be edited at ${(new Date(expiresAt)).toLocaleDateString()}</p>`);
             }
