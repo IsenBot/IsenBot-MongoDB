@@ -38,7 +38,7 @@ module.exports = {
         },
     },
     api: {
-        URI: process.env.API_URI ? process.env.API_URI : 'http://localhost',
+        URI: process.env.API_URI ? process.env.API_URI : ('http://localhost:' + (process.env.API_PORT ? Number(process.env.API_PORT) : 8080)),
         port: process.env.API_PORT ? Number(process.env.API_PORT) : 8080,
     },
     embed: {
