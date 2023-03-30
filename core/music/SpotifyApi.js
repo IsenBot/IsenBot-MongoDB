@@ -6,6 +6,7 @@ class SpotifyApi {
         this.access_token = null;
         this.client_id = this.client.config.player.key.spotifyClient;
         this.client_secret = this.client.config.player.key.spotifySecret;
+        this.expires_in = null;
     }
 
     async fetchToken() {
@@ -47,13 +48,15 @@ class SpotifyApi {
                 type: 'Success',
             });
 
-            setTimeout(() => {
-                this.fetchToken();
-            }, data.expires_in * 1000);
+            this.expires_in = Date.now() + data.expires_in * 1000;
         }
     }
 
     async search(query, type = ['track'], limit = 1) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${type.join(',')}&limit=${limit}`, {
             method: 'GET',
             headers: {
@@ -72,6 +75,10 @@ class SpotifyApi {
     }
 
     async getById(id, type = 'track') {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         switch (type) {
 
         case 'track':
@@ -91,6 +98,10 @@ class SpotifyApi {
     }
 
     async trackById(id) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
             method: 'GET',
             headers: {
@@ -109,6 +120,10 @@ class SpotifyApi {
     }
 
     async artistById(id) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.spotify.com/v1/artists/${id}`, {
             method: 'GET',
             headers: {
