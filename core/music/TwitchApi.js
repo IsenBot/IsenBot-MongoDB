@@ -48,7 +48,7 @@ class TwitchApi {
 
             setTimeout(() => {
                 this.fetchToken();
-            }, 86400000);
+            }, data.expires_in * 1000);
         }
     }
 
