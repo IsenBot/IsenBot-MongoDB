@@ -46,7 +46,7 @@ class TwitchApi {
 
             this.token = data.access_token;
 
-            setInterval(() => {
+            setTimeout(() => {
                 this.fetchToken();
             }, 86400000);
         }
