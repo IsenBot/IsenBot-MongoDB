@@ -5,6 +5,8 @@ class TwitchApi {
         this.client = client;
         this.Client_id = client.config.player.key.twitchClient;
         this.Client_secret = client.config.player.key.twitchSecret;
+        this.token = null;
+        this.expires_in = null;
     }
 
     async fetchToken() {
@@ -23,7 +25,6 @@ class TwitchApi {
                     headers: 'Twitch',
                     type: 'Error',
                 });
-                return;
             })
             .catch(error => {
                 this.client.log({
@@ -46,13 +47,15 @@ class TwitchApi {
 
             this.token = data.access_token;
 
-            setTimeout(() => {
-                this.fetchToken();
-            }, 86400000);
+            this.expires_in = Date.now() + data.expires_in;
         }
     }
 
     async fetchChannel(userId) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${userId}`, {
             method: 'GET',
             headers: {
@@ -70,6 +73,10 @@ class TwitchApi {
             });
     }
     async fetchUser(username) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.twitch.tv/helix/users?login=${username}`, {
             method: 'GET',
             headers: {
@@ -88,6 +95,10 @@ class TwitchApi {
     }
 
     async fetchStream(option) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.twitch.tv/helix/streams?${option.user_id ? 'user_id=' + option.user_id + '&' : ''}${option.language ? 'language=' + option.language + '&' : ''}${option.user_login ? 'user_login=' + option.user_login + '&' : ''}${option.type ? 'type=' + option.type + '&' : ''}${option.limit ? 'first=' + option.limit : '5'}`, {
             method: 'GET',
             headers: {
@@ -106,6 +117,10 @@ class TwitchApi {
     }
 
     async fetchQuery(query, maxResults = 5, isLive = true) {
+        if (Date.now() > this.expires_in) {
+            await this.fetchToken();
+        }
+
         return await fetch(`https://api.twitch.tv/helix/search/channels?query=${query}&first=${maxResults}&live_only=${isLive}`, {
             method: 'GET',
             headers: {
